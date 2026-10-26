@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI旅行会社 全体の流れ</title>
+<style>
+  :root{--bg:#f6f8fb;--card:#fff;--ink:#1c2733;--sub:#5b6b7c;--line:#dbe3ec;--accent:#0b6fb8;--accent2:#e8f2fb;--gold:#b8860b;--gold-bg:#fff7e0;--red:#c0392b;--green:#1e8e5a}
+  @media (prefers-color-scheme:dark){:root{--bg:#10161d;--card:#18212b;--ink:#e8eef4;--sub:#9fb0c1;--line:#2a3846;--accent:#5db3f0;--accent2:#16293a;--gold:#e8b84a;--gold-bg:#2c2412;--red:#ff8a7a;--green:#58d39b}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hiragino Sans","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;line-height:1.75}
+  .wrap{max-width:900px;margin:0 auto;padding:24px 16px 64px}
+  h1{font-size:1.7rem;margin:0 0 4px}
+  .lead{color:var(--sub);margin:0 0 20px}
+  h2{font-size:1.25rem;margin:36px 0 12px;padding-left:10px;border-left:6px solid var(--accent)}
+  h3{font-size:1.05rem;margin:18px 0 6px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:12px 0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+  .pill{display:inline-block;background:var(--accent2);color:var(--accent);border-radius:999px;padding:2px 10px;font-size:.85rem;font-weight:700;margin-right:6px}
+  table{width:100%;border-collapse:collapse;font-size:.95rem}
+  th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:var(--accent2);font-weight:700}
+  td.t{white-space:nowrap;color:var(--sub);width:1%}
+  tr.hl td{background:var(--gold-bg)}
+  .flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin:10px 0}
+  .step{flex:1 1 130px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center;position:relative}
+  .step b{display:block;font-size:.95rem}
+  .step small{color:var(--sub)}
+  .plus{color:var(--green);font-weight:700}
+  .minus{color:var(--red);font-weight:700}
+  .note{background:var(--gold-bg);border-left:5px solid var(--gold);padding:10px 14px;border-radius:8px;margin:12px 0;font-size:.95rem}
+  ul{margin:6px 0 6px 1.2em;padding:0}
+  footer{color:var(--sub);font-size:.85rem;margin-top:40px}
+  @media print{body{background:#fff}.card{break-inside:avoid}h2{break-after:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>AI旅行会社 全体の流れ</h1>
+<p class="lead">小3〜中3が、AIを使いながら「旅行会社の社長」になる1泊2日。<br>Dreamコイン100万円を元手に、行き先を選び、ツアーを作り、売って、最終の所持金を競います。</p>
+
+<div class="grid">
+  <div class="card"><span class="pill">対象</span>小学3年〜中学3年（約15人）</div>
+  <div class="card"><span class="pill">場所</span>あうる京北（京都）</div>
+  <div class="card"><span class="pill">AI</span>2人で1台（iPad約8台）／動画はGemini 10秒</div>
+  <div class="card"><span class="pill">通貨</span>Dreamコイン。計算は足す・引くだけ</div>
+</div>
+
+<h2>1. ゲームの全体像（3ステップ）</h2>
+<div class="flow">
+  <div class="step"><b>① 仕入れる</b><small>行き先を選び、宿を買う<br>（お金が出ていく）</small></div>
+  <div class="step"><b>② 作る</b><small>AIで調べて、名前・コピー・日程・ポスター・動画を作る</small></div>
+  <div class="step"><b>③ 売る</b><small>値段を決めて発表し、お客さんコインで買ってもらう</small></div>
+  <div class="step"><b>④ 競う</b><small>最終の所持金で順位。全員に賞状</small></div>
+</div>
+<div class="note">運の要素（サイコロ・ルーレット）もありますが、勝負の中心は「魅力的なツアーを作って、納得できる値段で売る」ことです。</div>
+
+<h2>2. 1日目（13:00集合）</h2>
+<div class="card">
+<table>
+<tr><th>時間</th><th>やること</th></tr>
+<tr><td class="t">13:00〜13:20</td><td>開会。Dreamコイン100万円を配る</td></tr>
+<tr><td class="t">13:20〜13:40</td><td>ペア決め（AIは2人1台）。1人ずつ自己紹介（名前＋行きたい旅行先）</td></tr>
+<tr><td class="t">13:40〜13:55</td><td>かけっこ（学年グループ別。小3〜4=10m／小5〜6=往復20m／中学=往復30m）</td></tr>
+<tr class="hl"><td class="t">13:55〜14:10</td><td><b>行き先を選ぶ</b>（各グループ1位→2位の順。交通費を払う）</td></tr>
+<tr><td class="t">14:10〜14:20</td><td>AIの使い方レッスン（コツ3つ＋個人情報に注意）</td></tr>
+<tr class="hl"><td class="t">14:20〜14:40</td><td><b>クエスト①</b> 地域調べ（3行メモ）</td></tr>
+<tr class="hl"><td class="t">14:40〜14:55</td><td><b>宿を選ぶ</b>（人数制限なし）＋椅子取りゲーム＋ご当地クイズ</td></tr>
+<tr class="hl"><td class="t">14:55〜15:15</td><td><b>クエスト②</b> ツアータイトルとキャッチコピー → 全員で投票</td></tr>
+<tr><td class="t">15:15〜15:30</td><td>おやつ、休憩</td></tr>
+<tr class="hl"><td class="t">15:30〜16:00</td><td><b>クエスト③</b> 旅行スケジュール作り</td></tr>
+<tr><td class="t">16:00〜16:20</td><td>サイコロ1回目</td></tr>
+<tr class="hl"><td class="t">16:20〜17:00</td><td><b>ミニ発表</b>（30秒）→ お客さんコイン50万円で買う → 団体客ルーレット1回目</td></tr>
+<tr><td class="t">17:00〜17:30</td><td>サイコロ2回目、今日の振り返り</td></tr>
+<tr><td class="t">17:30〜18:30</td><td>夕食（鍋）</td></tr>
+<tr><td class="t">18:30〜19:30</td><td>入浴（班ごとに交代）</td></tr>
+<tr><td class="t">19:30〜20:30</td><td>MGゲーム（任意）</td></tr>
+<tr><td class="t">20:30〜21:30</td><td>自由時間（クイズの調べ学習は自由。AIで遊んでもOK）</td></tr>
+<tr><td class="t">21:30〜22:00</td><td>就寝準備、22:00消灯</td></tr>
+</table>
+</div>
+
+<h2>3. 2日目（9:00スタート）</h2>
+<div class="card">
+<table>
+<tr><th>時間</th><th>やること</th></tr>
+<tr><td class="t">7:00〜9:00</td><td>起床、朝食、準備</td></tr>
+<tr><td class="t">9:00〜9:15</td><td>開始、サイコロ3回目</td></tr>
+<tr class="hl"><td class="t">9:15〜10:45</td><td><b>クエスト④⑤</b> 広報ポスター（1人1枚）と動画（Gemini、10秒、1人1本）。AIは2人1台なので交代で作る</td></tr>
+<tr class="hl"><td class="t">10:45〜11:00</td><td>作品を貼り出して投票（ポスター・動画の賞）</td></tr>
+<tr><td class="t">11:00〜11:10</td><td>団体客ルーレット2回</td></tr>
+<tr class="hl"><td class="t">11:10〜12:00</td><td><b>本番ピッチ</b>（1人2〜3分。ツアーの値段を発表）</td></tr>
+<tr class="hl"><td class="t">12:00〜12:15</td><td>お客さんコイン50万円で買う</td></tr>
+<tr><td class="t">12:15〜13:00</td><td>精算、表彰</td></tr>
+<tr><td class="t">13:00〜</td><td>昼食、解散準備</td></tr>
+</table>
+</div>
+
+<h2>4. お金の流れ</h2>
+<div class="flow">
+  <div class="step"><b>資本金</b><span class="plus">+100万</span></div>
+  <div class="step"><b>交通費</b><span class="minus">−10 / −20 / −30万</span><br><small>近い/少し遠い/すごく遠い</small></div>
+  <div class="step"><b>宿代</b><span class="minus">−10 / −30 / −60万</span><br><small>ゲストハウス/ホテル/高級旅館</small></div>
+  <div class="step"><b>サイコロ×3</b><span class="plus">＋</span> <span class="minus">−</span><br><small>運で増減</small></div>
+  <div class="step"><b>ツアーの売上</b><span class="plus">＋</span><br><small>お客さんコインで買われた分</small></div>
+  <div class="step"><b>賞金・団体客</b><span class="plus">＋</span></div>
+</div>
+<p>最終の所持金 ＝ 100万 − 交通費 − 宿代 ＋ サイコロ ＋ 売上 ＋ 賞金・団体客。マイナスになっても失格にはしません。</p>
+
+<h3>ツアーの値段</h3>
+<p>値段は<b>売る側が自分で決めます</b>（5万円刻み、上限まで）。上限は「距離の基本額＋宿の上乗せ」で決まります。</p>
+<div class="card">
+<table>
+<tr><th>宿 ＼ 行き先</th><th>近い県</th><th>少し遠い県</th><th>すごく遠い県</th></tr>
+<tr><td>ゲストハウス</td><td>20万</td><td>25万</td><td>30万</td></tr>
+<tr><td>ホテル</td><td>25万</td><td>30万</td><td>35万</td></tr>
+<tr><td>高級旅館</td><td>35万</td><td>40万</td><td>45万</td></tr>
+</table>
+</div>
+<p>遠くて高い宿ほど元手がかかりますが、高く売れる可能性も上がります。リスクとリターンのバランスを考えるのがポイントです。</p>
+
+<h3>お客さんコイン</h3>
+<ul>
+  <li>全員に1日目50万円、2日目50万円を配ります（持ち越しなし）。自分の資本金とは別です。</li>
+  <li>気に入ったツアーを、売る側が決めた値段で買います。自分のツアーは買えません。同じツアーは1人1回まで。</li>
+  <li>買ってもらった分が、そのままツアーの売上になります。</li>
+</ul>
+
+<h2>5. 強制クエスト（全員がAIを使って作る）</h2>
+<div class="card">
+<table>
+<tr><th>#</th><th>いつ</th><th>作るもの</th><th>ごほうび</th></tr>
+<tr><td>①</td><td>1日目</td><td>地域調べ（3行メモ）</td><td>宿を選ぶ理由・ピッチの材料</td></tr>
+<tr><td>②</td><td>1日目</td><td>タイトルとキャッチコピー</td><td>投票で最多得票の1人に <span class="plus">+20万</span></td></tr>
+<tr><td>③</td><td>1日目</td><td>旅行スケジュール</td><td>ピッチの材料</td></tr>
+<tr><td>④</td><td>2日目</td><td>広報ポスター</td><td>投票の上位3人に <span class="plus">+20万</span></td></tr>
+<tr><td>⑤</td><td>2日目</td><td>動画（10秒）</td><td>投票の上位3人に <span class="plus">+20万</span></td></tr>
+</table>
+</div>
+
+<h2>6. 運の要素</h2>
+<div class="grid">
+  <div class="card"><h3>サイコロ（各自3回）</h3>
+    <ul>
+      <li>1：+20万</li><li>2：−10万</li>
+      <li>3：チャンスカード（クリアで+20万）</li>
+      <li>4：AIで面白い答えが出たら+10万（判定はKazuさん）</li>
+      <li>5：+30万</li><li>6：−20万</li>
+    </ul></div>
+  <div class="card"><h3>団体客ルーレット（計3回）</h3>
+    <ul>
+      <li>全員の名前を書いたルーレットを回す</li>
+      <li>当たったツアーに、その人の値段1回分の売上が入る</li>
+      <li>ポスターか動画で上位に入った人は、名前が合計2口になる</li>
+    </ul></div>
+  <div class="card"><h3>チャンスカード（10枚）</h3>
+    <ul>
+      <li>お題をクリアで+20万（失敗は0円）</li>
+      <li>例：魅力を10秒で言う／名産品を3つ言う／決めポーズ／宿の自慢を15秒で話す</li>
+    </ul></div>
+</div>
+
+<h2>7. 決めるゲーム（準備が少ない遊び）</h2>
+<ul>
+  <li><b>かけっこ</b>：行き先を選ぶ順番</li>
+  <li><b>椅子取りゲーム</b>：宿を選んだあとの盛り上げ</li>
+  <li><b>全国ご当地クイズ</b>：参加者が選んだ県から1人1問ずつ出題。正解数で飴をプレゼント</li>
+  <li><b>じゃんけん</b>：同順位や取り合いの決着</li>
+</ul>
+
+<h2>8. 表彰</h2>
+<ul>
+  <li>総合優勝（最終の所持金が一番多い）</li>
+  <li>一番行きたいツアー賞（買われた人数が最多）</li>
+  <li>一番笑えたツアー賞（会場の拍手）</li>
+  <li>AI審査員賞（AIにピッチ原稿を見せて選ぶ）</li>
+  <li>全員に賞状</li>
+</ul>
+
+<h2>9. AIを使うときのルール</h2>
+<div class="card">
+  <p><b>3つのコツ</b>：ウェブ検索をオンにする／何をしたいかを伝える／「あなたは○○のプロです」と役割を与える。</p>
+  <p><b>入れないもの</b>：本名、住所、電話番号、学校名、顔写真、お客さんの情報。入力した内容は外のサーバーに送られます。</p>
+  <p><b>確かめる</b>：AIの答えは間違うことがあるので、そのまま信じずに自分で確認します。</p>
+  <p><b>アカウント</b>：動画はスタッフの有料Geminiアカウントを子どもが使います（まず1か月無料体験で試す）。保護者のAI利用同意は申込時にまとめて取ります。</p>
+</div>
+
+<h2>10. 会議で決めたいこと</h2>
+<ul>
+  <li>スタッフは2名か3名か（利益は約15.1万円／約11.6万円）</li>
+  <li>スタッフ（大人）の宿泊費</li>
+  <li>会場（研修室）の正式な料金、夕食の鍋が可能か</li>
+  <li>Geminiの無料体験の条件（18歳未満の操作、期間、解約手順）</li>
+  <li>iPadの台数とWi-Fi</li>
+  <li>参加者が11人を下回ったときの判断</li>
+</ul>
+
+<footer>最新の収支は「ビジネスキャンプ_収支と決めること.xlsx」を参照。金額・時間は仮を含みます。</footer>
+</div>
+</body>
+</html>
