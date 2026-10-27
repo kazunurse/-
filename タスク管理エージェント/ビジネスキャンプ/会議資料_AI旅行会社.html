@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>会議資料 AI旅行会社</title>
+<style>
+  :root{--bg:#f6f8fb;--card:#fff;--ink:#1c2733;--sub:#5b6b7c;--line:#dbe3ec;--accent:#0b6fb8;--accent2:#e8f2fb;--gold:#b8860b;--gold-bg:#fff7e0;--red:#c0392b;--green:#1e8e5a}
+  @media (prefers-color-scheme:dark){:root{--bg:#10161d;--card:#18212b;--ink:#e8eef4;--sub:#9fb0c1;--line:#2a3846;--accent:#5db3f0;--accent2:#16293a;--gold:#e8b84a;--gold-bg:#2c2412;--red:#ff8a7a;--green:#58d39b}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hiragino Sans","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;line-height:1.75}
+  .wrap{max-width:900px;margin:0 auto;padding:24px 16px 64px}
+  h1{font-size:1.6rem;margin:0 0 4px}
+  .lead{color:var(--sub);margin:0 0 16px}
+  h2{font-size:1.2rem;margin:32px 0 10px;padding-left:10px;border-left:6px solid var(--accent)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:10px 0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+  .num{font-size:1.5rem;font-weight:800;color:var(--accent)}
+  .small{color:var(--sub);font-size:.88rem}
+  table{width:100%;border-collapse:collapse;font-size:.93rem}
+  th,td{border-bottom:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  th{background:var(--accent2)}
+  td.t{white-space:nowrap;color:var(--sub);width:1%}
+  .todo{background:var(--gold-bg);border-left:5px solid var(--gold);border-radius:8px;padding:8px 14px;margin:8px 0}
+  .ok{color:var(--green);font-weight:700}
+  .ng{color:var(--red);font-weight:700}
+  ul,ol{margin:6px 0 6px 1.2em;padding:0}
+  @media print{body{background:#fff}.card{break-inside:avoid}h2{break-after:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>会議資料：AI旅行会社（ビジネスキャンプ）</h1>
+<p class="lead">小3〜中3、約15人、1泊2日、京都・あうる京北。AIと一緒に旅行会社の社長になるゲーム。</p>
+
+<h2>1. ひとことで</h2>
+<div class="card">
+  <p>Dreamコイン100万円を元手に、行き先と宿を買い、AIでツアーを作り、自分で値段を決めて売ります。最終の所持金で競い、全員に賞状を渡します。計算は足す・引くだけ。ルールと時間割は固まり、<b>残りは運営面の確認が中心</b>です。</p>
+</div>
+<div class="grid">
+  <div class="card"><div class="small">参加費</div><div class="num">4万円</div></div>
+  <div class="card"><div class="small">利益（15人・スタッフ2名）</div><div class="num">約19.4万円</div></div>
+  <div class="card"><div class="small">利益（スタッフ3名）</div><div class="num">約16.0万円</div></div>
+  <div class="card"><div class="small">損益分岐点</div><div class="num">10〜11人</div></div>
+</div>
+
+<h2>2. 今すぐ保存しておくもの</h2>
+<div class="card">
+<table>
+<tr><th>ファイル</th><th>中身</th></tr>
+<tr><td>会議資料_AI旅行会社.html</td><td>この資料（会議用の全体まとめ）</td></tr>
+<tr><td>AI旅行会社_全体の流れ.html</td><td>説明書つきの全体の流れ（時間割、ルール、リスク、チェックリスト、子ども向け説明）</td></tr>
+<tr><td>AI旅行会社_全体の流れ_文章版.md</td><td>同じ内容を文章で</td></tr>
+<tr><td>ビジネスキャンプ_収支と決めること.xlsx</td><td>収支シミュレーション（人数・スタッフ数を変えると自動計算）、時間割、決めること一覧</td></tr>
+<tr><td>旅行会社ゲーム_ルールと決めるゲーム.md</td><td>ルール表（詳細版）</td></tr>
+<tr><td>企画レポート（Claudeのドキュメント）</td><td>https://claude.ai/artifact/87zBmiu5Rgnnvhnaro1Tzm ／メニューからWord・PDFに書き出し可</td></tr>
+</table>
+</div>
+<p class="small">クラウドのセッションは一定時間で消えます。上のファイルはリポジトリ（ブランチ claude/funny-galileo-3oq50z）に保存・プッシュ済みですが、手元にもダウンロードして残してください。</p>
+
+<h2>3. ここまでの経緯</h2>
+<div class="card">
+<ol>
+  <li>旅行会社の社長になる案から出発。ペアでAIを共有し、行き先・宿・お金は個人にする形に。</li>
+  <li>旅行券の案を、売る側が値段を決め、お客さんがコインで買う形に変更（ライバルに安く書く不公平を避けるため）。</li>
+  <li>値段の上限を「距離の基本額＋宿の上乗せ」とし、全組み合わせの利益が近くなるよう計算して調整。</li>
+  <li>お客さんコイン（1日目50万円・2日目50万円）、強制クエスト5つ、団体客ルーレット（広告が強い人は合計2口）を追加。</li>
+  <li>6人のロールプレイを2回通して実施し、ルールが回ることを確認。小3も最下位を避けられた。</li>
+  <li>夜はMGゲーム（任意）と自由時間。サイコロは夕方・翌朝に分散。2日目は9:00スタートに。</li>
+  <li>動画は1人1本・Gemini10秒、スタッフの有料アカウントを子どもが使う形に。</li>
+  <li>費用を調査し、夕食は施設で鍋（子ども3,000円・大人3,500円）。バスの費用はなし。</li>
+  <li>サイコロ「4」は、AI審査員（3観点・6点以上）で判定する形に。</li>
+</ol>
+</div>
+
+<h2>4. 決まったこと</h2>
+<div class="card">
+<ul>
+  <li><span class="ok">確定</span> 資本金100万円。交通費は−10／−20／−30万。宿代は−10／−30／−60万。宿は人数制限なし。</li>
+  <li><span class="ok">確定</span> 値段は売る側が5万円刻みで決める。上限は20〜45万円（距離と宿で決まる）。</li>
+  <li><span class="ok">確定</span> お客さんコイン：1日目50万、2日目50万。持ち越しなし。</li>
+  <li><span class="ok">確定</span> 運営への支払い15万円は、会場や宿とは別。参加費は4万円。</li>
+  <li><span class="ok">確定</span> 保護者のAI利用同意は申込時にまとめて取る。</li>
+  <li><span class="ok">確定</span> 動画はスタッフの有料Geminiアカウントを子どもが使う（まず1か月無料体験）。</li>
+  <li><span class="ok">確定</span> 夕食は施設で鍋。子どもの宿泊＋3食は約6,100円、スタッフは約8,700円。</li>
+</ul>
+</div>
+
+<h2>5. 会議で決めること</h2>
+<div class="card">
+<table>
+<tr><th>#</th><th>決めること</th><th>メモ</th></tr>
+<tr><td>1</td><td>スタッフは2名か3名か</td><td>利益は約19.4万円／約16.0万円。日給は1日目1.5万、2日目1万</td></tr>
+<tr><td>2</td><td>会場（研修室）の正式な料金</td><td>仮に3万円で計算。施設に確認（電話番号は検索結果の記載）</td></tr>
+<tr><td>3</td><td>Geminiの無料体験の条件</td><td>18歳未満の子どもが操作してよいか、期間、解約手順</td></tr>
+<tr><td>4</td><td>iPadの台数とWi-Fi</td><td>15人なら8台。仮に約2.7万円</td></tr>
+<tr><td>5</td><td>集合・解散の移動手段</td><td>京都市内から車で約60分。費用が出るなら収支に追加</td></tr>
+<tr><td>6</td><td>参加者が10人を下回ったときの判断</td><td>損益分岐点は10〜11人</td></tr>
+<tr><td>7</td><td>子どもの宿泊税（200円）の扱い</td><td>対象・免除を施設に確認</td></tr>
+</table>
+</div>
+
+<h2>6. スケジュール</h2>
+<div class="card">
+<table>
+<tr><th>時期</th><th>やること</th></tr>
+<tr><td class="t">会議後</td><td>上の決めることを確定。会場・施設に電話確認。参加者募集と保護者の同意の案内</td></tr>
+<tr><td class="t">本番の約1か月前</td><td>Gemini無料体験を試す（開始日と解約日を決める）。iPadの手配</td></tr>
+<tr><td class="t">本番の数日前</td><td>ご当地クイズ・チャンスカード・コイン・賞状・飴の準備。印刷物の確認</td></tr>
+<tr><td class="t">本番の前日</td><td>ChatGPTの画像生成、Geminiの動画（10秒）の実機テスト。iPadのログイン設定</td></tr>
+<tr><td class="t">本番1日目</td><td>13:00集合 〜 22:00消灯（詳細は全体の流れHTML）</td></tr>
+<tr><td class="t">本番2日目</td><td>9:00スタート 〜 13:00昼食・解散</td></tr>
+</table>
+</div>
+
+<h2>7. 本番の時間割（要約）</h2>
+<div class="grid">
+  <div class="card"><b>1日目</b><br>
+    13:00 開会／13:20 ペア・自己紹介／13:40 かけっこ／13:55 行き先選び／14:10 AIレッスン／14:20 クエスト①地域調べ／14:40 宿選び・椅子取り・クイズ／14:55 クエスト②コピー／15:30 クエスト③日程／16:00 サイコロ1／16:20 ミニ発表／17:00 サイコロ2／17:30 夕食（鍋）／18:30 入浴／19:30 MGゲーム（任意）／20:30 自由／22:00 消灯</div>
+  <div class="card"><b>2日目</b><br>
+    9:00 サイコロ3／9:15 クエスト④⑤ ポスター・動画／10:45 投票／11:00 ルーレット2回／11:10 本番ピッチ／12:00 お客さんコインで買う／12:15 精算・表彰／13:00 昼食・解散</div>
+</div>
+
+<h2>8. 懸念点</h2>
+<div class="card">
+<ul>
+  <li>動画のアカウント：解説記事では18歳以上の有料プランが対象。スタッフのアカウントを使い、大人が横につく。公式の条件を要確認。</li>
+  <li>ChatGPT無料版の画像生成には回数制限がある（公式の回数は未確認）。前日にテスト。</li>
+  <li>共有アカウントの履歴が次の子に見える。子どもごとに新しいチャット、終わったら履歴削除。</li>
+  <li>2日目の90分で、ポスターと動画の2作品をAI2人1台で作る。時間に余裕が少ない。</li>
+  <li>ミニ発表で買われない子が出る。スタッフの声かけを用意。</li>
+  <li>あうる京北の料金は、古い資料と検索結果の要約のみ。正式な見積もりを取る。</li>
+</ul>
+</div>
+
+<h2>9. 収支（参加費4万円・15人）</h2>
+<div class="card">
+<table>
+<tr><th>項目</th><th>スタッフ2名</th><th>スタッフ3名</th></tr>
+<tr><td>参加費収入</td><td>600,000円</td><td>600,000円</td></tr>
+<tr><td>費用合計</td><td>405,900円</td><td>439,600円</td></tr>
+<tr><td><b>利益</b></td><td><b>194,100円</b></td><td><b>160,400円</b></td></tr>
+<tr><td>損益分岐点</td><td>10人</td><td>11人</td></tr>
+<tr><td>手取り10万円に必要な人数</td><td>13人</td><td>14人</td></tr>
+</table>
+</div>
+<p class="small">費用の主な内訳：運営への支払い15万円、スタッフ日給（1人2.5万円）、宿泊＋3食（子ども約6,100円、大人約8,700円）、会場3万円（仮）、iPad約2.7万円（仮）、おやつ・消耗品・保険4万円（仮）。</p>
+
+</div>
+</body>
+</html>
