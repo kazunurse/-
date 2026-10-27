@@ -24,6 +24,10 @@ h2::before{content:'';width:8px;height:24px;border-radius:4px;background:var(--a
 #rlSpin{background:linear-gradient(135deg,#e8590c,#ffa94d);box-shadow:0 6px 16px rgba(232,89,12,.35);border-radius:12px}
 .stage button{border-radius:12px;padding:8px 14px}
 .stage button.on{box-shadow:0 4px 12px rgba(11,111,184,.35)}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0;position:sticky;top:0;z-index:20;background:var(--bg);padding:8px 0}
+.tabs button{background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:999px;padding:8px 16px;font-weight:700;box-shadow:none}
+.tabs button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tabpane{display:none}.tabpane.on{display:block}
 table tbody tr:nth-child(even){background:rgba(120,150,180,.07)}
 .need{background:var(--goldbg)!important;box-shadow:inset 0 -3px 0 var(--gold)}
 #diceFace{transition:transform .05s}
@@ -98,8 +102,13 @@ td input.sp{min-width:70px}
 <li><b>結果</b>（誰が何人に買われたか、売上、ドリームコイン）と、<b>アンケート</b>（選んだ理由）を見る。気づいたことを直して、次の回へ。</li></ol></div>
 
 <div id="flow"></div>
-<div id="sheet"></div>
 <div id="rankOv" style="display:none;position:fixed;inset:0;z-index:50;background:radial-gradient(circle at 50% 30%,#3b2a8c,#14103a);color:#fff;overflow:auto;padding:24px 16px"><div style="max-width:720px;margin:0 auto;text-align:center"><div style="font-size:1.6rem;font-weight:800;margin-bottom:12px">🏆 ランキング発表！</div><div id="rankList"></div><button id="rankClose" style="margin-top:18px;background:#fff;color:#3b2a8c">とじる</button></div></div>
+<div id="tabs" class="tabs"><button data-tab="input">① 入力・見せる</button><button data-tab="result">② 結果</button><button data-tab="money">💰 収支</button><button data-tab="game">🎲 サイコロ・ルーレット</button><button data-tab="persona">👥 ペルソナ・しくみ</button></div>
+<div class="tabpane" data-pane="money"><h2>収支（お金のまとめ）</h2><div id="sheet"></div>
+<div class="row" style="margin:14px 0"><button id="rankShow" style="font-size:1.1rem;padding:10px 22px;background:linear-gradient(135deg,#f59f00,#ff6b6b);border-radius:12px">🏆 ランキング発表（トップ5）</button></div>
+<div id="ledger"></div>
+</div>
+<div class="tabpane" data-pane="input">
 <h2>1. 参加者の情報を入力する（運営が入力）</h2>
 <div id="dupWarn"></div>
 <div class="sub">行き先・宿・値段・タイトル・キャッチコピー・観光スポット3か所・広告を入力します。値段は5万円刻みで、「上限」の数字までです。宿と行き先を変えると、上限も変わります。</div>
@@ -140,6 +149,8 @@ td input.sp{min-width:70px}
 <button class="warn" id="reset">全部リセット</button>
 </div></div>
 
+</div>
+<div class="tabpane" data-pane="result">
 <h2>3. 結果</h2>
 <div class="card"><div class="row" style="justify-content:space-between;align-items:center"><h3 style="margin:0;font-size:1.2rem">🎪 ペルソナ広場（100人がばらまかれます）</h3><button class="sec" id="replay">もう一度ばらまく</button></div>
 <div class="sub">下の群衆がペルソナ100人です。「ペルソナ100人に見せる」を押すと、気に入ったツアーに向かって集まります。ツアーのカードをクリックすると、アンケート（選んだ理由）が見られます。人にマウスを乗せると、どんな人か分かります。</div>
@@ -151,12 +162,12 @@ td input.sp{min-width:70px}
 <div id="warn"></div>
 <div class="card tbl"><table id="resTbl"><thead><tr>
 <th>順位</th><th>名前</th><th>ツアー</th><th>今回の人数</th><th>今回の稼ぎ(万)</th><th>稼ぎの累計(万)</th><th>費用の累計(万)</th><th>累計もうけ(万)</th><th>元手の回収</th><th>サイコロ・団体客(万)</th><th>ドリームコイン(万)</th><th>回ごとの稼ぎ</th><th>声</th></tr></thead><tbody></tbody></table></div>
-<div class="row" style="margin:14px 0"><button id="rankShow" style="font-size:1.1rem;padding:10px 22px;background:linear-gradient(135deg,#f59f00,#ff6b6b);border-radius:12px">🏆 ランキング発表（トップ5）</button></div>
-<div id="ledger"></div>
 <div id="survey"></div>
 <div id="voices"></div>
 <div id="calc"></div>
 
+</div>
+<div class="tabpane" data-pane="game">
 <h2>4. 団体客ルーレット</h2>
 <div class="card">
 <div class="sub">回すと、団体客が来るツアーが1つ決まります。当たった人のツアーに、<b>その人が決めた値段1回分の売上</b>が入ります（結果の「団体客」の列と、ドリームコインに自動で足されます）。広告を出した人は<b>2口</b>（当たりやすい）が目安です。回数は、1日目に1回・2日目に3回の合計4回の予定です。</div>
@@ -197,6 +208,8 @@ td input.sp{min-width:70px}
 <button class="warn" id="diceReset" style="margin-top:6px">サイコロの記録を消す</button>
 </div></div></div>
 
+</div>
+<div class="tabpane" data-pane="persona">
 <h2>6. ペルソナ100人</h2>
 <div class="card"><div id="dist"></div>
 <button class="sec" id="togglePersona">一覧を表示／隠す</button>
@@ -211,6 +224,7 @@ td input.sp{min-width:70px}
 <li>ペルソナはみんな、買った理由・買わなかった理由を「ひとこと」で話します。</li></ul></div>
 </div>
 
+</div>
 <script>
 /* ===== データ ===== */
 const PREF = {
@@ -424,6 +438,7 @@ function evaluate(tours,personas,opts){
   target[t.id]=line;
  });
  const sc100=opts.scale||1;
+ const topUp={};
  const rev=id=>{const t=valid.find(x=>x.t.id===id).t;return Math.round(buyers[id].length*t.price*sc100*10)/10};
  if(opts.guard!=='none'){
   for(let round=0;round<400;round++){
@@ -450,7 +465,7 @@ function evaluate(tours,personas,opts){
    }
    buyers[t.id].push({p:pick,guarantee:true});assigned[pick.id]=t.id;
   }
-  valid.forEach(({t})=>{if(rev(t.id)<target[t.id])warn.push(t.name+'：保証ラインに届きません（値段を上げる／宿を安くする／広告を出す／くわしい設定の「売上の大きさ(%)」を上げる、などの調整が必要）')});
+  valid.forEach(({t})=>{const sh=Math.round((target[t.id]-rev(t.id))*10)/10;if(sh>0)topUp[t.id]=sh});
  }
  const nearMiss={};valid.forEach(({t})=>nearMiss[t.id]=[]);
  const allVoices=[];
@@ -464,13 +479,14 @@ function evaluate(tours,personas,opts){
  const results={};
  valid.forEach(({t,info})=>{
   const bl=buyers[t.id];
-  const revenue=Math.round(bl.length*t.price*sc100*10)/10;
+  const tu=topUp[t.id]||0;
+  const revenue=Math.round((bl.length*t.price*sc100+tu)*10)/10;
   const rows=personas.map(p=>({p,sc:scores[p.id][t.id]}));
   const reasons=bl.map(b=>({id:b.p.id,text:reasonText(b.p,t,scores[b.p.id][t.id],stage,b.guarantee),guarantee:b.guarantee}));
   const voices=allVoices.filter(v=>v.bought&&v.tid===t.id);
   const near=(nearMiss[t.id]||[]).sort((a,b)=>b.interest-a.interest).slice(0,6);
   results[t.id]={count:bl.length,revenue,cost:info.cost,target:target[t.id],reasons,voices,near,price:t.price,scale:sc100,hints:hint(t,info,stage,rows),adApplied:!!t.ad&&stage>=5,
-   guaranteeCount:bl.filter(b=>b.guarantee).length};
+   guaranteeCount:bl.filter(b=>b.guarantee).length,topUp:tu};
  });
  const assign={};
  valid.forEach(({t})=>buyers[t.id].forEach(b=>{assign[b.p.id]={tid:t.id,g:!!b.guarantee,weak:!!b.weak,wom:!!b.wom}}));
@@ -561,7 +577,7 @@ function runCycle(){
  const tours=rows.map(r=>({id:r.id,name:r.name||'(名前なし)',dest:r.dest,inn:r.inn,price:r.price,title:r.title,copy:r.copy,sp1:r.sp1,sp2:r.sp2,sp3:r.sp3,ad:r.ad}));
  const ev=evaluate(tours,personas,o);
  state.cycles[o.stage]={results:ev.results,warn:ev.warn,assign:ev.assign,detail:ev.detail,voices:ev.voices,opts:o,at:new Date().toLocaleString('ja-JP')};
- save();renderResults();drawPlaza(true);document.getElementById('plaza').scrollIntoView({behavior:'smooth',block:'center'});
+ save();renderResults();showTab('result');drawPlaza(true);document.getElementById('plaza').scrollIntoView({behavior:'smooth',block:'center'});
  renderFlow();
 }
 function dupDests(){const seen={},d=[];state.rows.forEach(r=>{if(!r.dest)return;if(seen[r.dest]&&!d.includes(r.dest))d.push(r.dest);seen[r.dest]=true});return d}
@@ -580,7 +596,7 @@ function renderResults(){
  list.forEach((x,i)=>{
   const hist=Object.keys(state.cycles).sort().map(k=>{const rr=state.cycles[k].results[x.r.id];return rr?'<span class="tag">'+k+'回目 '+rr.revenue+'</span>':''}).join('');
   let over;
-  if(x.gain>=0&&x.res.guaranteeCount>0)over='<span class="plus">✓ 回収（保証枠'+x.res.guaranteeCount+'人を回して）</span>';
+  if(x.gain>=0&&(x.res.guaranteeCount>0||x.res.topUp))over='<span class="plus">✓ 回収（保証枠'+x.res.guaranteeCount+'人'+(x.res.topUp?'＋保証の補填'+x.res.topUp+'万':'')+'）</span>';
   else if(x.gain>=0)over='<span class="plus">✓ 元手を回収した</span>';
   else over='<span class="minus">✗ まだ回収できていない</span>';
   const tr=document.createElement('tr');
@@ -723,7 +739,7 @@ function renderSheet(){
  const el=document.getElementById('sheet');if(!el)return;
  const rows=state.rows.filter(r=>r.name||r.dest);
  const K=Math.max(maxRun(),state.stage);
- const open=!(state.sheetClosed);
+ const open=true;
  let h='<details id="sheetBox" '+(open?'open':'')+' style="margin:12px 0"><summary style="cursor:pointer;font-weight:800;font-size:1.1rem;padding:8px 0">📊 収支シート（いつでも見られます。入力するたびに更新）</summary>';
  if(!rows.length){el.innerHTML=h+'<div class="sub">参加者を入力すると、ここに出ます。</div></details>';return}
  const data=rows.map(r=>({r,lg:ledgerFor(r,K)}));
@@ -824,6 +840,13 @@ function exportLedgerCsv(){
 }
 /* ===== いまやること（動線） ===== */
 const NEED={1:['行き先'],2:['宿','値段'],3:['タイトル','キャッチコピー'],4:['観光スポット1〜3'],5:['広告を出すか']};
+function showTab(t){
+ try{state.tab=t;save()}catch(e){}
+ document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
+ document.querySelectorAll('.tabpane').forEach(p=>p.classList.toggle('on',p.dataset.pane===t));
+ if(t==='result'&&typeof drawPlaza==='function')setTimeout(()=>drawPlaza(false),30);
+ if(t==='money'){renderSheet();renderLedger()}
+}
 function renderFlow(){
  const el=document.getElementById('flow');if(!el)return;
  const st=state.stage,done=state.cycles[st];
@@ -840,7 +863,7 @@ function renderFlow(){
  }
  h+='<div class="sub" style="margin-top:4px">※ 前の回の入力を変えたときは、その回をもう一度押すと、お金が計算し直されます。</div></div>';
  el.innerHTML=h;
- const nb=document.getElementById('nextStage');if(nb)nb.onclick=()=>{state.stage=st+1;save();renderStage();renderResults();markNeed();document.getElementById('flow').scrollIntoView({behavior:'smooth',block:'start'})};
+ const nb=document.getElementById('nextStage');if(nb)nb.onclick=()=>{state.stage=st+1;save();renderStage();renderResults();markNeed();showTab('input');document.getElementById('flow').scrollIntoView({behavior:'smooth',block:'start'})};
  markNeed();
 }
 function markNeed(){
@@ -880,7 +903,7 @@ function renderSummaries(){
   const ad=(r.ad&&state.stage>=5)?o.adcost:0;const cost=info.cost+ad;
   const gain=Math.round((res.revenue-cost)*10)/10;
   h+='<div class="tsum" id="tsum_'+r.id+'"><h3>'+(EMO[r.dest]||'🗾')+' '+esc(r.name||'(名前なし)')+'さんのツアー　<span class="sub">'+esc(r.dest)+'・'+esc(r.inn)+'・'+r.price+'万円'+(ad?'・広告あり':'')+'</span></h3>';
-  h+='<div style="font-size:1.25rem;font-weight:800">💰 稼いだ金額：<span class="plus">'+res.revenue+'万円</span>　<span class="sub" style="font-weight:400">（'+res.count+'人 × '+r.price+'万円'+((res.scale||1)!==1?' × '+Math.round((res.scale||1)*100)+'%':'')+'。元手'+cost+'万円を引くと もうけ <b class="'+(gain>=0?'plus':'minus')+'">'+(gain>=0?'+':'')+gain+'万円</b>）</span></div>';
+  h+='<div style="font-size:1.25rem;font-weight:800">💰 稼いだ金額：<span class="plus">'+res.revenue+'万円</span>　<span class="sub" style="font-weight:400">（'+res.count+'人 × '+r.price+'万円'+((res.scale||1)!==1?' × '+Math.round((res.scale||1)*100)+'%':'')+(res.topUp?' ＋保証の補填 '+res.topUp+'万':'')+'。元手'+cost+'万円を引くと もうけ <b class="'+(gain>=0?'plus':'minus')+'">'+(gain>=0?'+':'')+gain+'万円</b>）</span></div>';
   h+='<div style="margin:4px 0"><b>買った人の声のまとめ（'+res.count+'人）</b></div>'+summarize(res);
   const first=res.voices.slice(0,3);
   h+='<ul class="reasons">'+first.map(x=>'<li><span class="sub">'+esc(x.who)+'</span><br>'+esc(x.text)+(x.g?' <span class="tag">保証枠</span>':'')+'</li>').join('')+'</ul>';
@@ -1083,7 +1106,7 @@ function sampleRows(){
 function init(){
  load();
  if(!state.rows.length){state.rows=[newRow()]}
- rlState();diceState();renderStage();renderInputs();renderResDist();renderResults();renderPersonas();renderRoulette();renderDice();renderMute();renderFlow();renderSheet();
+ rlState();diceState();renderStage();renderInputs();renderResDist();renderResults();renderPersonas();renderRoulette();renderDice();renderMute();renderFlow();renderSheet();document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b){SFX.click();showTab(b.dataset.tab)}});showTab(state.tab||'input');
  document.getElementById('run').onclick=runCycle;
  document.getElementById('addRow').onclick=()=>{if(state.rows.length>=15){alert('最大15人です');return}state.rows.push(newRow());save();renderInputs()};
  document.getElementById('sample').onclick=()=>{if(confirm('入力をサンプルに置き換えます。よいですか？')){sampleRows();state.cycles={};save();renderInputs();renderResults()}};
