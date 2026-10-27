@@ -24,7 +24,12 @@ h2::before{content:'';width:8px;height:24px;border-radius:4px;background:var(--a
 #rlSpin{background:linear-gradient(135deg,#e8590c,#ffa94d);box-shadow:0 6px 16px rgba(232,89,12,.35);border-radius:12px}
 .stage button{border-radius:12px;padding:8px 14px}
 .stage button.on{box-shadow:0 4px 12px rgba(11,111,184,.35)}
-.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0;position:sticky;top:0;z-index:20;background:var(--bg);padding:8px 0}
+.stick{position:sticky;top:0;z-index:20;background:var(--bg);padding:6px 0 4px;margin-top:8px;border-bottom:1px solid var(--line)}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}
+#rankBar{display:flex;gap:8px;overflow-x:auto;align-items:center;padding:2px 0}
+.rchip{white-space:nowrap;border-radius:999px;padding:5px 12px;font-weight:800;background:var(--card);border:2px solid var(--line)}
+.rchip.r1{background:linear-gradient(135deg,#ffd43b,#f59f00);color:#3b2a00;border-color:#f59f00}
+.rchip.r2{background:#e9ecef;color:#343a40}.rchip.r3{background:#f4d9c0;color:#5a3a1a}
 .tabs button{background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:999px;padding:8px 16px;font-weight:700;box-shadow:none}
 .tabs button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 .tabpane{display:none}.tabpane.on{display:block}
@@ -103,9 +108,11 @@ td input.sp{min-width:70px}
 
 <div id="flow"></div>
 <div id="rankOv" style="display:none;position:fixed;inset:0;z-index:50;background:radial-gradient(circle at 50% 30%,#3b2a8c,#14103a);color:#fff;overflow:auto;padding:24px 16px"><div style="max-width:720px;margin:0 auto;text-align:center"><div style="font-size:1.6rem;font-weight:800;margin-bottom:12px">🏆 ランキング発表！</div><div id="rankList"></div><button id="rankClose" style="margin-top:18px;background:#fff;color:#3b2a8c">とじる</button></div></div>
-<div id="tabs" class="tabs"><button data-tab="input">① 入力・見せる</button><button data-tab="result">② 結果</button><button data-tab="money">💰 収支</button><button data-tab="game">🎲 サイコロ・ルーレット</button><button data-tab="persona">👥 ペルソナ・しくみ</button></div>
+<div class="stick"><div id="tabs" class="tabs"><button data-tab="input">① 入力・見せる</button><button data-tab="result">② 結果</button><button data-tab="rank">🏆 ランキング</button><button data-tab="money">💰 収支</button><button data-tab="game">🎲 サイコロ・ルーレット</button><button data-tab="persona">👥 ペルソナ・しくみ</button></div>
+<div id="rankBar"></div></div>
+<div class="tabpane" data-pane="rank"><h2>ランキング</h2><div class="row" style="margin:14px 0"><button id="rankShow" style="font-size:1.1rem;padding:10px 22px;background:linear-gradient(135deg,#f59f00,#ff6b6b);border-radius:12px">🏆 ランキング発表（トップ5）</button></div>
+<div id="rankBig"></div></div>
 <div class="tabpane" data-pane="money"><h2>収支（お金のまとめ）</h2><div id="sheet"></div>
-<div class="row" style="margin:14px 0"><button id="rankShow" style="font-size:1.1rem;padding:10px 22px;background:linear-gradient(135deg,#f59f00,#ff6b6b);border-radius:12px">🏆 ランキング発表（トップ5）</button></div>
 <div id="ledger"></div>
 </div>
 <div class="tabpane" data-pane="input">
@@ -735,7 +742,21 @@ function diceResolve(r,roll){
  document.getElementById('ai0').onclick=()=>{act.innerHTML='';out.innerHTML+='<br>0円';SFX.bad();diceRecord(r,4,0,'AI審査員で届かず')};
 }
 /* ===== お金の積み上げ（元手）とグラフ ===== */
+function rankData(){
+ const rows=state.rows.filter(r=>r.dest&&r.inn);const K=Math.max(maxRun(),state.stage);
+ return rows.map(r=>({r,lg:ledgerFor(r,K)})).sort((a,b)=>b.lg.final-a.lg.final);
+}
+function renderRankBar(){
+ const bar=document.getElementById('rankBar');if(!bar)return;
+ const d=rankData();const med=['🥇','🥈','🥉','4位','5位'];
+ bar.innerHTML=d.length?'<b style="white-space:nowrap">🏆 いまの順位</b>'+d.slice(0,5).map((x,i)=>'<span class="rchip '+(i<3?'r'+(i+1):'')+'">'+med[i]+' '+esc(x.r.name||'(名前なし)')+' <span style="font-weight:600">'+x.lg.final+'万</span></span>').join(''):'<span class="sub">参加者を入力すると、ここに順位が出ます</span>';
+ const big=document.getElementById('rankBig');if(!big)return;
+ if(!d.length){big.innerHTML='<div class="sub">まだありません</div>';return}
+ const mx=Math.max(100,...d.map(x=>x.lg.final));
+ big.innerHTML=d.map((x,i)=>'<div class="card" style="display:flex;align-items:center;gap:14px;'+(i===0?'background:linear-gradient(135deg,#fff3bf,#ffd43b);color:#3b2a00;':'')+'"><div style="font-size:'+(i<3?'2.4rem':'1.5rem')+';min-width:3.2rem;text-align:center">'+(i<3?med[i]:(i+1)+'位')+'</div><div style="flex:1"><div style="font-size:'+(i===0?'1.5rem':'1.15rem')+';font-weight:800">'+esc(x.r.name||'(名前なし)')+'　<span style="font-weight:500;font-size:.9rem">'+esc(x.r.dest)+'・'+esc(x.r.title||'')+'</span></div><div style="height:10px;border-radius:5px;background:rgba(120,140,160,.25);margin-top:6px"><div style="height:10px;border-radius:5px;width:'+Math.max(2,x.lg.final/mx*100)+'%;background:linear-gradient(90deg,#4dabf7,#69db7c)"></div></div></div><div style="font-size:1.5rem;font-weight:800">'+x.lg.final+'<span style="font-size:.9rem">万</span></div></div>').join('');
+}
 function renderSheet(){
+ renderRankBar();
  const el=document.getElementById('sheet');if(!el)return;
  const rows=state.rows.filter(r=>r.name||r.dest);
  const K=Math.max(maxRun(),state.stage);
@@ -845,7 +866,7 @@ function showTab(t){
  document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
  document.querySelectorAll('.tabpane').forEach(p=>p.classList.toggle('on',p.dataset.pane===t));
  if(t==='result'&&typeof drawPlaza==='function')setTimeout(()=>drawPlaza(false),30);
- if(t==='money'){renderSheet();renderLedger()}
+ if(t==='money'||t==='rank'){renderSheet();renderLedger()}
 }
 function renderFlow(){
  const el=document.getElementById('flow');if(!el)return;
