@@ -381,7 +381,7 @@ function scoreOne(p,t,info,ts,stage,adOn){
  const total=(stage>=2?0.5*interest+0.3*price+0.2:0.5*interest+0.5*0.6)*(aware?1:0.0001);
  const overall=stage>=2?(0.5*interest+0.3*price+0.2*(aware?1:0)):(0.6*interest+0.4*0.6);
  // 広告の後押し：広告を出したツアーは、乱数（人ごとにちがう）で選ばれやすくなる
- const adBoost=(adOn&&stage>=5)?(0.10+0.12*hash01(p.id+'|'+t.id+'|b')):0;
+ const adBoost=(adOn&&stage>=5)?(0.10+0.12*hash01(p.id+'|'+t.id+'|b')+0.02*(t.imgScore||0)):0;
  const loc=accessBonus(p.region,t.dest,p.style);
  return {interest,price,r,aware,total:aware?overall+adBoost+loc:0,matched,fitNote,adOn,words,adBoost,loc,willing};
 }
@@ -464,7 +464,8 @@ function evaluate(tours,personas,opts){
   const line=opts.guard==='cost'?Math.max(0,toDate+opts.margin*(stage||1)-prev):opts.guard==='100'?Math.max(0,100+opts.margin-prev):0;
   target[t.id]=line;
  });
- const sc100=opts.scale||1;
+ let sc100=opts.scale||1;
+ const baseScale=sc100;
  const topUp={};
  const rev=id=>{const t=valid.find(x=>x.t.id===id).t;return Math.round(buyers[id].length*t.price*sc100*10)/10};
  if(opts.guard!=='none'){
@@ -492,7 +493,8 @@ function evaluate(tours,personas,opts){
    }
    buyers[t.id].push({p:pick,guarantee:true});assigned[pick.id]=t.id;
   }
-  valid.forEach(({t})=>{const sh=Math.round((target[t.id]-rev(t.id))*10)/10;if(sh>0)topUp[t.id]=sh});
+  let need=sc100;valid.forEach(({t})=>{const n=buyers[t.id].length;if(n>0&&target[t.id]>0){const x=target[t.id]/(n*t.price);if(x>need)need=x}});
+  if(need>sc100){sc100=Math.min(3,Math.ceil(need*1000)/1000);warn.push('売上の大きさを '+Math.round(baseScale*1000)/10+'% → '+Math.round(sc100*1000)/10+'% に自動で調整しました（全員同じ率）。お客さんの人数や値段は、そのままです。')}
  }
  const nearMiss={};valid.forEach(({t})=>nearMiss[t.id]=[]);
  const allVoices=[];
@@ -507,13 +509,13 @@ function evaluate(tours,personas,opts){
  valid.forEach(({t,info})=>{
   const bl=buyers[t.id];
   const tu=topUp[t.id]||0;
-  const revenue=Math.round((bl.length*t.price*sc100+tu)*10)/10;
+  const revenue=Math.round(bl.length*t.price*sc100*10)/10;
   const rows=personas.map(p=>({p,sc:scores[p.id][t.id]}));
   const reasons=bl.map(b=>({id:b.p.id,text:reasonText(b.p,t,scores[b.p.id][t.id],stage,b.guarantee),guarantee:b.guarantee}));
   const voices=allVoices.filter(v=>v.bought&&v.tid===t.id);
   const near=(nearMiss[t.id]||[]).sort((a,b)=>b.interest-a.interest).slice(0,6);
   results[t.id]={count:bl.length,revenue,cost:info.cost,target:target[t.id],reasons,voices,near,price:t.price,scale:sc100,hints:hint(t,info,stage,rows),adApplied:!!t.ad&&stage>=5,
-   guaranteeCount:bl.filter(b=>b.guarantee).length,topUp:tu};
+   guaranteeCount:bl.filter(b=>b.guarantee).length,topUp:0};
  });
  const assign={};
  valid.forEach(({t})=>buyers[t.id].forEach(b=>{assign[b.p.id]={tid:t.id,g:!!b.guarantee,weak:!!b.weak,wom:!!b.wom}}));
@@ -564,14 +566,14 @@ function renderInputs(){
   '<td data-need="4"><input type="text" class="sp" data-k="sp1" value="'+esc(r.sp1)+'"></td>'+
   '<td data-need="4"><input type="text" class="sp" data-k="sp2" value="'+esc(r.sp2)+'"></td>'+
   '<td data-need="4"><input type="text" class="sp" data-k="sp3" value="'+esc(r.sp3)+'"></td>'+
-  '<td data-need="5"><input type="checkbox" data-k="ad"'+(r.ad?' checked':'')+'>'+(r.ad?'<br><label style="cursor:pointer;font-size:.8rem">🖼 画像<input type="file" accept="image/*" data-img hidden></label>'+(r.img?'<br><img src="'+r.img+'" style="width:60px;border-radius:6px"><br><a href="#" data-rmimg class="sub">消す</a>':''):'')+'</td>';
+  '<td data-need="5"><input type="checkbox" data-k="ad"'+(r.ad?' checked':'')+'>'+(r.ad?'<br><label style="cursor:pointer;font-size:.8rem">🖼 画像<input type="file" accept="image/*" data-img hidden></label>'+(r.img?'<br><img src="'+r.img+'" style="width:60px;border-radius:6px"><br><label class="sub">画像の点数<select data-k="imgScore">'+[0,1,2,3,4,5].map(n=>'<option value="'+n+'"'+((r.imgScore||0)===n?' selected':'')+'>'+n+'</option>').join('')+'</select></label><br><a href="#" data-rmimg class="sub">消す</a>':''):'')+'</td>';
   const fi=tr.querySelector('[data-img]');
   if(fi)fi.addEventListener('change',()=>{const f=fi.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{const im=new Image();im.onload=()=>{const W=480,sc=Math.min(1,W/im.width);const c=document.createElement('canvas');c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);c.getContext('2d').drawImage(im,0,0,c.width,c.height);r.img=c.toDataURL('image/jpeg',0.7);save();renderInputs();renderResults()};im.src=rd.result};rd.readAsDataURL(f)});
   const rm=tr.querySelector('[data-rmimg]');if(rm)rm.addEventListener('click',e=>{e.preventDefault();delete r.img;save();renderInputs();renderResults()});
   tr.querySelectorAll('[data-k]').forEach(el=>{
    el.addEventListener('change',()=>{
     const k=el.dataset.k;
-    if(el.type==='checkbox')r[k]=el.checked;else if(el.type==='number')r[k]=Number(el.value)||0;else r[k]=el.value;
+    if(el.type==='checkbox')r[k]=el.checked;else if(el.type==='number'||k==='imgScore')r[k]=Number(el.value)||0;else r[k]=el.value;
     if(k==='dest'||k==='inn'){const l=limitOf(r);if(r.price>l)r.price=l;renderInputs()}
     if(k==='price'){const l=limitOf(r);if(r.price>l)r.price=l;if(r.price<5)r.price=5;renderInputs()}
     save();renderRoulette();renderDice();updateDup();renderSheet();
@@ -620,7 +622,7 @@ function runCycleNow(){
  o.costToDate={};o.prevSales={};
  rows.forEach(r=>{let c=0,p=0;for(let k=1;k<=o.stage;k++)c+=costAt(r,k);for(let k=1;k<o.stage;k++){const cc=state.cycles[k];if(cc&&cc.results[r.id])p+=cc.results[r.id].revenue}o.costToDate[r.id]=c;o.prevSales[r.id]=p});
  const personas=makePersonas(o.seed);
- const tours=rows.map(r=>({id:r.id,name:r.name||'(名前なし)',dest:r.dest,inn:r.inn,price:r.price,title:r.title,copy:r.copy,sp1:r.sp1,sp2:r.sp2,sp3:r.sp3,ad:r.ad}));
+ const tours=rows.map(r=>({id:r.id,name:r.name||'(名前なし)',dest:r.dest,inn:r.inn,price:r.price,title:r.title,copy:r.copy,sp1:r.sp1,sp2:r.sp2,sp3:r.sp3,ad:r.ad,imgScore:r.imgScore||0}));
  const ev=evaluate(tours,personas,o);
  state.cycles[o.stage]={results:ev.results,warn:ev.warn,assign:ev.assign,detail:ev.detail,voices:ev.voices,opts:o,at:new Date().toLocaleString('ja-JP')};
  save();renderResults();showTab('result');drawPlaza(true);document.getElementById('plaza').scrollIntoView({behavior:'smooth',block:'center'});
