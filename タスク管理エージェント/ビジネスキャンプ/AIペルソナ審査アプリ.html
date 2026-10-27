@@ -98,6 +98,7 @@ td input.sp{min-width:70px}
 <li><b>結果</b>（誰が何人に買われたか、売上、ドリームコイン）と、<b>アンケート</b>（選んだ理由）を見る。気づいたことを直して、次の回へ。</li></ol></div>
 
 <div id="flow"></div>
+<div id="sheet"></div>
 <div id="rankOv" style="display:none;position:fixed;inset:0;z-index:50;background:radial-gradient(circle at 50% 30%,#3b2a8c,#14103a);color:#fff;overflow:auto;padding:24px 16px"><div style="max-width:720px;margin:0 auto;text-align:center"><div style="font-size:1.6rem;font-weight:800;margin-bottom:12px">🏆 ランキング発表！</div><div id="rankList"></div><button id="rankClose" style="margin-top:18px;background:#fff;color:#3b2a8c">とじる</button></div></div>
 <h2>1. 参加者の情報を入力する（運営が入力）</h2>
 <div id="dupWarn"></div>
@@ -527,7 +528,7 @@ function renderInputs(){
     if(el.type==='checkbox')r[k]=el.checked;else if(el.type==='number')r[k]=Number(el.value)||0;else r[k]=el.value;
     if(k==='dest'||k==='inn'){const l=limitOf(r);if(r.price>l)r.price=l;renderInputs()}
     if(k==='price'){const l=limitOf(r);if(r.price>l)r.price=l;if(r.price<5)r.price=5;renderInputs()}
-    save();renderRoulette();renderDice();updateDup();
+    save();renderRoulette();renderDice();updateDup();renderSheet();
    });
   });
   tb.appendChild(tr);
@@ -718,7 +719,37 @@ function diceResolve(r,roll){
  document.getElementById('ai0').onclick=()=>{act.innerHTML='';out.innerHTML+='<br>0円';SFX.bad();diceRecord(r,4,0,'AI審査員で届かず')};
 }
 /* ===== お金の積み上げ（元手）とグラフ ===== */
+function renderSheet(){
+ const el=document.getElementById('sheet');if(!el)return;
+ const rows=state.rows.filter(r=>r.name||r.dest);
+ const K=Math.max(maxRun(),state.stage);
+ const open=!(state.sheetClosed);
+ let h='<details id="sheetBox" '+(open?'open':'')+' style="margin:12px 0"><summary style="cursor:pointer;font-weight:800;font-size:1.1rem;padding:8px 0">📊 収支シート（いつでも見られます。入力するたびに更新）</summary>';
+ if(!rows.length){el.innerHTML=h+'<div class="sub">参加者を入力すると、ここに出ます。</div></details>';return}
+ const data=rows.map(r=>({r,lg:ledgerFor(r,K)}));
+ data.sort((a,b)=>b.lg.final-a.lg.final);
+ const mx=Math.max(100,...data.map(x=>x.lg.final));
+ h+='<div class="tbl" style="max-height:420px;overflow:auto;border:1px solid var(--line);border-radius:10px"><table style="min-width:1100px;font-size:.88rem"><thead style="position:sticky;top:0;z-index:2"><tr><th>順位</th><th>名前</th><th>行き先</th><th>宿</th><th>値段</th><th>広告</th><th>交通費</th><th>宿代</th><th>広告費</th>';
+ for(let k=1;k<=6;k++)h+='<th>稼ぎ'+k+'</th>';
+ h+='<th>稼ぎ合計</th><th>サイコロ</th><th>団体客</th><th>ドリームコイン</th><th>もうけ</th></tr></thead><tbody>';
+ data.forEach((x,i)=>{
+  const r=x.r,lg=x.lg;
+  const cs=k=>{const c=state.cycles[k];return c&&c.results[r.id]?c.results[r.id].revenue:null};
+  const gain=Math.round((lg.final-100)*10)/10;
+  h+='<tr><td>'+(i+1)+'</td><td><b>'+esc(r.name||'(名前なし)')+'</b></td><td>'+esc(r.dest||'')+'</td><td>'+esc(r.inn||'')+'</td><td>'+(r.price||'')+'</td><td>'+(r.ad?'あり':'')+'</td>';
+  h+='<td class="minus">'+(K>=1&&r.dest?'−'+costAt(r,1):'')+'</td><td class="minus">'+(K>=2&&r.inn?'−'+costAt(r,2):'')+'</td><td class="minus">'+(K>=5&&r.ad?'−'+costAt(r,5):'')+'</td>';
+  for(let k=1;k<=6;k++){const v=cs(k);h+='<td class="plus">'+(v==null?'<span class="sub">—</span>':'+'+v)+'</td>'}
+  h+='<td class="plus">'+lg.salesSum+'</td><td>'+(lg.dice?'<span class="'+(lg.dice>=0?'plus':'minus')+'">'+(lg.dice>0?'+':'')+lg.dice+'</span>':'')+'</td><td>'+(lg.bonus?'<span class="plus">+'+lg.bonus+'</span>':'')+'</td>';
+  h+='<td style="min-width:150px"><b style="font-size:1rem">'+lg.final+'</b><div style="height:6px;border-radius:3px;background:var(--line);margin-top:3px"><div style="height:6px;border-radius:3px;width:'+Math.max(2,Math.min(100,lg.final/mx*100))+'%;background:linear-gradient(90deg,#4dabf7,#69db7c)"></div></div></td>';
+  h+='<td class="'+(gain>=0?'plus':'minus')+'"><b>'+(gain>0?'+':'')+gain+'</b></td></tr>';
+ });
+ h+='</tbody></table></div><div class="row" style="margin-top:6px"><button class="sec" id="sheetCsv">この表をCSVで保存</button><span class="sub">単位は万円。Googleスプレッドシートに「ファイル→インポート」で入れられます。</span></div></details>';
+ el.innerHTML=h;
+ const b=document.getElementById('sheetBox');if(b)b.addEventListener('toggle',()=>{state.sheetClosed=!b.open;save()});
+ document.getElementById('sheetCsv').onclick=exportLedgerCsv;
+}
 function renderLedger(){
+ renderSheet();
  const el=document.getElementById('ledger');if(!el)return;
  const up=maxRun();
  const rows=state.rows.filter(r=>r.dest&&r.inn);
@@ -1052,7 +1083,7 @@ function sampleRows(){
 function init(){
  load();
  if(!state.rows.length){state.rows=[newRow()]}
- rlState();diceState();renderStage();renderInputs();renderResDist();renderResults();renderPersonas();renderRoulette();renderDice();renderMute();renderFlow();
+ rlState();diceState();renderStage();renderInputs();renderResDist();renderResults();renderPersonas();renderRoulette();renderDice();renderMute();renderFlow();renderSheet();
  document.getElementById('run').onclick=runCycle;
  document.getElementById('addRow').onclick=()=>{if(state.rows.length>=15){alert('最大15人です');return}state.rows.push(newRow());save();renderInputs()};
  document.getElementById('sample').onclick=()=>{if(confirm('入力をサンプルに置き換えます。よいですか？')){sampleRows();state.cycles={};save();renderInputs();renderResults()}};
