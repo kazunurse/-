@@ -238,7 +238,7 @@ td input.sp{min-width:70px}
 <div class="tbl hide" id="qzList"><table><thead><tr><th>県</th><th>問題</th><th>答え</th><th>ひとこと</th></tr></thead><tbody id="qzBody"></tbody></table></div></div>
 <div class="tabpane" data-pane="persona">
 <h2>6. ペルソナ100人</h2>
-<div class="card"><div id="dist"></div>
+<div class="card"><div id="paramTbl"></div><div id="dist"></div>
 <button class="sec" id="togglePersona">一覧を表示／隠す</button>
 <div class="tbl hide" id="personaWrap"><table id="personaTbl"><thead><tr><th>#</th><th>年代</th><th>性別</th><th>家族</th><th>居住地</th><th>所得層</th><th>予算(万)</th><th>好み</th><th>情報感度</th></tr></thead><tbody></tbody></table></div></div>
 
@@ -1080,6 +1080,18 @@ function renderPersonas(){
  const cnt=(f)=>{const m={};ps.forEach(p=>{const k=f(p);m[k]=(m[k]||0)+1});return Object.entries(m).map(([k,v])=>'<span class="tag">'+esc(k)+' '+v+'</span>').join('')};
  const tagc={};ps.forEach(p=>p.interests.forEach(g=>tagc[g]=(tagc[g]||0)+1));
  document.getElementById('dist').innerHTML='<div>年代：'+cnt(p=>p.age)+'</div><div>性別：'+cnt(p=>p.gender)+'</div><div>家族：'+cnt(p=>p.family)+'</div><div>所得層：'+cnt(p=>p.income)+'</div><div>好み（のべ）：'+Object.entries(tagc).map(([k,v])=>'<span class="tag">'+k+' '+v+'</span>').join('')+'</div>';
+ {
+  const tb=(h,rows)=>'<table style="width:auto;min-width:300px;margin:6px 0"><thead><tr>'+h.map(x=>'<th>'+x+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(x=>'<td>'+x+'</td>').join('')+'</tr>').join('')+'</tbody></table>';
+  const avg=ps.reduce((a,p)=>a+p.sense,0)/ps.length;
+  document.getElementById('paramTbl').innerHTML='<h3 style="margin-top:0">ペルソナ100人の決め方（数字）</h3><div class="sub">100人は、下の「人数の枠」を守って、乱数の種（'+o.seed+'）で入れ替えて作ります。種が同じなら、毎回同じ100人です。</div>'+
+  '<div class="row" style="align-items:flex-start;gap:24px">'+
+  '<div>'+tb(['年代','人数'],AGES.map(a=>[a,20]))+tb(['性別','人数'],[['男性',50],['女性',50]])+'</div>'+
+  '<div>'+tb(['家族','人数','入る年代'],FAMS.map(([k,n])=>[k,n,FAM_AGES[k].join('・')]))+'</div>'+
+  '<div>'+tb(['所得層','人数','旅行の予算（万円）'],Object.entries(INC).map(([k,v])=>[k,v.n,v.b]))+tb(['旅のスタイル','人数'],STYLES.map(x=>[x[0],x[1]]))+'</div>'+
+  '<div>'+tb(['住んでいる地方','人数'],Object.entries(RES_DIST).map(([k,v])=>[k,v]))+'</div></div>'+
+  '<div class="sub">好み：6つ（自然・グルメ・歴史・温泉・アクティブ・買い物）から2つずつ。100人で、のべ200個を、ほぼ同じ数ずつ配ります。<br>感度（広告などに気づきやすさ）：0.20〜0.55の乱数。いまの平均は '+(Math.round(avg*100)/100)+'。</div>'+
+  '<h3>選ぶときの数字</h3>'+tb(['項目','しくみ'],[['総合点','0.5×好み ＋ 0.3×値段 ＋ 0.2×気づく（広告ありは ＋0.10〜0.22）。1〜4回目は 0.6×好み ＋ 0.4×0.6'],['値段の点','払ってもいい額 ＝ 予算 × 宿（ゲストハウス0.85／ホテル1.0／高級旅館1.1）× 距離（近い0.95／少し遠い1.0／遠い1.05）。額を超えると点が急に下がる'],['気づく','5回目以降：乱数が（感度＋広告ありなら0.45）より小さい人だけ。上限は95%'],['混み具合','同じツアーに集まるほど、2%ずつ点が下がる（最大60%）'],['1ツアーの上限','max(切り上げ(100÷ツアー数×1.7), 12)人']])+'<div class="sub">※ 好み・住まい・年代などの人数は「ペルソナの決め方」の表のとおりです。住んでいる地方の人数は、設定で変えられます。</div>';
+ }
  document.querySelector('#personaTbl tbody').innerHTML=ps.map(p=>'<tr><td>'+p.id+'</td><td>'+p.age+'</td><td>'+p.gender+'</td><td>'+p.family+'</td><td>'+p.region+'</td><td>'+p.income+'</td><td>'+p.budget+'</td><td>'+p.interests.join('・')+'</td><td>'+p.sense+'</td></tr>').join('');
 }
 const EMO={'北海道':'🦀','青森':'🍎','岩手':'🍜','宮城':'🥩','秋田':'🐕','山形':'🍒','福島':'🍑','茨城':'🍠','栃木':'🍓','群馬':'♨️','埼玉':'🌸','千葉':'🎡','東京':'🗼','神奈川':'⛴️','新潟':'🍚','富山':'🏔️','石川':'🏯','福井':'🦖','山梨':'🍇','長野':'⛷️','岐阜':'🏯','静岡':'🗻','愛知':'🏰','三重':'🦞','滋賀':'🌊','京都':'⛩️','大阪':'🐙','兵庫':'🏯','奈良':'🦌','和歌山':'🍊','鳥取':'🐫','島根':'⛩️','岡山':'🍑','広島':'🕊️','山口':'🐡','徳島':'🌀','香川':'🍜','愛媛':'🍊','高知':'🐟','福岡':'🍜','佐賀':'🍵','長崎':'🕯️','熊本':'🐻','大分':'♨️','宮崎':'🥭','鹿児島':'🌋','沖縄':'🌺'};
