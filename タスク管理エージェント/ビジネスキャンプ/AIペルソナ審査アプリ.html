@@ -30,8 +30,24 @@ h2::before{content:'';width:8px;height:24px;border-radius:4px;background:var(--a
 .rchip{white-space:nowrap;border-radius:999px;padding:5px 12px;font-weight:800;background:var(--card);border:2px solid var(--line)}
 .rchip.r1{background:linear-gradient(135deg,#ffd43b,#f59f00);color:#3b2a00;border-color:#f59f00}
 .rchip.r2{background:#e9ecef;color:#343a40}.rchip.r3{background:#f4d9c0;color:#5a3a1a}
-.tabs button{background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:999px;padding:8px 16px;font-weight:700;box-shadow:none}
+.tabs button{background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:999px;padding:6px 12px;font-size:.9rem;font-weight:700;box-shadow:none}
 .tabs button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes floaty{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(-60px) rotate(20deg)}}
+.tabpane.on{animation:pop .35s ease}
+.cardgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.rcard{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:12px 16px;transition:transform .15s}
+.rcard:hover{transform:translateY(-4px) rotate(-.4deg);border-color:var(--accent)}
+.rcard h3{margin:4px 0 6px}.rcard p{margin:4px 0}.remo{font-size:2.4rem;display:inline-block;animation:bob 2.4s ease-in-out infinite}
+.cardgrid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:10px}
+.pcard{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:8px;text-align:center;break-inside:avoid;transition:transform .15s}
+.pcard:hover{transform:scale(1.06) rotate(-1deg)}
+.pcard .e{font-size:2.2rem}.pcard b{font-size:1.1rem;display:block}.pcard small{display:block;color:var(--sub)}
+.pcard.d0{border-top:6px solid #69db7c}.pcard.d1{border-top:6px solid #ffd43b}.pcard.d2{border-top:6px solid #ff8787}
+button{transition:transform .1s}button:active{transform:scale(.94)}
+.floatemo{position:absolute;font-size:1.8rem;opacity:.5;animation:floaty 5s ease-in-out infinite alternate;pointer-events:none}
+@media print{.stick,.hero,#calcOv,.tabpane:not([data-pane=cards]),#flow,#rankBar{display:none!important}.tabpane[data-pane=cards]{display:block!important}.cardgrid2{grid-template-columns:repeat(4,1fr)}}
 @keyframes spin{to{transform:rotate(360deg)}}
 .tabpane{display:none}.tabpane.on{display:block}
 table tbody tr:nth-child(even){background:rgba(120,150,180,.07)}
@@ -110,7 +126,7 @@ td input.sp{min-width:70px}
 <div id="flow"></div>
 <div id="rankOv" style="display:none;position:fixed;inset:0;z-index:50;background:radial-gradient(circle at 50% 30%,#3b2a8c,#14103a);color:#fff;overflow:auto;padding:24px 16px"><div style="max-width:720px;margin:0 auto;text-align:center"><div style="font-size:1.6rem;font-weight:800;margin-bottom:12px">🏆 ランキング発表！</div><div id="rankList"></div><button id="rankClose" style="margin-top:18px;background:#fff;color:#3b2a8c">とじる</button></div></div>
 <div class="stick"><div id="calcOv" style="display:none;position:fixed;inset:0;z-index:70;background:radial-gradient(circle at 50% 40%,#2b5876,#10263a);color:#fff;align-items:center;justify-content:center;flex-direction:column;gap:18px;text-align:center"><div style="font-size:4rem;animation:spin 1.2s linear infinite;display:inline-block">🔍</div><div id="calcMsg" style="font-size:1.5rem;font-weight:800">集計中…</div><div style="width:min(420px,80vw);height:14px;border-radius:7px;background:rgba(255,255,255,.2)"><div id="calcBar" style="height:14px;border-radius:7px;width:0;background:linear-gradient(90deg,#4dabf7,#ffd43b);transition:width .8s"></div></div></div>
-<div id="tabs" class="tabs"><button data-tab="input">① 入力・見せる</button><button data-tab="result">② 結果</button><button data-tab="rank">🏆 ランキング</button><button data-tab="money">💰 収支</button><button data-tab="game">🎲 サイコロ・ルーレット</button><button data-tab="quiz">🎯 ご当地クイズ</button><button data-tab="persona">👥 ペルソナ・しくみ</button></div>
+<div id="tabs" class="tabs"><button data-tab="rules">📖 ルール</button><button data-tab="sched">📅 スケジュール</button><button data-tab="input">① 入力・見せる</button><button data-tab="result">② 結果</button><button data-tab="rank">🏆 ランキング</button><button data-tab="money">💰 収支</button><button data-tab="game">🎲 サイコロ・ルーレット</button><button data-tab="cards">🗾 都道府県カード</button><button data-tab="quiz">🎯 ご当地クイズ</button><button data-tab="persona">👥 ペルソナ・しくみ</button></div>
 <div id="rankBar"></div></div>
 <div class="tabpane" data-pane="rank"><h2>ランキング</h2><div class="row" style="margin:14px 0"><button id="rankShow" style="font-size:1.1rem;padding:10px 22px;background:linear-gradient(135deg,#f59f00,#ff6b6b);border-radius:12px">🏆 ランキング発表（トップ5）</button></div>
 <div id="rankBig"></div></div>
@@ -232,13 +248,14 @@ td input.sp{min-width:70px}
 </div></div></div>
 
 </div>
+<div class="tabpane" data-pane="rules"><h2>ルール説明（子どもにも分かる版）</h2><div class="cardgrid"><div class="rcard"><div class="remo">🧳</div><h3>きみは「旅行会社の社長」！</h3><p>AIといっしょに、ツアーを作って売ろう。</p><p>いちばんドリームコインが多い社長が、優勝！</p></div><div class="rcard"><div class="remo">💰</div><h3>最初のお金：ドリームコイン 100万円</h3><p>これが、会社の元手（もとで）。</p><p>交通費・宿代・広告費に使って、ツアーを売って増やそう。</p><p>ゲームのあいだ、お金は<b>どんどん積み上がる</b>。</p></div><div class="rcard"><div class="remo">🗾</div><h3>① 行き先をえらぶ</h3><p>都道府県カードから、じゃんけんで決めた順に1人1県。</p><p><b>同じ県は、えらべません。</b></p><p>交通費：近い −10万／少し遠い −20万／北海道・沖縄 −30万</p></div><div class="rcard"><div class="remo">🏨</div><h3>② 宿をえらぶ</h3><p>ゲストハウス −10万／ホテル −30万／高級旅館 −60万</p><p>高い宿ほど、高い値段をつけられる。でも、お金は減る。</p></div><div class="rcard"><div class="remo">🏷️</div><h3>③ ツアーの値段を決める</h3><p>5万円きざみ。上限があります。</p><p>上限 ＝ 行き先の基本（近い20／少し遠い25／北海道・沖縄30）＋ 宿の上乗せ（ゲストハウス0／ホテル5／高級旅館15）</p><p>高すぎると、お客さんは買ってくれない！</p></div><div class="rcard"><div class="remo">✍️</div><h3>④ ツアーを作る</h3><p>タイトル・キャッチコピー・ポスター画像・観光スポット3か所。</p><p>AIに聞いて、いい言葉を考えよう。</p></div><div class="rcard"><div class="remo">🤖</div><h3>⑤ AIペルソナ100人が買う</h3><p>お客さん役の「AIペルソナ」が100人。</p><p>1日目に5回、2日目に1回、結果が出ます。</p><p><b>買った人数 × 値段</b>が、きみの売上！</p><p>結果を見て、ツアーをよくしていこう。</p></div><div class="rcard"><div class="remo">📣</div><h3>⑥ 広告（出しても、出さなくてもOK）</h3><p>広告費 10万円。</p><p>出すと、ペルソナに知ってもらえる人がふえる。</p><p>団体客ルーレットの名前が、2口になる。</p></div><div class="rcard"><div class="remo">🎲</div><h3>サイコロ（1人3回）</h3><p>1：+20万　2：−10万</p><p>3：チャンスカード（クリアで +20万）</p><p>4：AI審査員で6点以上なら +10万</p><p>5：+30万　6：−20万</p></div><div class="rcard"><div class="remo">🎡</div><h3>団体客ルーレット（全部で4回）</h3><p>当たった人のツアーに、団体客が来る！</p><p>広告を出した人は、2口で当たりやすい。</p></div><div class="rcard"><div class="remo">🎤</div><h3>2日目：最終ピッチ</h3><p>全部を使って、発表しよう。</p><p>お客さんコイン <b>50万円</b> で、友だちのツアーを買う。</p><p>AIペルソナも、最後に買う。</p></div><div class="rcard"><div class="remo">🏆</div><h3>さいごに</h3><p>ドリームコインが一番多い人が優勝！</p><p>AIの評価が高い人には、賞金もあるよ。</p><p>全員に賞状があります。</p></div><div class="rcard"><div class="remo">🔒</div><h3>AIを使うときのお約束</h3><p>自分や友だち、家族の名前・住所・電話番号・学校名・顔写真は、入れない。</p><p>AIの答えは、まちがうことがある。自分でも確かめよう。</p><p>使い終わったら、チャットの履歴を消す。</p></div></div></div><div class="tabpane" data-pane="sched"><h2>スケジュール（時間は仮です）</h2><h3>1日目</h3><div class="card tbl"><table><tbody><tr><td class="t" style="white-space:nowrap;width:1%"><b>13:00〜13:20</b></td><td>開会。ドリームコイン100万円を配る。ルール説明</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>13:20〜14:00</b></td><td>学び（AIの使い方30分＋ツアーの作り方10分）</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>14:00〜14:15</b></td><td>行き先を選ぶ（交通費を払う）</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>14:15〜14:30</b></td><td>AIサイクル①：行き先だけを入れる</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>14:30〜14:50</b></td><td>地域調べ（ご当地クイズ）</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>14:50〜15:00</b></td><td>宿を選ぶ（宿代を払う）</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>15:00〜15:15</b></td><td>AIサイクル②：行き先＋宿</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>15:15〜15:30</b></td><td>おやつ、休憩</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>15:30〜16:05</b></td><td>タイトル・キャッチコピー・ポスター画像を作る</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>16:05〜16:20</b></td><td>AIサイクル③</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>16:20〜16:40</b></td><td>旅行スケジュールを作る（観光スポット3か所）</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>16:40〜16:55</b></td><td>AIサイクル④</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>16:55〜17:05</b></td><td>広告を作る（出すかは自由・10万円）</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>17:05〜17:35</b></td><td>ミニ発表（30秒）とAIサイクル⑤</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>17:35〜18:00</b></td><td>かけっこ（25分）</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>18:00〜18:20</b></td><td>サイコロ1・2回目、団体客ルーレット1回目、振り返り</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>18:20〜19:20</b></td><td>夕食（施設で鍋）</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>19:20〜20:15</b></td><td>入浴（班ごとに交代）</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>20:15〜21:30</b></td><td>スマイルゲーム、自由時間</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>21:30〜22:00</b></td><td>就寝準備、22:00消灯</td></tr></tbody></table></div><h3>2日目</h3><div class="card tbl"><table><tbody><tr><td class="t" style="white-space:nowrap;width:1%"><b>7:00〜9:00</b></td><td>起床、朝食、準備</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>9:00〜9:15</b></td><td>開始、サイコロ3回目</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>9:15〜9:30</b></td><td>学び（広告・キャッチコピー・伝え方）</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>9:30〜10:45</b></td><td>考える時間（作る75分・自由に動いてよい）。10:00ごろ団体客ルーレット2回目</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>10:45〜10:55</b></td><td>団体客ルーレット3回目、最終ピッチの準備</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>10:55〜11:50</b></td><td>最終ピッチ（1人2〜3分）＋AIサイクル⑥</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>11:50〜12:05</b></td><td>購入：AIペルソナ＋お客さんコイン50万円で友だちが買う</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>12:05〜12:15</b></td><td>団体客ルーレット4回目、親へのLINE投票</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>12:15〜13:00</b></td><td>精算、表彰</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>13:00〜</b></td><td>昼食、解散準備</td></tr></tbody></table></div></div><div class="tabpane" data-pane="cards"><h2>都道府県カード（47枚）</h2><div class="row"><button id="cardPrint">🖨 カードを印刷する</button><span class="sub">切り取って、配れます。じゃんけんの順に、1人1枚えらびます。</span></div><div id="cardGrid" class="cardgrid2"></div></div>
 <div class="tabpane" data-pane="quiz"><h2>ご当地クイズ（47都道府県）</h2>
 <div class="card"><div class="row" style="align-items:flex-end"><div><label>都道府県</label><select id="qzPref"></select></div><button id="qzRand">🎲 ランダムで出す</button><button class="sec" id="qzAll">一覧を表示／隠す（先生用・答え付き）</button></div>
 <div id="qzBox" style="margin-top:12px"></div></div>
 <div class="tbl hide" id="qzList"><table><thead><tr><th>県</th><th>問題</th><th>答え</th><th>ひとこと</th></tr></thead><tbody id="qzBody"></tbody></table></div></div>
 <div class="tabpane" data-pane="persona">
 <h2>6. ペルソナ100人</h2>
-<div class="card"><div id="paramTbl"></div><div id="dist"></div>
+<div class="card"><div class="row"><button id="expPersona">ペルソナ100人の数値（CSV）</button><button id="expDetail">判定の詳細の数値（CSV・全回）</button><button id="expAll" class="sec">全データ（JSON）</button></div><div class="sub">乱数の種・感度・「気づく乱数」も入っています。スプレッドシートで開けます。</div><div id="paramTbl"></div><div id="dist"></div>
 <button class="sec" id="togglePersona">一覧を表示／隠す</button>
 <div class="tbl hide" id="personaWrap"><table id="personaTbl"><thead><tr><th>#</th><th>年代</th><th>性別</th><th>家族</th><th>居住地</th><th>所得層</th><th>予算(万)</th><th>好み</th><th>情報感度</th></tr></thead><tbody></tbody></table></div></div>
 
@@ -837,6 +854,38 @@ const QUIZ=[
 ['沖縄','沖縄にある、大きな魚が泳ぐ水族館は？',['美ら海水族館','海遊館','アクアワールド'],0,'ジンベエザメが人気です。']
 ];
 
+function renderCards(){
+ const g=document.getElementById('cardGrid');if(!g)return;
+ g.innerHTML=Object.keys(PREF).map(k=>{const [d,tg]=PREF[k];const di=DIST[d];const cls=d==='近い'?'d0':d==='少し遠い'?'d1':'d2';return '<div class="pcard '+cls+'"><div class="e">'+(EMO[k]||'📍')+'</div><b>'+k+'</b><small>'+d+'（交通費 −'+di.cost+'万）</small><small>値段の基本 '+di.base+'万</small><small>'+tg.replace(/,/g,'・')+'</small></div>'}).join('');
+ document.getElementById('cardPrint').onclick=()=>window.print();
+}
+function csvDownload(name,lines){const csv='\ufeff'+lines.map(l=>l.map(v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"').join(',')).join('\n');download(name,csv,'text/csv')}
+function exportPersonasCsv(){
+ const o=currentOpts();const ps=makePersonas(o.seed);
+ const L=[['乱数の種','ID','年代','性別','家族','住んでいる地方','所得層','予算(万)','好み1','好み2','旅のスタイル','感度(気づきやすさ)']];
+ ps.forEach(p=>L.push([o.seed,p.id,p.age,p.gender,p.family,p.region,p.income,p.budget,p.interests[0],p.interests[1],p.style,p.sense]));
+ csvDownload('ペルソナ100人_数値.csv',L);
+}
+function exportDetailCsv(){
+ const L=[['回','ペルソナID','ツアー(名前)','行き先','好み点','値段点','気づく(1/0)','気づく乱数','広告の後押し','行きやすさ','総合点','選んだ(1/0)','保証枠(1/0)']];
+ const seed=currentOpts().seed;
+ Object.keys(state.cycles).sort().forEach(k=>{
+  const c=state.cycles[k];if(!c.detail)return;
+  Object.keys(c.detail).forEach(pid=>{
+   const asg=c.assign[pid];
+   Object.keys(c.detail[pid]).forEach(tid=>{
+    const d=c.detail[pid][tid];const r=state.rows.find(x=>x.id===tid)||{};
+    L.push([k,pid,r.name||tid,r.dest||'',d[0],d[1],d[2],Math.round(hash01(pid+'|'+tid+'|a')*1000)/1000,d[3],d[5],d[4],asg&&asg.tid===tid?1:0,asg&&asg.tid===tid&&asg.g?1:0]);
+   });
+  });
+ });
+ if(L.length===1){alert('先に結果を出してください');return}
+ csvDownload('判定の詳細_数値.csv',L);
+}
+function exportAllJson(){
+ const o=currentOpts();
+ download('ビジキャン全データ_'+stamp()+'.json',JSON.stringify({seed:o.seed,personas:makePersonas(o.seed),state},null,1),'application/json');
+}
 function qzShow(i){
  const q=QUIZ[i];const box=document.getElementById('qzBox');
  const opts=q[2].map((t,k)=>({t,ok:k===q[3]}));for(let a=opts.length-1;a>0;a--){const b=Math.floor(Math.random()*(a+1));[opts[a],opts[b]]=[opts[b],opts[a]]}
@@ -1268,7 +1317,7 @@ function sampleRows(){
 function init(){
  load();
  if(!state.rows.length){state.rows=[newRow()]}
- rlState();diceState();renderStage();renderInputs();renderResDist();renderResults();renderPersonas();renderRoulette();renderDice();renderMute();renderFlow();initQuiz();renderSheet();document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b){SFX.click();showTab(b.dataset.tab)}});showTab(state.tab||'input');
+ rlState();diceState();renderStage();renderInputs();renderResDist();renderResults();renderPersonas();renderRoulette();renderDice();renderMute();renderFlow();initQuiz();renderCards();{const h=document.querySelector('.hero');if(h){['🌸','🍜','♨️','🚅','🗻','🐟','🎡','⛩️'].forEach((e,i)=>{const sp=document.createElement('span');sp.className='floatemo';sp.textContent=e;sp.style.left=(8+i*12)+'%';sp.style.top=(20+(i%3)*25)+'%';sp.style.animationDelay=(i*0.5)+'s';h.appendChild(sp)})}}document.getElementById('expPersona').onclick=exportPersonasCsv;document.getElementById('expDetail').onclick=exportDetailCsv;document.getElementById('expAll').onclick=exportAllJson;renderSheet();document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b){SFX.click();showTab(b.dataset.tab)}});showTab(state.tab||'input');
  document.getElementById('run').onclick=runCycle;
  document.getElementById('addRow').onclick=()=>{if(state.rows.length>=15){alert('最大15人です');return}state.rows.push(newRow());save();renderInputs()};
  document.getElementById('sample').onclick=()=>{if(confirm('入力をサンプルに置き換えます。よいですか？')){sampleRows();state.cycles={};save();renderInputs();renderResults()}};
