@@ -181,7 +181,7 @@ td input.sp{min-width:70px}
 <div><label>最初の元手（万円）</label><input type="number" id="startCoin" value="150" min="50" step="10"><div class="sub">ドリームコインの<br>最初の金額</div></div>
 <div><label>毎回、最低これだけは増える（万円）</label><input type="number" id="margin" value="2" min="0" step="1"><div class="sub">元手が、1回ごとに<br>これだけ増えていきます</div></div>
 <div><label>広告費（万円）</label><input type="number" id="adcost" value="10" min="0" step="5"><div class="sub">広告を出す1人あたり</div></div>
-<div><label>売上の大きさ（%）<br><span class="sub">6回ぶん積み上がるので、10%くらいが目安（15人のとき）</span></label><input type="number" id="scale" value="10" min="5" max="300" step="5"><div class="sub">人数が少ないときは<br>自動で小さくします</div></div>
+<div><label>売上の大きさ（%）<br><span class="sub">6回ぶん積み上がるので、10%くらいが目安（15本以上のとき）</span></label><input type="number" id="scale" value="10" min="5" max="300" step="5"><div class="sub">少ないときは<br>自動で小さくします</div></div>
 <div style="flex-basis:100%"><label>お客さん（ペルソナ）の住んでいる地方の人数（合計100人にしてください）</label><div class="row" id="resDist"></div><div class="sub">ビジネスキャンプの過去の参加者の住んでいる地方の割合などがあれば、ここに入れると、より本番に近くなります。</div></div>
 <div><label>ペルソナの顔ぶれ（番号）</label><input type="number" id="seed" value="2026" step="1"><div class="sub">通常は変えません。<br>変えると100人の顔ぶれが<br>入れ替わります</div></div>
 </div></details>
@@ -195,8 +195,8 @@ td input.sp{min-width:70px}
 
 </div>
 <div class="tabpane" data-pane="plaza"><h2>お客さんが 集まるよ！</h2>
-<div class="card"><div class="row" style="justify-content:space-between;align-items:center"><h3 style="margin:0;font-size:1.2rem">🎪 ペルソナ広場（100人がばらまかれます）</h3><button class="sec" id="replay">もう一度ばらまく</button></div>
-<div class="sub">下の群衆がペルソナ100人です。「ペルソナ100人に見せる」を押すと、気に入ったツアーに向かって集まります。ツアーのカードをクリックすると、アンケート（選んだ理由）が見られます。人にマウスを乗せると、どんな人か分かります。</div>
+<div class="card"><div class="row" style="justify-content:space-between;align-items:center"><h3 style="margin:0;font-size:1.2rem">🎪 ペルソナ広場（お客さんがばらまかれます）</h3><button class="sec" id="replay">もう一度ばらまく</button></div>
+<div class="sub">下の群衆がペルソナです（ツアーが15本までは100人、それを超えると増えます）。「ペルソナ100人に見せる」を押すと、気に入ったツアーに向かって集まります。ツアーのカードをクリックすると、アンケート（選んだ理由）が見られます。人にマウスを乗せると、どんな人か分かります。</div>
 <div id="plazaTotal" style="font-weight:800;margin:6px 0"></div>
 <div style="overflow-x:auto"><div id="plaza"></div></div>
 <div class="sub" id="legend" style="margin-top:6px"></div></div>
@@ -207,7 +207,7 @@ td input.sp{min-width:70px}
 <div class="note" id="resNote">お金は<b>回ごとに積み上がります</b>。1回目で交通費、2回目で宿代、5回目で広告費（出す人だけ）が引かれ、そのたびにペルソナの購入で稼いだ分が足されます。<b>ドリームコイン ＝ 元手 − 費用の累計 ＋ 稼ぎの累計 ＋ サイコロ・団体客</b>。100万円を超えれば、増えたことになります。</div>
 <div id="warn"></div>
 <div class="card tbl"><table id="resTbl"><thead><tr>
-<th>順位</th><th>名前</th><th>ツアー</th><th>今回の人数</th><th>今回の稼ぎ(万)</th><th>稼ぎの累計(万)</th><th>費用の累計(万)</th><th>累計もうけ(万)</th><th>元手の回収</th><th>サイコロ・団体客(万)</th><th>ドリームコイン(万)</th><th>回ごとの稼ぎ</th><th>声</th></tr></thead><tbody></tbody></table></div>
+<th>順位</th><th>名前</th><th>ツアー</th><th>今回の人数</th><th>今回の稼ぎ(万)</th><th>累計もうけ(万)</th><th>元手の回収</th><th>サイコロ・団体客(万)</th><th>ドリームコイン(万)</th><th>回ごとの稼ぎ</th><th>声</th></tr></thead><tbody></tbody></table></div>
 <div id="survey"></div>
 <div id="voices"></div>
 <div id="calc"></div>
@@ -339,7 +339,13 @@ function hash01(str){let h=2166136261;for(let i=0;i<str.length;i++){h^=str.charC
 function shuffle(arr,rnd){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 
 /* ===== ペルソナ生成（100人・ばらけるように） ===== */
-function makePersonas(seed){
+function PN(){const t=state.rows.filter(r=>r.dest&&r.inn).length;return Math.max(100,Math.ceil(t/15)*100)}
+function makePersonas(seed,n){
+ n=n||PN();const k=Math.max(1,Math.round(n/100));let all=[];
+ for(let b=0;b<k;b++){makePersonas100(seed+b*101).forEach(p=>{p.id=p.id+b*100;all.push(p)})}
+ return all;
+}
+function makePersonas100(seed){
  const rnd=mulberry32(seed);
  const famList=[];FAMS.forEach(([f,n])=>{for(let i=0;i<n;i++)famList.push(f)});
  const fams=shuffle(famList,rnd);
@@ -492,7 +498,7 @@ function evaluate(tours,personas,opts){
  personas.forEach(p=>{scores[p.id]={};valid.forEach(({t,info})=>{scores[p.id][t.id]=scoreOne(p,{...t,price:t.price},info,strengths[t.id],stage,!!t.ad&&stage>=5)})});
  const buyers={};valid.forEach(({t})=>buyers[t.id]=[]);
  const assigned={};const second={};
- const N=Math.max(valid.length,1);const cap=Math.max(Math.ceil(100/N*1.7),12);
+ const N=Math.max(valid.length,1);const cap=Math.max(Math.ceil(personas.length/N*1.7),12);
  order.forEach(p=>{
   const cands=valid.map(({t})=>{const sc=scores[p.id][t.id];const crowd=1-Math.min(0.6,0.02*buyers[t.id].length);return {t,sc,eff:(sc.aware?sc.total:0)*crowd,alt:sc.interest*0.5+(stage>=2?sc.price*0.3:0.18)}});
   let pool=cands.filter(c=>c.sc.aware&&buyers[c.t.id].length<cap);
@@ -696,7 +702,7 @@ function runCycleNow(){
  const o=currentOpts();
  o.costToDate={};o.prevSales={};
  rows.forEach(r=>{let c=0,p=0;for(let k=1;k<=o.stage;k++)c+=costAt(r,k);for(let k=1;k<o.stage;k++){const cc=state.cycles[k];if(cc&&cc.results[r.id])p+=cc.results[r.id].revenue}o.costToDate[r.id]=c;o.prevSales[r.id]=p});
- const personas=makePersonas(o.seed);
+ o.n=PN();const personas=makePersonas(o.seed,o.n);
  const tours=rows.map(r=>({id:r.id,name:r.name||'(名前なし)',dest:r.dest,inn:r.inn,price:r.price,title:r.title,copy:r.copy,sp1:r.sp1,sp2:r.sp2,sp3:r.sp3,ad:r.ad,imgScore:r.imgScore||0}));
  const ev=evaluate(tours,personas,o);
  state.cycles[o.stage]={results:ev.results,warn:ev.warn,assign:ev.assign,detail:ev.detail,voices:ev.voices,opts:o,at:new Date().toLocaleString('ja-JP')};
@@ -710,7 +716,7 @@ function renderResults(){
  const warnEl=document.getElementById('warn');warnEl.innerHTML='';
  drawPlaza(false);
  renderLedger();renderFlow();
- if(!cur){tb.innerHTML='<tr><td colspan="12" class="sub">この回の結果は、まだありません。上の「ペルソナ100人に見せる」ボタンを押してください。</td></tr>';document.getElementById('survey').innerHTML='';renderCalc();renderLoc();const pt=document.getElementById('plazaTotal');if(pt)pt.textContent='まだ結果がありません。100人は、ここで待っています。';const vz=document.getElementById('voices');if(vz)vz.innerHTML='';return}
+ if(!cur){tb.innerHTML='<tr><td colspan="11" class="sub">この回の結果は、まだありません。上の「ペルソナ100人に見せる」ボタンを押してください。</td></tr>';document.getElementById('survey').innerHTML='';renderCalc();renderLoc();const pt=document.getElementById('plazaTotal');if(pt)pt.textContent='まだ結果がありません。100人は、ここで待っています。';const vz=document.getElementById('voices');if(vz)vz.innerHTML='';return}
  if(cur.warn&&cur.warn.length)warnEl.innerHTML='<div class="warnbox">'+cur.warn.map(esc).join('<br>')+'</div>';
  const list=state.rows.filter(r=>cur.results[r.id]).map(r=>{
   const res=cur.results[r.id];const lg=ledgerFor(r,state.stage);
@@ -725,7 +731,7 @@ function renderResults(){
   const tr=document.createElement('tr');
   tr.innerHTML='<td>'+(i+1)+'</td><td>'+esc(x.r.name||'(名前なし)')+'</td><td>'+(EMO[x.r.dest]||'🗾')+' '+esc(x.r.dest)+'・'+esc(x.r.inn)+'<br><span class="sub">値段'+x.r.price+'万'+(x.r.ad&&state.stage>=5?'／広告あり':'')+'</span></td>'+
   '<td>'+x.res.count+'人</td><td><b>'+x.res.revenue+'</b><br><span class="sub">'+x.res.count+'人×'+x.r.price+'万'+((x.res.scale||1)!==1?'×'+Math.round((x.res.scale||1)*100)+'%':'')+'</span></td>'+
-  '<td>'+x.lg.salesSum+'</td><td>'+x.lg.costSum+'</td><td class="'+(x.gain>=0?'plus':'minus')+'">'+(x.gain>=0?'+':'')+x.gain+'</td><td>'+over+'</td>'+
+  '<td class="'+(x.gain>=0?'plus':'minus')+'">'+(x.gain>=0?'+':'')+x.gain+'</td><td>'+over+'</td>'+
   '<td>'+((x.lg.bonus+x.lg.dice)?'<span class="'+((x.lg.bonus+x.lg.dice)>=0?'plus':'minus')+'">'+((x.lg.bonus+x.lg.dice)>=0?'+':'')+Math.round((x.lg.bonus+x.lg.dice)*10)/10+'</span>':'—')+'</td>'+
   '<td><b style="font-size:1.1rem">'+x.lg.final+'</b> <span class="'+(x.lg.final>=START?'plus':'minus')+'">'+(x.lg.final>=START?'▲':'▼')+'</span></td><td>'+hist+'</td>'+
   '<td><button class="sec" data-s="'+x.r.id+'">見る</button></td>';
@@ -764,8 +770,8 @@ function renderCalc(){
  const st=state.stage;
  const rows=state.rows.filter(r=>cur.results[r.id]);
  const nm=id=>{const r=state.rows.find(x=>x.id===id);return r?(r.name||'(名前なし)'):''};
- const ps=makePersonas(cur.opts.seed);
- const pid=Math.min(100,Math.max(1,state.calcPid||1));const p=ps[pid-1];
+ const ps=makePersonas(cur.opts.seed,cur.opts.n||100);
+ const pid=Math.min(ps.length,Math.max(1,state.calcPid||1));const p=ps[pid-1];
  const w=st>=2?'<b>総合点 ＝ 0.5 × 好み ＋ 0.3 × 値段 ＋ 0.2 × 知っているか</b>（広告を出したツアーは +0.10〜0.22 の後押し）<b>＋ 行きやすさ</b>（−0.04〜+0.06）':'<b>総合点 ＝ 0.6 × 好み ＋ 0.4 × 0.6</b>（まだ値段は見せないので、値段の点は一律0.6）';
  let h='<h2>数字のしくみ（どうやって選んでいるか）</h2>';
  h+='<div class="card"><h3 style="margin-top:0">計算のルール（いまの回：'+st+'回目）</h3><ol class="reasons">'+
@@ -792,7 +798,7 @@ function renderCalc(){
  if(ch){const v=d[ch.id];h+='<div class="sub" style="margin-top:6px">計算例（'+esc(ch.name||'')+'さんのツアー）：'+(st>=2?'0.5 × '+v[0]+'（好み） ＋ 0.3 × '+v[1]+'（値段） ＋ 0.2 × '+v[2]+'（知っている）':'0.6 × '+v[0]+'（好み） ＋ 0.4 × 0.6')+(v[3]?' ＋ '+v[3]+'（広告の後押し）':'')+(v[5]?' ＋ '+v[5]+'（行きやすさ）':'')+' ＝ '+v[4]+'。'+(list[0]&&list[0].r.id===ch.id?'いちばん高い点数のツアーを選びました。':'総合点では別のツアーが上でしたが、人気が集まって混雑補正がかかったため、このツアーになりました。')+'</div>'}
  h+='</div>';
  el.innerHTML=h;
- const inp=document.getElementById('calcPid');inp.onchange=()=>{state.calcPid=Math.min(100,Math.max(1,Number(inp.value)||1));save();renderCalc()};
+ const inp=document.getElementById('calcPid');inp.onchange=()=>{state.calcPid=Math.min(PN(),Math.max(1,Number(inp.value)||1));save();renderCalc()};
 }
 /* ===== 音（Web Audio。外部ファイルなし） ===== */
 let AC=null;
@@ -1221,14 +1227,14 @@ function renderPersonas(){
  document.querySelector('#personaTbl tbody').innerHTML=ps.map(p=>'<tr><td>'+p.id+'</td><td>'+p.age+'</td><td>'+p.gender+'</td><td>'+p.family+'</td><td>'+p.region+'</td><td>'+p.income+'</td><td>'+p.budget+'</td><td>'+p.interests.join('・')+'</td><td>'+p.sense+'</td></tr>').join('');
 }
 const EMO={'北海道':'🦀','青森':'🍎','岩手':'🍜','宮城':'🥩','秋田':'🐕','山形':'🍒','福島':'🍑','茨城':'🍠','栃木':'🍓','群馬':'♨️','埼玉':'🌸','千葉':'🎡','東京':'🗼','神奈川':'⛴️','新潟':'🍚','富山':'🏔️','石川':'🏯','福井':'🦖','山梨':'🍇','長野':'⛷️','岐阜':'🏯','静岡':'🗻','愛知':'🏰','三重':'🦞','滋賀':'🌊','京都':'⛩️','大阪':'🐙','兵庫':'🏯','奈良':'🦌','和歌山':'🍊','鳥取':'🐫','島根':'⛩️','岡山':'🍑','広島':'🕊️','山口':'🐡','徳島':'🌀','香川':'🍜','愛媛':'🍊','高知':'🐟','福岡':'🍜','佐賀':'🍵','長崎':'🕯️','熊本':'🐻','大分':'♨️','宮崎':'🥭','鹿児島':'🌋','沖縄':'🌺'};
-const FEMO={'一人':'🧍','夫婦':'👫','小さい子連れ':'👨‍👩‍👶','小中学生連れ':'👨‍👩‍👧','三世代':'👵','友人グループ':'🧑‍🤝‍🧑'};
+const FEMO={'一人':'🧍','夫婦':'👫','小さい子連れ':'👶','小中学生連れ':'👨‍👩‍👧','三世代':'👵','友人グループ':'🧑‍🤝‍🧑'};
 let plazaTimers=[];
 function drawPlaza(animate){
  const el=document.getElementById('plaza');if(!el)return;
  plazaTimers.forEach(clearTimeout);plazaTimers=[];
  const rows=state.rows.filter(r=>r.dest&&r.inn);
  const cur=state.cycles[state.stage];
- const o=currentOpts();const ps=makePersonas(o.seed);
+ const o=currentOpts();const ps=makePersonas(o.seed,cur&&cur.opts&&cur.opts.n);
  const host=el.parentElement;const avail=Math.max(320,(host&&host.clientWidth?host.clientWidth:1000)-2);
  const PER=avail>=1000?5:avail>=760?4:avail>=520?3:2;
  const colW=Math.floor(avail/PER),AV=36,perRow=Math.max(2,Math.floor((colW-16)/AV)),cardH=190;
