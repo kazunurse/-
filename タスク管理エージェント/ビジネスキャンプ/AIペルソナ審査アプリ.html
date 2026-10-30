@@ -24,22 +24,23 @@ h2::before{content:'';width:8px;height:24px;border-radius:4px;background:var(--a
 #rlSpin{background:linear-gradient(135deg,#e8590c,#ffa94d);box-shadow:0 6px 16px rgba(232,89,12,.35);border-radius:12px}
 .stage button{border-radius:12px;padding:8px 14px}
 .stage button.on{box-shadow:0 4px 12px rgba(11,111,184,.35)}
-.stick{position:sticky;top:0;z-index:20;background:var(--bg);padding:6px 0 4px;margin-top:8px;border-bottom:1px solid var(--line)}
-.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}
+.stick{position:sticky;top:0;z-index:20;background:var(--bg);padding:5px 0 3px;margin-top:8px;border-bottom:1px solid var(--line)}
+.tabs{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:5px;margin:0 0 4px;scrollbar-width:none}
 #rankBar{display:flex;gap:8px;overflow-x:auto;align-items:center;padding:2px 0}
-.rchip{white-space:nowrap;border-radius:999px;padding:5px 12px;font-weight:800;background:var(--card);border:2px solid var(--line)}
+.rchip{white-space:nowrap;border-radius:999px;padding:2px 10px;font-size:.88rem;font-weight:800;background:var(--card);border:2px solid var(--line)}
 .rchip.r1{background:linear-gradient(135deg,#ffd43b,#f59f00);color:#3b2a00;border-color:#f59f00}
 .rchip.r2{background:#e9ecef;color:#343a40}.rchip.r3{background:#f4d9c0;color:#5a3a1a}
-.tabs button{background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:999px;padding:6px 12px;font-size:.9rem;font-weight:700;box-shadow:none}
+.tabs button{background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:999px;padding:5px 11px;font-size:.88rem;white-space:nowrap;font-weight:700;box-shadow:none}
 .tabs button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 @keyframes pop{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes floaty{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(-60px) rotate(20deg)}}
-.tabpane.on{animation:pop .35s ease}
+.tabpane.on{animation:fadein .35s ease}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
 .cardgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
 .rcard{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:12px 16px;transition:transform .15s}
 .rcard:hover{transform:translateY(-4px) rotate(-.4deg);border-color:var(--accent)}
-.rcard h3{margin:4px 0 6px}.rcard p{margin:4px 0}.remo{font-size:2.4rem;display:inline-block;animation:bob 2.4s ease-in-out infinite}
+.rcard h3{margin:4px 0 6px;font-size:1.1rem}.rcard p{margin:5px 0;font-size:1.02rem;line-height:1.7}.remo{font-size:2.4rem;display:inline-block;animation:bob 2.4s ease-in-out infinite}
 .cardgrid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:10px}
 .pcard{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:8px;text-align:center;break-inside:avoid;transition:transform .15s}
 .pcard:hover{transform:scale(1.06) rotate(-1deg)}
@@ -50,6 +51,7 @@ button{transition:transform .1s}button:active{transform:scale(.94)}
 @media print{.stick,.hero,#calcOv,.tabpane:not([data-pane=cards]),#flow,#rankBar{display:none!important}.tabpane[data-pane=cards]{display:block!important}.cardgrid2{grid-template-columns:repeat(4,1fr)}}
 @keyframes spin{to{transform:rotate(360deg)}}
 .tabpane{display:none}.tabpane.on{display:block}
+td button{white-space:nowrap}
 table tbody tr:nth-child(even){background:rgba(120,150,180,.07)}
 .need{background:var(--goldbg)!important;box-shadow:inset 0 -3px 0 var(--gold)}
 #diceFace{transition:transform .05s}
@@ -126,8 +128,9 @@ td input.sp{min-width:70px}
 <div id="flow"></div>
 <div id="rankOv" style="display:none;position:fixed;inset:0;z-index:50;background:radial-gradient(circle at 50% 30%,#3b2a8c,#14103a);color:#fff;overflow:auto;padding:24px 16px"><div style="max-width:720px;margin:0 auto;text-align:center"><div style="font-size:1.6rem;font-weight:800;margin-bottom:12px">🏆 ランキング発表！</div><div id="rankList"></div><button id="rankClose" style="margin-top:18px;background:#fff;color:#3b2a8c">とじる</button></div></div>
 <div class="stick"><div id="calcOv" style="display:none;position:fixed;inset:0;z-index:70;background:radial-gradient(circle at 50% 40%,#2b5876,#10263a);color:#fff;align-items:center;justify-content:center;flex-direction:column;gap:18px;text-align:center"><div style="font-size:4rem;animation:spin 1.2s linear infinite;display:inline-block">🔍</div><div id="calcMsg" style="font-size:1.5rem;font-weight:800">集計中…</div><div style="width:min(420px,80vw);height:14px;border-radius:7px;background:rgba(255,255,255,.2)"><div id="calcBar" style="height:14px;border-radius:7px;width:0;background:linear-gradient(90deg,#4dabf7,#ffd43b);transition:width .8s"></div></div></div>
+<button id="runFloat" style="display:none;position:fixed;left:20px;bottom:20px;z-index:40;font-size:1.15rem;padding:14px 24px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.3)">▶ ペルソナ100人に見せる</button>
 <div id="rankPrompt" style="display:none;position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:40"><button id="rankGo" style="font-size:1.3rem;padding:14px 28px;border-radius:999px;background:linear-gradient(135deg,#f59f00,#ff6b6b);box-shadow:0 8px 24px rgba(0,0,0,.35);animation:bob 1.4s ease-in-out infinite">🏆 ランキングを見る ▶</button></div>
-<div id="tabs" class="tabs"><button data-tab="rules">📖 ルール</button><button data-tab="sched">📅 スケジュール</button><button data-tab="input">① 入力・見せる</button><button data-tab="plaza">🎪 広場</button><button data-tab="result">② 結果</button><button data-tab="rank">🏆 ランキング</button><button data-tab="money">💰 収支</button><button data-tab="game">🎲 サイコロ・ルーレット</button><button data-tab="cards">🗾 都道府県カード</button><button data-tab="quiz">🎯 ご当地クイズ</button><button data-tab="persona">👥 ペルソナ・しくみ</button></div>
+<div id="tabs" class="tabs"><button data-tab="rules">📖 ルール</button><button data-tab="sched">📅 予定</button><button data-tab="input">✏️ 入力</button><button data-tab="plaza">🎪 広場</button><button data-tab="result">📋 結果</button><button data-tab="rank">🏆 順位</button><button data-tab="money">💰 収支</button><button data-tab="game">🎲 サイコロ</button><button data-tab="cards">🗾 カード</button><button data-tab="quiz">🎯 クイズ</button><button data-tab="persona">👥 しくみ</button></div>
 <div id="rankBar"></div></div>
 <div class="tabpane" data-pane="rank"><h2>ランキング</h2><div class="row" style="margin:14px 0"><button id="rankShow" style="font-size:1.1rem;padding:10px 22px;background:linear-gradient(135deg,#f59f00,#ff6b6b);border-radius:12px">🏆 ランキング発表（トップ5）</button></div>
 <div id="rankBig"></div></div>
@@ -216,8 +219,9 @@ td input.sp{min-width:70px}
 <div class="sub">回すと、団体客が来るツアーが1つ決まります。当たった人のツアーに、<b>その人の値段 × 団体の人数</b>が入ります（結果の「団体客」の列と、ドリームコインに自動で足されます）。広告を出した人は<b>2口</b>（当たりやすい）が目安です。回数は、1日目に1回・2日目に3回の合計4回の予定です。</div>
 <div class="row" style="align-items:flex-start;margin-top:10px">
 <div style="text-align:center"><canvas id="wheel" width="380" height="380" style="max-width:100%"></canvas>
-<div class="row" style="margin-bottom:8px"><div><label>団体客の人数（人）</label><input type="number" id="rlN" value="10" min="1" step="1" style="width:90px"></div><div class="sub">当たると「値段 × 人数 × 売上の大きさ」が入ります。人数を増やすと、もっと大きく入ります。</div></div>
-<div><button id="rlSpin" style="font-size:1.1rem;padding:10px 24px">ルーレットを回す</button></div>
+<div class="row" style="margin:10px 0;align-items:flex-end;justify-content:center"><div><label>団体客の人数（人）</label><input type="number" id="rlN" value="10" min="1" step="1" style="width:90px"></div></div>
+<div class="sub" style="text-align:center;margin-bottom:6px">当たると「値段 × 人数 × 売上の大きさ」が入ります。</div>
+<div style="text-align:center"><button id="rlSpin" style="font-size:1.1rem;padding:10px 24px">ルーレットを回す</button></div>
 <div id="rlResult" style="font-size:1.25rem;font-weight:800;margin-top:8px;min-height:2.4em"></div></div>
 <div style="flex:1;min-width:280px">
 <h3>名前と口数（口数が多いほど当たりやすい）</h3>
@@ -696,7 +700,7 @@ function runCycleNow(){
  const tours=rows.map(r=>({id:r.id,name:r.name||'(名前なし)',dest:r.dest,inn:r.inn,price:r.price,title:r.title,copy:r.copy,sp1:r.sp1,sp2:r.sp2,sp3:r.sp3,ad:r.ad,imgScore:r.imgScore||0}));
  const ev=evaluate(tours,personas,o);
  state.cycles[o.stage]={results:ev.results,warn:ev.warn,assign:ev.assign,detail:ev.detail,voices:ev.voices,opts:o,at:new Date().toLocaleString('ja-JP')};
- save();renderResults();clearTimeout(window.__pt);window.__plazaAnim=true;showTab('plaza');setTimeout(()=>drawPlaza(true),150);window.__pt=setTimeout(()=>{window.__plazaAnim=false;showTab('result');setTimeout(showRankPrompt,1500)},9500);document.getElementById('plaza').scrollIntoView({behavior:'smooth',block:'center'});
+ save();renderResults();clearTimeout(window.__pt);window.__plazaAnim=true;showTab('plaza');setTimeout(()=>drawPlaza(true),150);window.__pt=setTimeout(()=>{window.__plazaAnim=false;showTab('result');setTimeout(showRankPrompt,1500)},9500);
  renderFlow();ringBackup();if(state.autoDl!==false)backupNow(true);
 }
 function dupDests(){const seen={},d=[];state.rows.forEach(r=>{if(!r.dest)return;if(seen[r.dest]&&!d.includes(r.dest))d.push(r.dest);seen[r.dest]=true});return d}
@@ -715,15 +719,15 @@ function renderResults(){
  list.forEach((x,i)=>{
   const hist=Object.keys(state.cycles).sort().map(k=>{const rr=state.cycles[k].results[x.r.id];return rr?'<span class="tag">'+k+'回目 '+rr.revenue+'</span>':''}).join('');
   let over;
-  if(x.gain>=0&&(x.res.guaranteeCount>0||x.res.topUp))over='<span class="plus">✓ 回収（保証枠'+x.res.guaranteeCount+'人'+(x.res.topUp?'＋保証の補填'+x.res.topUp+'万':'')+'）</span>';
-  else if(x.gain>=0)over='<span class="plus">✓ 元手を回収した</span>';
-  else over='<span class="minus">✗ まだ回収できていない</span>';
+  if(x.gain>=0&&(x.res.guaranteeCount>0||x.res.topUp))over='<span class="plus">✓回収</span>';
+  else if(x.gain>=0)over='<span class="plus">✓回収</span>';
+  else over='<span class="minus">✗未回収</span>';
   const tr=document.createElement('tr');
   tr.innerHTML='<td>'+(i+1)+'</td><td>'+esc(x.r.name||'(名前なし)')+'</td><td>'+(EMO[x.r.dest]||'🗾')+' '+esc(x.r.dest)+'・'+esc(x.r.inn)+'<br><span class="sub">値段'+x.r.price+'万'+(x.r.ad&&state.stage>=5?'／広告あり':'')+'</span></td>'+
   '<td>'+x.res.count+'人</td><td><b>'+x.res.revenue+'</b><br><span class="sub">'+x.res.count+'人×'+x.r.price+'万'+((x.res.scale||1)!==1?'×'+Math.round((x.res.scale||1)*100)+'%':'')+'</span></td>'+
   '<td>'+x.lg.salesSum+'</td><td>'+x.lg.costSum+'</td><td class="'+(x.gain>=0?'plus':'minus')+'">'+(x.gain>=0?'+':'')+x.gain+'</td><td>'+over+'</td>'+
   '<td>'+((x.lg.bonus+x.lg.dice)?'<span class="'+((x.lg.bonus+x.lg.dice)>=0?'plus':'minus')+'">'+((x.lg.bonus+x.lg.dice)>=0?'+':'')+Math.round((x.lg.bonus+x.lg.dice)*10)/10+'</span>':'—')+'</td>'+
-  '<td><b style="font-size:1.1rem">'+x.lg.final+'</b> <span class="'+(x.lg.final>=START?'plus':'minus')+'">'+(x.lg.final>=START?'（元手より増えた）':'（100万円より減った）')+'</span></td><td>'+hist+'</td>'+
+  '<td><b style="font-size:1.1rem">'+x.lg.final+'</b> <span class="'+(x.lg.final>=START?'plus':'minus')+'">'+(x.lg.final>=START?'▲':'▼')+'</span></td><td>'+hist+'</td>'+
   '<td><button class="sec" data-s="'+x.r.id+'">見る</button></td>';
   tb.appendChild(tr);
  });
@@ -910,7 +914,7 @@ const QUIZ=[
 
 function renderCards(){
  const g=document.getElementById('cardGrid');if(!g)return;
- g.innerHTML=Object.keys(PREF).map(k=>{const [d,tg]=PREF[k];const di=DIST[d];const cls=d==='近い'?'d0':d==='少し遠い'?'d1':'d2';return '<div class="pcard '+cls+'"><div class="e">'+(EMO[k]||'📍')+'</div><b>'+k+'</b><small>'+d+'（交通費 −'+di.cost+'万）</small><small>値段の基本 '+di.base+'万</small><small>'+tg.replace(/,/g,'・')+'</small></div>'}).join('');
+ g.innerHTML=Object.keys(PREF).map(k=>{const [d,tg]=PREF[k];const di=DIST[d];const cls=d==='近い'?'d0':d==='少し遠い'?'d1':'d2';return '<div class="pcard '+cls+'"><div class="e">'+(EMO[k]||'📍')+'</div><b>'+k+'</b><small><b style="display:inline">'+d+'</b>・交通費 −'+di.cost+'万</small><small>値段の基本 '+di.base+'万</small><small>'+tg.replace(/,/g,'・')+'</small></div>'}).join('');
  document.getElementById('cardPrint').onclick=()=>window.print();
 }
 function csvDownload(name,lines){const csv='\ufeff'+lines.map(l=>l.map(v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"').join(',')).join('\n');download(name,csv,'text/csv')}
@@ -1108,10 +1112,13 @@ const NEED={1:['行き先'],2:['宿','値段'],3:['タイトル','キャッチ�
 function showRankPrompt(){const p=document.getElementById('rankPrompt');if(p)p.style.display='block'}
 function showTab(t){
  const rp=document.getElementById('rankPrompt');if(rp&&t!=='result')rp.style.display='none';
+ const rf=document.getElementById('runFloat');if(rf)rf.style.display=(t==='input')?'block':'none';
  try{state.tab=t;save()}catch(e){}
  document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
  document.querySelectorAll('.tabpane').forEach(p=>p.classList.toggle('on',p.dataset.pane===t));
+ if(t==='game'){try{renderRoulette();renderDice()}catch(e){}}
  if(t==='plaza'&&typeof drawPlaza==='function'&&!window.__plazaAnim)setTimeout(()=>drawPlaza(false),30);
+ try{const pn=document.querySelector('.tabpane.on'),sk=document.querySelector('.stick');if(pn&&sk)window.scrollTo({top:Math.max(0,pn.getBoundingClientRect().top+window.scrollY-sk.offsetHeight-8),behavior:'auto'})}catch(e){}
  if(t==='money'||t==='rank'){renderSheet();renderLedger()}
 }
 function renderFlow(){
@@ -1390,8 +1397,9 @@ function init(){
  if(!state.rows.length){state.rows=[newRow()]}
  rlState();diceState();renderStage();renderInputs();renderResDist();renderResults();renderPersonas();renderRoulette();renderDice();renderMute();renderFlow();initQuiz();renderCards();{const h=document.querySelector('.hero');if(h){['🌸','🍜','♨️','🚅','🗻','🐟','🎡','⛩️'].forEach((e,i)=>{const sp=document.createElement('span');sp.className='floatemo';sp.textContent=e;sp.style.left=(8+i*12)+'%';sp.style.top=(20+(i%3)*25)+'%';sp.style.animationDelay=(i*0.5)+'s';h.appendChild(sp)})}}document.getElementById('expPersona').onclick=exportPersonasCsv;document.getElementById('expDetail').onclick=exportDetailCsv;document.getElementById('expAll').onclick=exportAllJson;renderSheet();document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b){SFX.click();clearTimeout(window.__pt);window.__plazaAnim=false;showTab(b.dataset.tab)}});showTab(state.tab||'input');
  document.getElementById('run').onclick=runCycle;
+ document.getElementById('runFloat').onclick=runCycle;
  document.getElementById('addRow').onclick=()=>{if(persons().length>=15){alert('最大15人です');return}state.rows.push(newRow());save();renderInputs()};
- document.getElementById('sample').onclick=()=>{if(confirm('入力をサンプルに置き換えます。よいですか？')){sampleRows();state.cycles={};save();renderInputs();renderResults()}};
+ document.getElementById('sample').onclick=()=>{if(confirm('入力をサンプルに置き換えます。よいですか？')){sampleRows();state.cycles={};save();renderInputs();renderResults();renderRoulette();renderDice();renderSheet()}};
  document.getElementById('reset').onclick=()=>{if(confirm('入力も結果も全部消します。よいですか？')){state={rows:[],cycles:{},stage:1,nextId:1,rl:{w:{},extra:[],history:[],angle:0},dice:{history:[],deck:[]},start:START};state.rows=[newRow()];save();renderStage();renderInputs();renderResults();renderRoulette();renderDice()}};
  document.getElementById('exportJson').onclick=()=>download('AIペルソナ審査_保存.json',JSON.stringify(state),'application/json');
  document.getElementById('importJson').onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const s=JSON.parse(rd.result);if(s.rows){state=s;dedupeIds();save();renderStage();renderInputs();renderResults()}else alert('ファイルの形式が違います')}catch(x){alert('読み込めませんでした')}};rd.readAsText(f)};
