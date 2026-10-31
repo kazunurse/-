@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI旅行会社 全体の流れとスケジュール</title><style>
+:root{--bg:#f6f8fb;--card:#fff;--ink:#1c2733;--sub:#5b6b7c;--line:#dbe3ec;--accent:#0b6fb8;--accent2:#e8f2fb;--gold:#b8860b;--gold-bg:#fff7e0;--red:#c0392b;--green:#1e8e5a}
+@media (prefers-color-scheme:dark){:root{--bg:#10161d;--card:#18212b;--ink:#e8eef4;--sub:#9fb0c1;--line:#2a3846;--accent:#5db3f0;--accent2:#16293a;--gold:#e8b84a;--gold-bg:#2c2412;--red:#ff8a7a;--green:#58d39b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hiragino Sans","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;line-height:1.8}
+.wrap{max-width:920px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:1.7rem;margin:0 0 4px}
+.lead{color:var(--sub);margin:0 0 14px}
+h2{font-size:1.25rem;margin:38px 0 10px;padding-left:10px;border-left:6px solid var(--accent)}
+h3{font-size:1.02rem;margin:18px 0 6px}
+.part{background:var(--accent);color:#fff;border-radius:10px;padding:10px 16px;margin:46px 0 4px;font-weight:700;font-size:1.1rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+.kpi .num{font-size:1.5rem;font-weight:800;color:var(--accent)}
+.small{color:var(--sub);font-size:.88rem}
+table{width:100%;border-collapse:collapse;font-size:.93rem}
+th,td{border-bottom:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:var(--accent2)}
+td.t{white-space:nowrap;color:var(--sub);width:1%}
+tr.hl td{background:var(--gold-bg)}
+.flow{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.step{flex:1 1 140px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
+.step b{display:block}
+.plus{color:var(--green);font-weight:700}
+.minus{color:var(--red);font-weight:700}
+.note{background:var(--gold-bg);border-left:5px solid var(--gold);padding:10px 14px;border-radius:8px;margin:12px 0}
+ul,ol{margin:6px 0 6px 1.2em;padding:0}
+svg{width:100%;height:auto;background:var(--card);border:1px solid var(--line);border-radius:12px}
+nav{display:flex;flex-wrap:wrap;gap:4px 14px;margin:10px 0;font-size:.92rem}
+.tag{display:inline-block;white-space:nowrap;border-radius:999px;padding:0 9px;font-size:.8rem;font-weight:700;background:var(--accent2);color:var(--accent)}
+@media print{body{background:#fff}.card{break-inside:avoid}h2{break-after:avoid}.part{break-after:avoid}}
+</style></head><body><div class="wrap">
+<h1>AI旅行会社 全体の流れとスケジュール</h1>
+<p class="lead">小3〜中3が、AIを使いながら旅行会社の社長になる1泊2日（京都・あうる京北）。<br>ドリームコイン150万円を元手に、行き先と宿を選び、ツアーを作り、AIペルソナ（約100名）と友だちに買ってもらいます。</p>
+<div class="note">集合・開始時間は確認中です（暫定：14:00開始）。時間は仮のものです。</div>
+
+<h2>ゲームの流れ</h2>
+<div class="flow">
+<div class="step"><b>① 行き先</b><small>じゃんけん順に選ぶ。同じ県はなし</small></div>
+<div class="step"><b>② AIに入れる</b><small>まず行き先だけ</small></div>
+<div class="step"><b>③ 作る</b><small>宿・コピー・ポスター・広告</small></div>
+<div class="step"><b>④ 結果</b><small>AIペルソナが購入。コインが増減</small></div>
+<div class="step"><b>⑤ 最終ピッチ</b><small>2日目に全部を使って発表</small></div>
+</div>
+
+<h2>1日目</h2>
+<div class="card"><table><tr><th>時間</th><th>やること</th></tr><tr><td class="t">14:00〜14:20</td><td>開会。ドリームコイン150万円を配る。ルール説明</td></tr>
+<tr class="hl"><td class="t">14:20〜15:00</td><td><b>学び（40分）</b>：AIの使い方レッスン30分（コツ3つ＋個人情報の注意）＋ツアーの作り方10分。1人1台のセット、自己紹介</td></tr>
+<tr class="hl"><td class="t">15:00〜15:15</td><td><b>行き先を選ぶ</b>：都道府県カードから、じゃんけんで決めた順に1人1県ずつ選ぶ（同じ県は選べない）。交通費を払う</td></tr>
+<tr class="hl"><td class="t">15:15〜15:30</td><td><b>AIサイクル①</b>：行き先だけをAIに入れる（チュートリアル）→ AIペルソナの購入結果 → ドリームコインが増減</td></tr>
+<tr class="hl"><td class="t">15:30〜15:50</td><td><b>地域調べ</b>（ご当地クイズを統合。アプリの「ご当地クイズ」タブも使える）。AIで調べて3行メモにまとめる</td></tr>
+<tr class="hl"><td class="t">15:50〜16:00</td><td><b>宿を選ぶ</b>（宿代を払う。人数制限なし）</td></tr>
+<tr class="hl"><td class="t">16:00〜16:15</td><td><b>AIサイクル②</b>：行き先＋宿を入れる → 結果</td></tr>
+<tr><td class="t">16:15〜16:30</td><td>おやつ、休憩</td></tr>
+<tr class="hl"><td class="t">16:30〜17:05</td><td><b>タイトルとキャッチコピー、ポスター画像</b>を作る</td></tr>
+<tr class="hl"><td class="t">17:05〜17:20</td><td><b>AIサイクル③</b>：タイトル・キャッチコピー・画像を入れる → 結果</td></tr>
+<tr class="hl"><td class="t">17:20〜17:40</td><td><b>旅行スケジュール</b>を作る（行き先・宿・観光スポット3か所）</td></tr>
+<tr class="hl"><td class="t">17:40〜17:55</td><td><b>AIサイクル④</b>：旅行スケジュールを入れる → 結果</td></tr>
+<tr class="hl"><td class="t">17:55〜18:05</td><td><b>広告を作る</b>（出すかは自由。出す場合の広告費は10万円）</td></tr>
+<tr class="hl"><td class="t">18:05〜18:35</td><td><b>ミニ発表</b>（30秒）と<b>AIサイクル⑤</b>：ここまでの全部（広告を含む）を入れる → 結果</td></tr>
+<tr><td class="t">18:35〜19:00</td><td><b>かけっこ</b>（25分）</td></tr>
+<tr><td class="t">19:00〜19:20</td><td>サイコロ1回目・2回目、団体客ルーレット1回目、今日の振り返り（夕食の前）</td></tr>
+<tr><td class="t">19:20〜20:20</td><td>夕食（施設で鍋）</td></tr>
+<tr><td class="t">20:20〜21:10</td><td>入浴（班ごとに交代）</td></tr>
+<tr><td class="t">21:10〜21:45</td><td>スマイルゲーム（山田さん制作）、自由時間（短め）。MGゲームは任意</td></tr>
+<tr><td class="t">21:45〜22:00</td><td>就寝準備（22:00消灯）</td></tr></table></div>
+<h2>2日目</h2>
+<div class="card"><table><tr><th>時間</th><th>やること</th></tr><tr><td class="t">7:00〜9:00</td><td>起床、朝食、準備</td></tr>
+<tr><td class="t">9:00〜9:15</td><td>開始、サイコロ3回目</td></tr>
+<tr class="hl"><td class="t">9:15〜9:30</td><td><b>学び（15分）</b>：広告・キャッチコピー・伝え方のコツ</td></tr>
+<tr class="hl"><td class="t">9:30〜10:45</td><td><b>考える時間（作る75分）</b>：この間は自由に動いてよい。1日目の結果をもとに、広告・キャッチコピー・ポスター・旅行スケジュールなどを全部やり直す。AIにもう一度入れて、結果を見て改善する。<b>最後に動画を作る</b></td></tr>
+<tr><td class="t">10:00〜10:10</td><td>（考える時間の途中）団体客ルーレット2回目。気分転換</td></tr>
+<tr><td class="t">10:45〜10:55</td><td>団体客ルーレット3回目、最終ピッチの準備</td></tr>
+<tr class="hl"><td class="t">10:55〜11:50</td><td><b>最終ピッチ</b>（1人2〜3分）。1日目からの全部を使って発表。値段を発表する。<b>AIサイクル⑥</b>（最後の一発勝負）</td></tr>
+<tr class="hl"><td class="t">11:50〜12:05</td><td><b>購入</b>：AIペルソナが購入判定。<b>お客さんコイン50万円を発動</b>し、子どもたちは他の人のツアーを買う</td></tr>
+<tr><td class="t">12:05〜12:15</td><td>団体客ルーレット4回目、親へのLINE投票</td></tr>
+<tr><td class="t">12:15〜13:00</td><td>精算、表彰</td></tr>
+<tr><td class="t">13:00〜</td><td>昼食（扱いは未定）、解散準備</td></tr></table></div>
+
+<h2>ルールのまとめ</h2>
+<div class="card"><ul>
+<li>最初に、ドリームコインを150万円ずつ配ります。</li>
+<li>ツアーは、<b>1人2つ</b>作ります。行き先と宿は2セットで、同じ県はだれともかぶれません。2つとも最後まで続けます（お金も2つ分かかります）。</li>
+<li>行き先の交通費：近い県−10万／少し遠い県−20万／北海道・沖縄−30万。</li>
+<li>宿代：ゲストハウス−10万／ホテル−30万／高級旅館−60万。</li>
+<li>ツアーの値段は自分で決めますが、上限があります（距離と宿で決まる）。</li>
+<li>広告を出すかは自由です。出すと、AIペルソナの目に触れやすくなります。</li>
+<li>サイコロとルーレット、チャンスカードで、お金が増えたり減ったりします。団体客ルーレットで当たると、「値段 × 団体の人数（初期10人）」が入ります。</li>
+<li>2日目の最終ピッチで、AIペルソナが買い、子どもたちもお客さんコイン50万円で友だちのツアーを買います。</li>
+<li>最後に、お金が一番多い人が優勝です。全員に賞状があります。</li></ul>
+<h3>ツアーの値段の上限（万円）</h3>
+<table><tr><th>宿 ＼ 行き先</th><th>近い県</th><th>少し遠い県</th><th>北海道・沖縄</th></tr>
+<tr><td>ゲストハウス</td><td>20</td><td>25</td><td>30</td></tr><tr><td>ホテル</td><td>25</td><td>30</td><td>35</td></tr><tr><td>高級旅館</td><td>35</td><td>40</td><td>45</td></tr></table></div>
+
+<h2>AIを使うときのお約束</h2>
+<div class="card"><ul>
+<li>自分や友だち、家族の名前、住所、電話番号、学校の名前、顔写真はAIに入れない。</li>
+<li>AIの答えは間違うことがあるので、自分でも確かめる。</li>
+<li>使い終わったら、チャットの履歴を消す。</li></ul></div>
+
+<h2>これから（準備のスケジュール）</h2>
+<div class="card"><table><tr><th>時期</th><th>内容</th><th>担当</th></tr>
+<tr><td class="t">11月中旬</td><td>AIペルソナ100名の生成テストと精度確認。審査アプリ、サイコロ・ルーレットアプリの作成</td><td>かず</td></tr>
+<tr><td class="t">GOサイン後</td><td>LP（募集ページ）の作成</td><td>山田</td></tr>
+<tr><td class="t">早めに</td><td>あうる京北のバス・宿の時間の確認、集合時間の確定</td><td>Hiroko</td></tr>
+<tr><td class="t">12月</td><td>東京保護者会でイベントを告知。公式LINEで募集（登録者・経験者限定）</td><td>Hiroko</td></tr>
+<tr><td class="t">1月（9・10・11日）</td><td>初回開催（ベーシック版）</td><td>全員</td></tr>
+<tr><td class="t">3月以降</td><td>本格版（Webアプリなど）を検討</td><td>—</td></tr></table></div>
+</div></body></html>
