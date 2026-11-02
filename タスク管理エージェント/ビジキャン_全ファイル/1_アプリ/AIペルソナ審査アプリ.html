@@ -36,6 +36,19 @@ h2::before{content:'';width:8px;height:24px;border-radius:4px;background:var(--a
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes floaty{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(-60px) rotate(20deg)}}
 .tabpane.on{animation:fadein .35s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-12px) rotate(-1deg)}40%{transform:translateX(12px) rotate(1deg)}60%{transform:translateX(-8px)}80%{transform:translateX(8px)}}
+.shake{animation:shake .5s ease}
+@keyframes drop{0%{transform:translateY(-40px) scale(.5) rotate(0);opacity:0}15%{opacity:1}100%{transform:translateY(105vh) scale(1) rotate(540deg);opacity:.9}}
+@keyframes crown{0%{transform:scale(.2) rotate(-20deg);opacity:0}60%{transform:scale(1.2) rotate(6deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+#bannerOv{display:none;position:fixed;inset:0;z-index:75;align-items:center;justify-content:center;flex-direction:column;background:rgba(10,16,40,.72);color:#fff;text-align:center;pointer-events:none}
+#bannerOv .crown{font-size:7rem;animation:crown .8s cubic-bezier(.2,1.6,.4,1)}
+#bannerOv .t{font-size:2.6rem;font-weight:800;text-shadow:0 4px 20px rgba(0,0,0,.5);animation:crown .9s .2s both}
+#bannerOv .u{font-size:1.5rem;margin-top:8px;animation:crown 1s .35s both}
+.award{display:inline-flex;gap:6px;align-items:center;background:var(--card);border:2px solid var(--gold);border-radius:999px;padding:4px 14px;margin:4px 6px 4px 0;font-weight:700;animation:crown .6s both}
+#mascot{position:fixed;right:14px;bottom:14px;z-index:30;display:flex;align-items:flex-end;gap:6px;cursor:pointer;user-select:none}
+#mascot .m{font-size:2.6rem;animation:bob 2.2s ease-in-out infinite}
+#mascot .b{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:6px 12px;font-size:.85rem;max-width:220px;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+@media (max-width:700px){#mascot .b{display:none}}
 @keyframes fadein{from{opacity:0}to{opacity:1}}
 .cardgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
 .rcard{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:12px 16px;transition:transform .15s}
@@ -129,6 +142,8 @@ td input.sp{min-width:70px}
 <div id="rankOv" style="display:none;position:fixed;inset:0;z-index:50;background:radial-gradient(circle at 50% 30%,#3b2a8c,#14103a);color:#fff;overflow:auto;padding:24px 16px"><div style="max-width:720px;margin:0 auto;text-align:center"><div style="font-size:1.6rem;font-weight:800;margin-bottom:12px">🏆 ランキング発表！</div><div id="rankList"></div><button id="rankClose" style="margin-top:18px;background:#fff;color:#3b2a8c">とじる</button></div></div>
 <div class="stick"><div id="calcOv" style="display:none;position:fixed;inset:0;z-index:70;background:radial-gradient(circle at 50% 40%,#2b5876,#10263a);color:#fff;align-items:center;justify-content:center;flex-direction:column;gap:18px;text-align:center"><div style="font-size:4rem;animation:spin 1.2s linear infinite;display:inline-block">🔍</div><div id="calcMsg" style="font-size:1.5rem;font-weight:800">集計中…</div><button id="calcSkip" style="position:absolute;right:20px;bottom:20px;background:rgba(255,255,255,.2);padding:8px 16px;border-radius:999px;font-size:.9rem">スキップ ▶</button><div style="width:min(420px,80vw);height:14px;border-radius:7px;background:rgba(255,255,255,.2)"><div id="calcBar" style="height:14px;border-radius:7px;width:0;background:linear-gradient(90deg,#4dabf7,#ffd43b);transition:width .8s"></div></div></div>
 <button id="runFloat" style="display:none;position:fixed;left:20px;bottom:20px;z-index:40;font-size:1.15rem;padding:14px 24px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.3)">▶ ペルソナ100人に見せる</button>
+<div id="bannerOv"><div class="crown">👑</div><div class="t" id="bnT"></div><div class="u" id="bnU"></div></div>
+<div id="mascot" title="さわると ヒントが かわるよ"><div class="b" id="mascotMsg">こんにちは！ビジキャンくんだよ</div><div class="m">🧳</div></div>
 <div id="rankPrompt" style="display:none;position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:40"><button id="rankGo" style="font-size:1.3rem;padding:14px 28px;border-radius:999px;background:linear-gradient(135deg,#f59f00,#ff6b6b);box-shadow:0 8px 24px rgba(0,0,0,.35);animation:bob 1.4s ease-in-out infinite">🏆 ランキングを見る ▶</button></div>
 <div id="tabs" class="tabs"><button data-tab="rules">📖 ルール</button><button data-tab="sched">📅 予定</button><button data-tab="input">✏️ 入力</button><button data-tab="plaza">🎪 広場</button><button data-tab="result">📋 結果</button><button data-tab="rank">🏆 順位</button><button data-tab="money">💰 収支</button><button data-tab="game">🎲 サイコロ</button><button data-tab="cards">🗾 カード</button><button data-tab="quiz">🎯 クイズ</button><button data-tab="persona">👥 しくみ</button></div>
 <div id="rankBar"></div></div>
@@ -205,6 +220,7 @@ td input.sp{min-width:70px}
 <div class="tabpane" data-pane="result">
 <h2>3. 結果</h2>
 <div class="note" id="resNote">お金は<b>回ごとに積み上がります</b>。1回目で交通費、2回目で宿代、5回目で広告費（出す人だけ）が引かれ、そのたびにペルソナの購入で稼いだ分が足されます。<b>ドリームコイン ＝ 元手 − 費用の累計 ＋ 稼ぎの累計 ＋ サイコロ・団体客</b>。元手（<span id="startNote">150</span>万円）を超えれば、増えたことになります。</div>
+<div id="awards"></div>
 <div id="warn"></div>
 <div class="card tbl"><table id="resTbl"><thead><tr>
 <th>順位</th><th>名前</th><th>ツアー</th><th>今回の人数</th><th>今回の稼ぎ(万)</th><th>累計もうけ(万)</th><th>元手の回収</th><th>サイコロ・団体客(万)</th><th>ドリームコイン(万)</th><th>回ごとの稼ぎ</th><th>声</th></tr></thead><tbody></tbody></table></div>
@@ -709,7 +725,7 @@ function runCycleNow(){
  const tours=rows.map(r=>({id:r.id,name:r.name||'(名前なし)',dest:r.dest,inn:r.inn,price:r.price,title:r.title,copy:r.copy,sp1:r.sp1,sp2:r.sp2,sp3:r.sp3,ad:r.ad,imgScore:r.imgScore||0}));
  const ev=evaluate(tours,personas,o);
  state.cycles[o.stage]={results:ev.results,warn:ev.warn,assign:ev.assign,detail:ev.detail,voices:ev.voices,opts:o,at:new Date().toLocaleString('ja-JP')};
- save();renderResults();clearTimeout(window.__pt);window.__plazaAnim=true;showTab('plaza');setTimeout(()=>drawPlaza(true),150);window.__pt=setTimeout(()=>{window.__plazaAnim=false;showTab('result');setTimeout(showRankPrompt,1500)},9500);
+ save();renderResults();clearTimeout(window.__pt);clearTimeout(window.__pb);window.__plazaAnim=true;showTab('plaza');setTimeout(()=>drawPlaza(true),150);window.__pb=setTimeout(()=>{const c=state.cycles[state.stage];if(!c||document.querySelector('.tabpane.on').dataset.pane!=='plaza')return;const L=state.rows.filter(r=>c.results[r.id]).sort((a,b)=>c.results[b.id].revenue-c.results[a.id].revenue);if(L.length){const t=L[0];showBanner(t.name+'さんが 今回の1位！',t.dest+'のツアー　'+c.results[t.id].count+'人 ／ '+c.results[t.id].revenue+'万円')}},5800);window.__pt=setTimeout(()=>{window.__plazaAnim=false;showTab('result');setTimeout(showRankPrompt,1500)},9500);
  renderFlow();ringBackup();if(state.autoDl!==false)backupNow(true);
 }
 function dupDests(){const seen={},d=[];state.rows.forEach(r=>{if(!r.dest)return;if(seen[r.dest]&&!d.includes(r.dest))d.push(r.dest);seen[r.dest]=true});return d}
@@ -718,7 +734,7 @@ function renderResults(){
  const cur=state.cycles[state.stage];
  const warnEl=document.getElementById('warn');warnEl.innerHTML='';
  drawPlaza(false);
- renderLedger();renderFlow();
+ renderLedger();renderFlow();renderAwards();
  if(!cur){tb.innerHTML='<tr><td colspan="11" class="sub">この回の結果は、まだありません。上の「ペルソナ100人に見せる」ボタンを押してください。</td></tr>';document.getElementById('survey').innerHTML='';renderCalc();renderLoc();const pt=document.getElementById('plazaTotal');if(pt)pt.textContent='まだ結果がありません。100人は、ここで待っています。';const vz=document.getElementById('voices');if(vz)vz.innerHTML='';return}
  if(cur.warn&&cur.warn.length)warnEl.innerHTML='<div class="warnbox">'+cur.warn.map(esc).join('<br>')+'</div>';
  const list=state.rows.filter(r=>cur.results[r.id]).map(r=>{
@@ -852,7 +868,7 @@ function diceRecord(r,roll,delta,note){const d=diceState();d.history.push({n:d.h
 function diceResolve(r,roll){
  const out=document.getElementById('diceResult'),act=document.getElementById('diceAction');
  const fixed={1:[20,'問い合わせ殺到！'],2:[-10,'台風でキャンセル…'],5:[30,'SNSでバズった！'],6:[-20,'ダブルブッキング…']};
- if(fixed[roll]){const [dl,msg]=fixed[roll];out.innerHTML=esc(r.name)+'さん：'+DICE_FACES[roll-1]+' '+msg+'<br><span class="'+(dl>0?'plus':'minus')+'">'+(dl>0?'+':'')+dl+'万円</span>';(dl>0?SFX.good:SFX.bad)();diceRecord(r,roll,dl,msg);return}
+ if(fixed[roll]){const [dl,msg]=fixed[roll];out.innerHTML=esc(r.name)+'さん：'+DICE_FACES[roll-1]+' '+msg+'<br><span class="'+(dl>0?'plus':'minus')+'">'+(dl>0?'+':'')+dl+'万円</span>';(dl>0?SFX.good:SFX.bad)();if(dl>=20)burst(['🎉','💰','✨'],40,2.2);else if(dl<=-10)shakeScreen();diceRecord(r,roll,dl,msg);return}
  if(roll===3){
   const d=diceState();if(!d.deck||!d.deck.length)d.deck=CHANCE.map((_,i)=>i);
   const k=randInt(d.deck.length);const ci=d.deck.splice(k,1)[0];
@@ -1118,8 +1134,35 @@ function exportLedgerCsv(){
 }
 /* ===== いまやること（動線） ===== */
 const NEED={1:['行き先'],2:['宿','値段'],3:['タイトル','キャッチコピー'],4:['観光スポット1〜3'],5:['広告を出すか']};
+function burst(emos,n,dur){
+ const list=emos||['🎉','✨','⭐','🪙','🎊'];n=n||50;
+ for(let i=0;i<n;i++){const c=document.createElement('div');c.textContent=list[i%list.length];
+  c.style.cssText='position:fixed;top:-30px;left:'+(Math.random()*100)+'vw;font-size:'+(18+Math.random()*26)+'px;z-index:90;pointer-events:none;animation:drop '+((dur||2.6)+Math.random()*1.6)+'s '+(Math.random()*0.6)+'s ease-in forwards';
+  document.body.appendChild(c);setTimeout(()=>c.remove(),((dur||2.6)+2.6)*1000)}
+}
+function shakeScreen(){const w=document.querySelector('.wrap')||document.body;w.classList.remove('shake');void w.offsetWidth;w.classList.add('shake');setTimeout(()=>w.classList.remove('shake'),600)}
+function showBanner(top,sub){
+ const o=document.getElementById('bannerOv');document.getElementById('bnT').textContent=top;document.getElementById('bnU').textContent=sub||'';o.style.display='flex';SFX.fanfare();burst(['👑','🎉','✨','🪙','🎊'],70,2.8);
+ setTimeout(()=>{o.style.display='none'},3000);
+}
+const MASCOT={input:['ツアーの なまえと 行き先を 入れよう！','ボタンを おすと、お客さんが やってくるよ！'],plaza:['お客さんが ツアーに むかって 走ってるよ！','どの ツアーが にんきかな？'],result:['お金が どれだけ ふえたかな？','「見る」を おすと、お客さんの こえが 聞けるよ！'],rank:['ぜんいんの じゅんいが でるよ！','1いに なるのは だれかな？'],money:['お金の ながれが ぜんぶ ここに あるよ。','バックアップは わすれずに！'],game:['サイコロは ほんものの らんすうだよ！','ルーレット、あたるかな？'],rules:['わからなくなったら ここを 見てね。'],sched:['きょうの よていだよ。'],cards:['すきな 県を えらぼう！'],quiz:['ご当地クイズに ちょうせん！'],persona:['お客さんは こうやって 作ってるよ。']};
+function mascotSay(t){const m=document.getElementById('mascotMsg');if(!m)return;const l=MASCOT[t]||['がんばろう！'];m.textContent=l[Math.floor(Math.random()*l.length)]}
+function renderAwards(){
+ const el=document.getElementById('awards');if(!el)return;
+ const cur=state.cycles[state.stage];if(!cur){el.innerHTML='';return}
+ const L=state.rows.filter(r=>cur.results[r.id]).map(r=>({r,res:cur.results[r.id],net:cur.results[r.id].revenue-costAt(r,state.stage)}));
+ if(L.length<2){el.innerHTML='';return}
+ const best=(f)=>L.slice().sort((a,b)=>f(b)-f(a))[0];
+ const a=[];
+ const pop=best(x=>x.res.count);a.push(['🏅','人気者賞',pop.r.name+'（'+pop.res.count+'人）']);
+ const ear=best(x=>x.res.revenue);a.push(['💰','稼ぎ王',ear.r.name+'（'+ear.res.revenue+'万円）']);
+ const net=best(x=>x.net);a.push(['🎯','もうけ名人',net.r.name+'（'+(Math.round(net.net*10)/10)+'万円）']);
+ const ads=L.filter(x=>x.r.ad&&state.stage>=5);if(ads.length){const ad=ads.slice().sort((p,q)=>q.res.count-p.res.count)[0];a.push(['📣','広告の達人',ad.r.name+'（'+ad.res.count+'人）'])}
+ el.innerHTML='<div class="card"><h3 style="margin:0 0 6px">🏆 この回の表彰</h3>'+a.map((x,i)=>'<span class="award" style="animation-delay:'+(i*0.15)+'s">'+x[0]+' '+x[1]+'：<b>'+esc(x[2])+'</b></span>').join('')+'</div>';
+}
 function showRankPrompt(){const p=document.getElementById('rankPrompt');const on=document.querySelector('.tabpane.on');if(p&&on&&on.dataset.pane==='result')p.style.display='block'}
 function showTab(t){
+ try{mascotSay(t)}catch(e){}
  const rp=document.getElementById('rankPrompt');if(rp&&t!=='result')rp.style.display='none';
  const rf=document.getElementById('runFloat');if(rf)rf.style.display=(t==='input')?'block':'none';
  try{state.tab=t;save()}catch(e){}
@@ -1359,7 +1402,7 @@ function rlSpin(){
    rl.history.push({n:rl.history.length+1,name:w.name,rowId:w.rowId,bonus,at:new Date().toLocaleTimeString('ja-JP')});
    save();
    document.getElementById('rlResult').innerHTML='🎉 <span style="color:var(--accent)">'+esc(w.name)+'</span>さんのツアーに団体客！'+(bonus?'<br><span class="plus">+'+bonus+'万円</span>':'');
-   document.getElementById('rlSpin').disabled=false;
+   document.getElementById('rlSpin').disabled=false;SFX.fanfare();burst(['🎡','🎉','✨','🪙'],45,2.4);
    renderRoulette();renderResults();
   }
  }
@@ -1404,7 +1447,7 @@ function sampleRows(){
 function init(){
  load();
  if(!state.rows.length){state.rows=[newRow()]}
- rlState();diceState();renderStage();renderInputs();renderResDist();renderResults();renderPersonas();renderRoulette();renderDice();renderMute();renderFlow();initQuiz();renderCards();{const h=document.querySelector('.hero');if(h){['🌸','🍜','♨️','🚅','🗻','🐟','🎡','⛩️'].forEach((e,i)=>{const sp=document.createElement('span');sp.className='floatemo';sp.textContent=e;sp.style.left=(8+i*12)+'%';sp.style.top=(20+(i%3)*25)+'%';sp.style.animationDelay=(i*0.5)+'s';h.appendChild(sp)})}}document.getElementById('expPersona').onclick=exportPersonasCsv;document.getElementById('expDetail').onclick=exportDetailCsv;document.getElementById('expAll').onclick=exportAllJson;renderSheet();document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b){SFX.click();clearTimeout(window.__pt);window.__plazaAnim=false;showTab(b.dataset.tab)}});showTab(state.tab||'input');
+ rlState();diceState();renderStage();renderInputs();renderResDist();renderResults();renderPersonas();renderRoulette();renderDice();renderMute();renderFlow();initQuiz();renderCards();{const h=document.querySelector('.hero');if(h){['🌸','🍜','♨️','🚅','🗻','🐟','🎡','⛩️'].forEach((e,i)=>{const sp=document.createElement('span');sp.className='floatemo';sp.textContent=e;sp.style.left=(8+i*12)+'%';sp.style.top=(20+(i%3)*25)+'%';sp.style.animationDelay=(i*0.5)+'s';h.appendChild(sp)})}}document.getElementById('expPersona').onclick=exportPersonasCsv;document.getElementById('expDetail').onclick=exportDetailCsv;document.getElementById('expAll').onclick=exportAllJson;renderSheet();document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b){SFX.click();clearTimeout(window.__pt);clearTimeout(window.__pb);window.__plazaAnim=false;showTab(b.dataset.tab)}});showTab(state.tab||'input');
  document.getElementById('run').onclick=runCycle;
  document.getElementById('runFloat').onclick=runCycle;
  document.getElementById('addRow').onclick=()=>{if(persons().length>=15){alert('最大15人です');return}state.rows.push(newRow());save();renderInputs()};
@@ -1423,6 +1466,7 @@ function init(){
  document.getElementById('diceReset').onclick=()=>{if(confirm('サイコロの記録を消します。よいですか？')){state.dice={history:[],deck:[]};save();renderDice();renderResults()}};
  document.getElementById('muteBtn').onclick=()=>{state.mute=!state.mute;save();renderMute();if(!state.mute)SFX.click()};
  const sc=document.getElementById('startCoin');sc.value=START;sc.onchange=()=>{START=Math.max(1,Number(sc.value)||150);state.start=START;save();renderStage();renderResults();renderSheet();renderInputs()};
+ document.getElementById('mascot').onclick=()=>{mascotSay((document.querySelector('.tabpane.on')||{dataset:{}}).dataset.pane);SFX.pop()};
  document.getElementById('plazaToResult').onclick=()=>{clearTimeout(window.__pt);window.__plazaAnim=false;showTab('result');setTimeout(showRankPrompt,800)};
  document.getElementById('rankShow').onclick=rankShow;
  document.getElementById('rankGo').onclick=()=>{showTab('rank');setTimeout(rankShow,400)};
