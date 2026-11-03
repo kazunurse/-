@@ -190,7 +190,7 @@ input,select{font-size:1rem;border-radius:12px;border-width:2px}
 </details>
 
 <div id="flow"></div>
-<div id="rankOv" style="display:none;position:fixed;inset:0;z-index:50;background:radial-gradient(circle at 50% 30%,#3b2a8c,#14103a);color:#fff;overflow:auto;padding:24px 16px"><div style="max-width:720px;margin:0 auto;text-align:center"><div style="font-size:1.6rem;font-weight:800;margin-bottom:12px">🏆 ランキング発表！</div><div id="rankList"></div><button id="rankClose" style="margin-top:18px;background:#fff;color:#3b2a8c">とじる</button></div></div>
+<div id="rankOv" style="display:none;position:fixed;inset:0;z-index:50;background:radial-gradient(circle at 50% 30%,#3b2a8c,#14103a);color:#fff;overflow:auto;padding:24px 16px"><div style="max-width:720px;margin:0 auto;text-align:center"><div id="rankTitle" style="font-size:1.6rem;font-weight:800;margin-bottom:12px">🏆 ランキング発表！</div><div id="rankList"></div><button id="rankClose" style="margin-top:18px;background:#fff;color:#3b2a8c">とじる</button></div></div>
 <div class="stick"><div id="calcOv" style="display:none;position:fixed;inset:0;z-index:70;background:radial-gradient(circle at 50% 40%,#2b5876,#10263a);color:#fff;align-items:center;justify-content:center;flex-direction:column;gap:18px;text-align:center"><div style="font-size:4rem;animation:spin 1.2s linear infinite;display:inline-block">🔍</div><div id="calcMsg" style="font-size:1.5rem;font-weight:800">集計中…</div><button id="calcSkip" style="position:absolute;right:20px;bottom:20px;background:rgba(255,255,255,.2);padding:8px 16px;border-radius:999px;font-size:.9rem">スキップ ▶</button><div style="width:min(420px,80vw);height:14px;border-radius:7px;background:rgba(255,255,255,.2)"><div id="calcBar" style="height:14px;border-radius:7px;width:0;background:linear-gradient(90deg,#4dabf7,#ffd43b);transition:width .8s"></div></div></div>
 <button id="runFloat" style="display:none;position:fixed;left:20px;bottom:20px;z-index:40;font-size:1.15rem;padding:14px 24px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.3)">▶ ペルソナ100人に見せる</button>
 <div id="bannerOv"><div class="crown">👑</div><div class="t" id="bnT"></div><div class="u" id="bnU"></div></div>
@@ -198,7 +198,9 @@ input,select{font-size:1rem;border-radius:12px;border-width:2px}
 <div id="rankPrompt" style="display:none;position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:40"><button id="rankGo" style="font-size:1.3rem;padding:14px 28px;border-radius:999px;background:linear-gradient(135deg,#f59f00,#ff6b6b);box-shadow:0 8px 24px rgba(0,0,0,.35);animation:bob 1.4s ease-in-out infinite">🏆 ランキングを見る ▶</button></div>
 <div id="tabs" class="tabs"><button data-tab="rules">📖 ルール</button><button data-tab="howto">📘 やり方</button><button data-tab="sched">📅 予定</button><button data-tab="input">✏️ 入力</button><button data-tab="plaza">🎪 広場</button><button data-tab="result">📋 結果</button><button data-tab="rank">🏆 順位</button><button data-tab="money">💰 収支</button><button data-tab="game">🎲 サイコロ</button><button data-tab="cards">🗾 カード</button><button data-tab="words">🔍 ことば</button><button data-tab="quiz">🎯 クイズ</button><button data-tab="persona">👥 しくみ</button></div>
 <div id="rankBar"></div></div>
-<div class="tabpane" data-pane="rank"><h2>ランキング</h2><div class="row" style="margin:14px 0"><button id="rankShow" style="font-size:1.1rem;padding:10px 22px;background:linear-gradient(135deg,#f59f00,#ff6b6b);border-radius:12px">🏆 ランキング発表（トップ5）</button></div>
+<div class="tabpane" data-pane="rank"><h2>ランキング</h2><div class="row" style="margin:14px 0"><button id="rankShowC" style="font-size:1.1rem;padding:10px 22px;background:linear-gradient(135deg,#37b24d,#69db7c);border-radius:12px">📋 この回のランキング発表</button><button id="rankShow" style="font-size:1.1rem;padding:10px 22px;background:linear-gradient(135deg,#f59f00,#ff6b6b);border-radius:12px">🏆 ぜんたいのランキング発表</button></div>
+<h3 id="rankCycleT">📋 この回のランキング</h3><div class="sub">この回で、いくら 稼いだか（売上）の じゅんばんだよ。</div><div id="rankCycle"></div>
+<h3>🏆 ぜんたいのランキング</h3><div class="sub">いまの ドリームコイン（ぜんぶの 回の お金）の じゅんばんだよ。</div>
 <div id="rankBig"></div></div>
 <div class="tabpane" data-pane="money"><h2>収支（お金のまとめ）</h2>
 <div class="card" id="bkCard"><h3 style="margin-top:0">💾 バックアップ（お金の積み上げは、必ず取っておく）</h3>
@@ -1162,7 +1164,26 @@ function backupNow(auto){
 function ringBackup(){
  try{const k='aiPersonaApp.backups';const a=JSON.parse(localStorage.getItem(k)||'[]');a.push({at:new Date().toLocaleString('ja-JP'),data:JSON.stringify(state)});while(a.length>10)a.shift();localStorage.setItem(k,JSON.stringify(a))}catch(e){}
 }
+function cycleRankData(){
+ const cur=state.cycles[state.stage];if(!cur)return [];
+ return persons().filter(r=>r.dest&&r.inn).map(r=>{
+  const T=toursOf(r).filter(t=>cur.results[t.id]);
+  const rev=Math.round(T.reduce((a,t)=>a+cur.results[t.id].revenue,0)*10)/10;
+  const cnt=T.reduce((a,t)=>a+cur.results[t.id].count,0);
+  const cost=toursOf(r).filter(t=>t.dest&&t.inn).reduce((a,t)=>a+costAt(t,state.stage),0);
+  return {r,rev,cnt,cost,net:Math.round((rev-cost)*10)/10};
+ }).filter(x=>x.cnt>0||x.rev>0).sort((a,b)=>b.rev-a.rev);
+}
+function renderCycleRank(){
+ const el=document.getElementById('rankCycle');if(!el)return;
+ const t=document.getElementById('rankCycleT');if(t)t.textContent='📋 この回（'+state.stage+'回目）のランキング';
+ const d=cycleRankData();const med=['🥇','🥈','🥉'];
+ if(!d.length){el.innerHTML='<div class="sub">この回の結果は、まだ ありません。</div>';return}
+ const mx=Math.max(1,...d.map(x=>x.rev));
+ el.innerHTML=d.map((x,i)=>'<div class="card" style="display:flex;align-items:center;gap:14px;'+(i===0?'background:linear-gradient(135deg,#d3f9d8,#8ce99a);color:#133a1c;':'')+'"><div style="font-size:'+(i<3?'2.2rem':'1.4rem')+';min-width:3.2rem;text-align:center">'+(med[i]||(i+1)+'位')+'</div><img src="'+tourPic(toursOf(x.r)[0])+'" style="width:96px;height:36px;object-fit:cover;object-position:50% 100%;border-radius:8px" alt=""><div style="flex:1"><div style="font-size:'+(i===0?'1.4rem':'1.1rem')+';font-weight:800">'+esc(x.r.name||'(名前なし)')+'　<span style="font-weight:500;font-size:.9rem">👥 '+x.cnt+'人が 買った</span></div><div style="height:10px;border-radius:5px;background:rgba(120,140,160,.25);margin-top:6px"><div style="height:10px;border-radius:5px;width:'+Math.max(3,x.rev/mx*100)+'%;background:linear-gradient(90deg,#69db7c,#4dabf7)"></div></div></div><div style="text-align:right"><div style="font-size:1.4rem;font-weight:800">💰 +'+x.rev+'<span style="font-size:.9rem">万</span></div><div class="sub" style="font-size:.85rem">この回の費用 '+x.cost+'万 → もうけ '+(x.net>=0?'+':'')+x.net+'万</div></div></div>').join('');
+}
 function renderRankBar(){
+ renderCycleRank();
  const bar=document.getElementById('rankBar');if(!bar)return;
  const d=rankData();const med=['🥇','🥈','🥉','4位','5位'];
  bar.innerHTML=d.length?'<b style="white-space:nowrap">🏆 いまの順位</b>'+d.slice(0,5).map((x,i)=>'<span class="rchip '+(i<3?'r'+(i+1):'')+'">'+med[i]+' '+esc(x.r.name||'(名前なし)')+' <span style="font-weight:600">'+x.lg.final+'万</span></span>').join(''):'<span class="sub">参加者を入力すると、ここに順位が出ます</span>';
@@ -1236,11 +1257,15 @@ function renderLedger(){
  el.innerHTML=h;
  const btn=document.getElementById('ledgerCsv');if(btn)btn.onclick=exportLedgerCsv;
 }
-function rankShow(){
+function rankShow(mode){
+ const cyc=(mode==='cycle');
  const rows=persons().filter(r=>r.dest&&r.inn);
  if(!maxRun()||!rows.length){alert('先にペルソナ100人に見せてください');return}
  const K=Math.max(maxRun(),state.stage);
- const data=rows.map(r=>({r,lg:ledgerPerson(r,K)})).sort((a,b)=>b.lg.final-a.lg.final).slice(0,5);
+ let data;
+ if(cyc){data=cycleRankData().slice(0,5).map(x=>({r:x.r,lg:{final:x.rev},cyc:x}));if(!data.length){alert('この回の結果が、まだ ありません');return}}
+ else data=rows.map(r=>({r,lg:ledgerPerson(r,K)})).sort((a,b)=>b.lg.final-a.lg.final).slice(0,5);
+ document.getElementById('rankTitle').textContent=cyc?'📋 '+state.stage+'回目の ランキング！':'🏆 ぜんたいの ランキング！';
  const ov=document.getElementById('rankOv'),list=document.getElementById('rankList');
  ov.style.display='block';list.innerHTML='';
  const medals=['🥇','🥈','🥉','4️⃣','5️⃣'];
@@ -1249,7 +1274,7 @@ function rankShow(){
   setTimeout(()=>{
    const x=data[i];const d=document.createElement('div');
    d.style.cssText='margin:10px 0;padding:14px 18px;border-radius:16px;background:'+(i===0?'linear-gradient(135deg,#ffd43b,#f08c00)':'rgba(255,255,255,.14)')+';color:'+(i===0?'#3b2a00':'#fff')+';font-size:'+(i===0?'1.6rem':'1.2rem')+';font-weight:800;transform:scale(.2);opacity:0;transition:all .5s cubic-bezier(.2,1.6,.4,1)';
-   d.innerHTML='<img src="'+tourPic(toursOf(x.r)[0])+'" style="max-width:260px;max-height:150px;border-radius:12px;display:block;margin:0 auto 6px" alt="">'+medals[i]+' '+(i+1)+'位　'+esc(x.r.name)+'<div style="font-size:.9rem;font-weight:500">'+esc(joinT(x.r,'dest'))+'・'+esc(joinT(x.r,'title','／'))+'</div><div>💰 '+x.lg.final+'万円</div>';
+   d.innerHTML='<img src="'+tourPic(toursOf(x.r)[0])+'" style="max-width:260px;max-height:150px;border-radius:12px;display:block;margin:0 auto 6px" alt="">'+medals[i]+' '+(i+1)+'位　'+esc(x.r.name)+'<div style="font-size:.9rem;font-weight:500">'+esc(joinT(x.r,'dest'))+'・'+esc(joinT(x.r,'title','／'))+'</div><div>'+(cyc?'💰 この回の稼ぎ +'+x.lg.final+'万円（'+x.cyc.cnt+'人が 買った）':'💰 '+x.lg.final+'万円')+'</div>';
    list.insertBefore(d,list.firstChild);
    requestAnimationFrame(()=>requestAnimationFrame(()=>{d.style.transform='scale(1)';d.style.opacity='1'}));
    if(i===0){SFX.fanfare();confetti()}else SFX.coin();
@@ -1351,7 +1376,7 @@ function showTab(t){
  if(t==='money'||t==='rank'){renderSheet();renderLedger()}
 }
 
-const HOWTO=[{"e": "🗾", "t": "行き先を えらぶ", "steps": ["じゃんけん（かけっこ）で 順番を きめる。", "都道府県カードから 1つ えらぶ。", "同じ県は えらべないよ。", "交通費を 払う（かかるお金：近い 10万円／ちょっと遠い 20万円／北海道・沖縄 30万円）。"], "tip": "遠い所は お金が かかるけど、「行きたい！」と思う人も いるよ。"}, {"e": "👀", "t": "お客さんに 見せる（まいかい）", "steps": ["運営が、きみの ツアーの 情報を 入力する。", "「▶ お客さんに見せる」を おす。", "3・2・1 のあと、お客さんが 走って ツアーを えらぶ。", "「結果」で、何人 来たか、いくら もうかったか 見よう。", "「お客さんの こえ」を 読んで、よくするところを 考える。"], "tip": "お客さんの こえは、ヒントの たからばこ！"}, {"e": "🤖", "t": "AIを ひらこう（さわり方）", "steps": ["👆 iPadの ホーム画面で「ChatGPT」（または Gemini）の アイコンを タップ。", "👆 いちばん下の「文字を 入れる ところ」を タップ。", "👆 れいぶんを 入れる（コピーした ものを 長おし →「ペースト」）。", "👆「↑」の ボタンを タップして 送る。", "⏳ 答えが 出るまで ちょっと 待つ。", "👀 答えを 読んで、つかえそうな ところを メモする。"], "tip": "まちがえても だいじょうぶ。もう一度 聞いて みよう！"}, {"e": "🔍", "t": "AIで 調べよう ①　地域調べ", "steps": ["AIを ひらく（前の スライドの さわり方）。", "れいぶんの「〇〇」を 自分の 県の なまえに 直す。", "👆 送る ボタンを タップ。", "答えから「食べ物」「観光地」「歴史」を 1つずつ えらんで、3行で メモ。", "「クイズ」タブで、ご当地クイズにも ちょうせん！"], "prompt": "〇〇県の 有名な 食べ物と 観光地を、小学生にも わかる ことばで 3つずつ おしえて。", "ex": {"a": ["食べ物：湯豆腐、抹茶スイーツ、八つ橋", "観光地：清水寺、嵐山、伏見稲荷大社"], "pick": "3行メモ：①お寺が たくさん ②抹茶スイーツが 有名 ③嵐山の 竹林が きれい"}, "tip": "AIの 答えは まちがうことも あるよ。ほんとうかな？と 思ったら 先生に 聞こう。"}, {"e": "🏨", "t": "宿と ねだんを きめる", "steps": ["ゲストハウス（10万円）／ホテル（30万円）／高級旅館（60万円）から 1つ えらぶ。（かかるお金）", "ねだんを 5万円ずつで きめる。", "上限が あるよ（遠い所・いい宿ほど 高くできる）。"], "tip": "高すぎると 売れない。安すぎると もうからない。ちょうどいい ねだんを さがそう！"}, {"e": "✍️", "t": "AIで 調べよう ②　タイトル", "steps": ["AIを ひらく。", "れいぶんの「〇〇」「△△」を 自分の ツアーに 合わせて 直す。", "👆 送る ボタンを タップ。", "出てきた 5つから 気に入った 1つを えらぶ（自分で 直しても OK）。", "運営に 見せて、入力して もらう。"], "prompt": "〇〇県で、△△が すきな 人に 売る 旅行ツアーの 名前を、10文字くらいで 5つ 考えて。", "ex": {"a": ["1. 古都で ゆったり 歴史さんぽ", "2. 京都 まるごと 抹茶めぐり", "3. 嵐山と 温泉の ごほうび旅", "4. 京の おいしい 歴史旅", "5. 京都 ぐるぐる 神社めぐり"], "pick": "「歴史」「温泉」「抹茶」など、お客さんが すきな ことばが 入ってる 名前が にんき！"}, "tip": "お客さんは タイトルの ことばを 見て えらぶよ（温泉・グルメ・自然…）。"}, {"e": "🔍", "t": "ことばを チェックしよう", "steps": ["「🔍 ことば」タブを ひらく。", "行き先を えらんで、タイトルと 観光スポットを 入れる。", "色の バーが 長い カテゴリーが、お客さんに にんきの ところ。", "⚠が 出たら、行き先と 合わない ことば（ほかの県の 名前や 名物）が あるよ。直そう！", "「🗾 カード」タブで、その県の ゆうめいな 名所・名物を 見ると、えらびやすいよ。"], "tip": "県の ゆうめいな ところを 入れると、お客さんに 伝わりやすいよ！"}, {"e": "📍", "t": "AIで 調べよう ③　観光スポット", "steps": ["AIを ひらく。", "れいぶんを 自分の 県に 直して 送る。", "出てきた 場所から、ツアーで 行く 3か所を えらぶ。", "タイトルと 合う 場所だと、お客さんに にんき！", "運営に 3か所を 伝える。"], "prompt": "〇〇県で、△△が すきな 人に おすすめの 観光スポットを 5つ おしえて。1つずつ ひとこと 説明して。", "ex": {"a": ["清水寺（お寺・歴史）", "嵐山の 竹林（自然）", "伏見稲荷大社（千本鳥居）", "錦市場（食べ歩き）", "京都タワー"], "pick": "3か所：清水寺・嵐山・錦市場 →「歴史」「自然」「グルメ」が 入るよ。"}, "tip": "「お客さんに 来てほしい 場所」を えらぼう。"}, {"e": "📣", "t": "広告を 作る（出す人だけ）", "steps": ["広告費 10万円を 払うと、お客さんに 知ってもらいやすく なる。（かかるお金）", "ChatGPTを ひらいて、ポスターの 絵を 作って もらう。", "👆 できた 絵を 長おしして「保存」。", "運営に 絵を 見せる。運営が アプリに 貼ってくれる。"], "prompt": "「〇〇ツアー」の 旅行ポスターを 作って。〇〇県の 名物と 名所が 入った、明るくて たのしい 絵で。文字は 入れないで。", "tip": "自分や 友だちの 名前・顔写真は 入れない！ 作りなおしは 3回まで。"}, {"e": "🎤", "t": "ミニ発表（30秒）", "steps": ["自分の ツアーを 30秒で 紹介する。", "「どこに行くか」「どんなところが いいか」「ねだん」を 話す。", "広告を 出した人は、ポスターも 見せる。"], "tip": "大きな こえで、ゆっくり！"}, {"e": "🎲", "t": "サイコロ・ルーレット", "steps": ["サイコロは 1人 3回。出た 目で お金が かわる。", "3は チャンスカード、4は AIに 頼んで 審査員に 見てもらう。", "ルーレットで 当たると、団体の お客さんが 来る！", "広告を 出した人は ルーレットで 当たりやすい。"], "tip": "運も 大事。ドキドキを たのしもう！"}, {"e": "🏆", "t": "最終ピッチ（2日目）", "steps": ["1日目の 結果を 見て、ツアーを よくする。", "1人 2〜3分で 発表する。", "みんなは お客さんコイン 50万円で、友だちの ツアーを 買う。", "AIの お客さんも 買う。ドリームコインが 一番 多い人が 優勝！"], "tip": "友だちに 「行きたい！」と 思わせよう。"}, {"e": "🔒", "t": "AIを つかう おやくそく", "steps": ["自分や 友だち、おうちの人の 名前・住所・電話番号・学校の名前・顔の写真は、AIに 入れない。", "AIの 答えは まちがうことが ある。自分でも たしかめる。", "つかい おわったら、チャットの きろくを 消す。"], "tip": "わからない ときは、すぐ 先生に 聞いてね。"}];
+const HOWTO=[{"e": "🗾", "t": "行き先を えらぶ", "steps": ["じゃんけん（かけっこ）で 順番を きめる。", "都道府県カードから 1つ えらぶ。", "同じ県は えらべないよ。", "交通費を 払う（かかるお金：近い 10万円／ちょっと遠い 20万円／北海道・沖縄 30万円）。"], "tip": "遠い所は お金が かかるけど、「行きたい！」と思う人も いるよ。"}, {"e": "👀", "t": "お客さんに 見せる（まいかい）", "steps": ["運営が、きみの ツアーの 情報を 入力する。", "「▶ お客さんに見せる」を おす。", "3・2・1 のあと、お客さんが 走って ツアーを えらぶ。", "「結果」で、何人 来たか、いくら もうかったか 見よう。", "「お客さんの こえ」を 読んで、よくするところを 考える。", "「順位」で、この回の ランキングと、ぜんたいの ランキングを 見よう！"], "tip": "お客さんの こえは、ヒントの たからばこ！"}, {"e": "🤖", "t": "AIを ひらこう（さわり方）", "steps": ["👆 iPadの ホーム画面で「ChatGPT」（または Gemini）の アイコンを タップ。", "👆 いちばん下の「文字を 入れる ところ」を タップ。", "👆 れいぶんを 入れる（コピーした ものを 長おし →「ペースト」）。", "👆「↑」の ボタンを タップして 送る。", "⏳ 答えが 出るまで ちょっと 待つ。", "👀 答えを 読んで、つかえそうな ところを メモする。"], "tip": "まちがえても だいじょうぶ。もう一度 聞いて みよう！"}, {"e": "🔍", "t": "AIで 調べよう ①　地域調べ", "steps": ["AIを ひらく（前の スライドの さわり方）。", "れいぶんの「〇〇」を 自分の 県の なまえに 直す。", "👆 送る ボタンを タップ。", "答えから「食べ物」「観光地」「歴史」を 1つずつ えらんで、3行で メモ。", "「クイズ」タブで、ご当地クイズにも ちょうせん！"], "prompt": "〇〇県の 有名な 食べ物と 観光地を、小学生にも わかる ことばで 3つずつ おしえて。", "ex": {"a": ["食べ物：湯豆腐、抹茶スイーツ、八つ橋", "観光地：清水寺、嵐山、伏見稲荷大社"], "pick": "3行メモ：①お寺が たくさん ②抹茶スイーツが 有名 ③嵐山の 竹林が きれい"}, "tip": "AIの 答えは まちがうことも あるよ。ほんとうかな？と 思ったら 先生に 聞こう。"}, {"e": "🏨", "t": "宿と ねだんを きめる", "steps": ["ゲストハウス（10万円）／ホテル（30万円）／高級旅館（60万円）から 1つ えらぶ。（かかるお金）", "ねだんを 5万円ずつで きめる。", "上限が あるよ（遠い所・いい宿ほど 高くできる）。"], "tip": "高すぎると 売れない。安すぎると もうからない。ちょうどいい ねだんを さがそう！"}, {"e": "✍️", "t": "AIで 調べよう ②　タイトル", "steps": ["AIを ひらく。", "れいぶんの「〇〇」「△△」を 自分の ツアーに 合わせて 直す。", "👆 送る ボタンを タップ。", "出てきた 5つから 気に入った 1つを えらぶ（自分で 直しても OK）。", "運営に 見せて、入力して もらう。"], "prompt": "〇〇県で、△△が すきな 人に 売る 旅行ツアーの 名前を、10文字くらいで 5つ 考えて。", "ex": {"a": ["1. 古都で ゆったり 歴史さんぽ", "2. 京都 まるごと 抹茶めぐり", "3. 嵐山と 温泉の ごほうび旅", "4. 京の おいしい 歴史旅", "5. 京都 ぐるぐる 神社めぐり"], "pick": "「歴史」「温泉」「抹茶」など、お客さんが すきな ことばが 入ってる 名前が にんき！"}, "tip": "お客さんは タイトルの ことばを 見て えらぶよ（温泉・グルメ・自然…）。"}, {"e": "🔍", "t": "ことばを チェックしよう", "steps": ["「🔍 ことば」タブを ひらく。", "行き先を えらんで、タイトルと 観光スポットを 入れる。", "色の バーが 長い カテゴリーが、お客さんに にんきの ところ。", "⚠が 出たら、行き先と 合わない ことば（ほかの県の 名前や 名物）が あるよ。直そう！", "「🗾 カード」タブで、その県の ゆうめいな 名所・名物を 見ると、えらびやすいよ。"], "tip": "県の ゆうめいな ところを 入れると、お客さんに 伝わりやすいよ！"}, {"e": "📍", "t": "AIで 調べよう ③　観光スポット", "steps": ["AIを ひらく。", "れいぶんを 自分の 県に 直して 送る。", "出てきた 場所から、ツアーで 行く 3か所を えらぶ。", "タイトルと 合う 場所だと、お客さんに にんき！", "運営に 3か所を 伝える。"], "prompt": "〇〇県で、△△が すきな 人に おすすめの 観光スポットを 5つ おしえて。1つずつ ひとこと 説明して。", "ex": {"a": ["清水寺（お寺・歴史）", "嵐山の 竹林（自然）", "伏見稲荷大社（千本鳥居）", "錦市場（食べ歩き）", "京都タワー"], "pick": "3か所：清水寺・嵐山・錦市場 →「歴史」「自然」「グルメ」が 入るよ。"}, "tip": "「お客さんに 来てほしい 場所」を えらぼう。"}, {"e": "📣", "t": "広告を 作る（出す人だけ）", "steps": ["広告費 10万円を 払うと、お客さんに 知ってもらいやすく なる。（かかるお金）", "ChatGPTを ひらいて、ポスターの 絵を 作って もらう。", "👆 できた 絵を 長おしして「保存」。", "運営に 絵を 見せる。運営が アプリに 貼ってくれる。"], "prompt": "「〇〇ツアー」の 旅行ポスターを 作って。〇〇県の 名物と 名所が 入った、明るくて たのしい 絵で。文字は 入れないで。", "tip": "自分や 友だちの 名前・顔写真は 入れない！ 作りなおしは 3回まで。"}, {"e": "🎤", "t": "ミニ発表（30秒）", "steps": ["自分の ツアーを 30秒で 紹介する。", "「どこに行くか」「どんなところが いいか」「ねだん」を 話す。", "広告を 出した人は、ポスターも 見せる。"], "tip": "大きな こえで、ゆっくり！"}, {"e": "🎲", "t": "サイコロ・ルーレット", "steps": ["サイコロは 1人 3回。出た 目で お金が かわる。", "3は チャンスカード、4は AIに 頼んで 審査員に 見てもらう。", "ルーレットで 当たると、団体の お客さんが 来る！", "広告を 出した人は ルーレットで 当たりやすい。"], "tip": "運も 大事。ドキドキを たのしもう！"}, {"e": "🏆", "t": "最終ピッチ（2日目）", "steps": ["1日目の 結果を 見て、ツアーを よくする。", "1人 2〜3分で 発表する。", "みんなは お客さんコイン 50万円で、友だちの ツアーを 買う。", "AIの お客さんも 買う。ドリームコインが 一番 多い人が 優勝！"], "tip": "友だちに 「行きたい！」と 思わせよう。"}, {"e": "🔒", "t": "AIを つかう おやくそく", "steps": ["自分や 友だち、おうちの人の 名前・住所・電話番号・学校の名前・顔の写真は、AIに 入れない。", "AIの 答えは まちがうことが ある。自分でも たしかめる。", "つかい おわったら、チャットの きろくを 消す。"], "tip": "わからない ときは、すぐ 先生に 聞いてね。"}];
 let howIdx=0;
 function renderHowto(){
  const box=document.getElementById('howtoBox');if(!box)return;
@@ -1690,8 +1715,9 @@ function init(){
  const sc=document.getElementById('startCoin');sc.value=START;sc.onchange=()=>{START=Math.max(1,Number(sc.value)||150);state.start=START;save();renderStage();renderResults();renderSheet();renderInputs()};
  document.getElementById('mascot').onclick=()=>{mascotSay((document.querySelector('.tabpane.on')||{dataset:{}}).dataset.pane);SFX.pop()};
  document.getElementById('plazaToResult').onclick=()=>{clearTimeout(window.__pt);window.__plazaAnim=false;showTab('result');setTimeout(showRankPrompt,800)};
- document.getElementById('rankShow').onclick=rankShow;
- document.getElementById('rankGo').onclick=()=>{showTab('rank');setTimeout(rankShow,400)};
+ document.getElementById('rankShow').onclick=()=>rankShow('all');
+ document.getElementById('rankShowC').onclick=()=>rankShow('cycle');
+ document.getElementById('rankGo').onclick=()=>{showTab('rank');setTimeout(()=>rankShow('cycle'),400)};
  document.getElementById('bkSave').onclick=()=>backupNow(false);
  document.getElementById('bkFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const x=JSON.parse(rd.result);if(x.rows){state=x;dedupeIds();save();location.reload()}else alert('ファイルの形式が違います')}catch(z){alert('読み込めませんでした')}};rd.readAsText(f)};
  document.getElementById('bkAuto').onchange=e=>{state.autoDl=e.target.checked;save()};
