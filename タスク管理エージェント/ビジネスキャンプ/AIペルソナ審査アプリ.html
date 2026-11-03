@@ -280,7 +280,7 @@ input,select{font-size:1rem;border-radius:12px;border-width:2px}
 <div class="sub" style="font-size:1.05rem">回すと、団体のお客さんが 来る ツアーが 1つ きまるよ！ あたると、お金が たくさん 入るよ（ねだん × 団体の人数）。広告を出した人は、あたりやすいよ。</div>
 <div class="row" style="align-items:flex-start;margin-top:10px">
 <div style="text-align:center"><canvas id="wheel" width="380" height="380" style="max-width:100%"></canvas>
-<div class="row" style="margin:10px 0;align-items:flex-end;justify-content:center"><div><label>団体客の人数（人）</label><input type="number" id="rlN" value="10" min="1" step="1" style="width:90px"></div></div>
+<div class="row" style="margin:10px 0;align-items:flex-end;justify-content:center"><div><label>団体客の人数（人）</label><input type="number" id="rlN" value="20" min="1" step="1" style="width:90px"></div></div>
 <div class="sub" style="text-align:center;margin-bottom:6px">当たると「値段 × 人数 × 売上の大きさ」が入ります。</div>
 <div style="text-align:center"><button id="rlSpin" style="font-size:1.1rem;padding:10px 24px">ルーレットを回す</button></div>
 <div id="rlResult" style="font-size:1.25rem;font-weight:800;margin-top:8px;min-height:2.4em"></div></div>
@@ -1414,7 +1414,7 @@ const RL_COLORS=['#e57373','#64b5f6','#81c784','#ffb74d','#ba68c8','#4db6ac','#f
 function rlState(){if(!state.rl)state.rl={w:{},extra:[],history:[],angle:0};return state.rl}
 function rlEntries(){
  const rl=rlState();
- const base=state.rows.filter(r=>r.name).map(r=>({key:r.id,name:r.name,w:(rl.w[r.id]!=null?rl.w[r.id]:(r.ad?2:1)),rowId:r.id}));
+ const base=persons().filter(r=>r.name).map(r=>({key:r.id,name:r.name,w:(rl.w[r.id]!=null?rl.w[r.id]:(toursOf(r).some(t=>t.ad)?2:1)),rowId:r.id}));
  const ex=(rl.extra||[]).map((e,i)=>({key:'E'+i,name:e.name,w:e.w||1,rowId:null}));
  return base.concat(ex).filter(e=>e.w>0);
 }
@@ -1462,12 +1462,14 @@ function rlSpin(){
   if(p<1){requestAnimationFrame(step)}else{
    rlSpinning=false;rl.angle=end%(2*Math.PI);
    const w=segs[idx].e;
-   const row=w.rowId?state.rows.find(r=>r.id===w.rowId):null;
-   const gN=Math.max(1,Number(document.getElementById('rlN').value)||10);const lastC=state.cycles[maxRun()];const scl=(lastC&&lastC.opts&&lastC.opts.scale)||currentOpts().scale;
+   const person=w.rowId?state.rows.find(r=>r.id===w.rowId):null;
+   const tl=person?toursOf(person).filter(t=>t.dest&&t.inn):[];
+   const row=tl.length?tl[randInt(tl.length)]:null;
+   const gN=Math.max(1,Number(document.getElementById('rlN').value)||20);const lastC=state.cycles[maxRun()];const scl=Math.max(0.1,(lastC&&lastC.opts&&lastC.opts.scale)||currentOpts().scale);
    const bonus=row?Math.round(row.price*gN*scl*10)/10:0;
-   rl.history.push({n:rl.history.length+1,name:w.name,rowId:w.rowId,bonus,at:new Date().toLocaleTimeString('ja-JP')});
+   rl.history.push({n:rl.history.length+1,name:w.name+(row&&tl.length>1?'（'+row.dest+'）':''),rowId:row?row.id:w.rowId,bonus,at:new Date().toLocaleTimeString('ja-JP')});
    save();
-   document.getElementById('rlResult').innerHTML='🎉 <span style="color:var(--accent)">'+esc(w.name)+'</span>さんのツアーに団体客！'+(bonus?'<br><span class="plus">+'+bonus+'万円</span>':'');
+   document.getElementById('rlResult').innerHTML='🎉 <span style="color:var(--accent)">'+esc(w.name)+'</span>さんの'+(row&&tl.length>1?esc(row.dest)+'の':'')+'ツアーに団体客！'+(bonus?'<br><span class="plus">+'+bonus+'万円</span>':'');
    document.getElementById('rlSpin').disabled=false;SFX.fanfare();burst(['🎡','🎉','✨','🪙'],45,2.4);
    renderRoulette();renderResults();
   }
@@ -1477,10 +1479,10 @@ function rlSpin(){
 function renderRoulette(){
  const rl=rlState();
  const tb=document.querySelector('#rlTbl tbody');if(!tb)return;tb.innerHTML='';
- state.rows.filter(r=>r.name).forEach(r=>{
-  const w=rl.w[r.id]!=null?rl.w[r.id]:(r.ad?2:1);
+ persons().filter(r=>r.name).forEach(r=>{
+  const w=rl.w[r.id]!=null?rl.w[r.id]:(toursOf(r).some(t=>t.ad)?2:1);
   const tr=document.createElement('tr');
-  tr.innerHTML='<td>'+esc(r.name)+(r.ad?' <span class="tag">広告あり</span>':'')+'</td><td><input type="number" min="0" max="5" value="'+w+'" style="width:60px"></td><td></td>';
+  tr.innerHTML='<td>'+esc(r.name)+(toursOf(r).some(t=>t.ad)?' <span class="tag">広告あり</span>':'')+'</td><td><input type="number" min="0" max="5" value="'+w+'" style="width:60px"></td><td></td>';
   tr.querySelector('input').onchange=e=>{rl.w[r.id]=Math.max(0,Math.min(5,Number(e.target.value)||0));save();drawWheel(rl.angle)};
   tb.appendChild(tr);
  });
