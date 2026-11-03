@@ -102,12 +102,14 @@ td input.sp{min-width:70px}
 #plaza .deco{position:absolute;pointer-events:none;opacity:.8;user-select:none}
 #plaza .path{position:absolute;left:0;right:0;border-radius:50%;background:rgba(255,236,190,.55);pointer-events:none}
 @media (prefers-color-scheme:dark){#plaza{background:linear-gradient(#16293a,#1a2a35 40%,#1c3322 100%)}#plaza .path{background:rgba(255,236,190,.12)}}
-.tcard{position:absolute;height:190px;border:none;border-radius:16px;background:var(--card);text-align:center;padding:0 6px 6px;cursor:pointer;font-size:.9rem;line-height:1.4;overflow:hidden;box-shadow:0 6px 16px rgba(20,40,70,.18);transition:transform .2s}
+.tcard{position:absolute;height:206px;border:none;border-radius:16px;background:var(--card);text-align:center;padding:0 6px 6px;cursor:pointer;font-size:.9rem;line-height:1.4;overflow:hidden;box-shadow:0 6px 16px rgba(20,40,70,.18);transition:transform .2s}
 .tcard:hover{transform:translateY(-4px)}
 .tcard .awn{height:18px;margin:0 -6px 6px;background:repeating-linear-gradient(90deg,#e03e3e 0 18px,#fff 18px 36px)}
 .tcard.ad .awn{background:repeating-linear-gradient(90deg,#f2a900 0 18px,#fff 18px 36px)}
 .tcard.ad{box-shadow:0 6px 18px rgba(242,169,0,.45)}
 .tcard .em{font-size:2.8rem;line-height:1.1}
+.tcard .pst{display:block;width:100%;height:74px;object-position:50% 100%;object-fit:cover;border-radius:10px;margin:0 0 4px}
+.pcard .cimg{display:block;width:100%;height:62px;object-position:50% 100%;object-fit:cover;border-radius:10px;margin-bottom:4px}
 .tcard b{display:block;font-size:1.05rem}
 .tcard .cnt{display:block;margin-top:4px;color:var(--accent);font-weight:800;font-size:1.15rem}
 .tsum{border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:10px 0;background:var(--card)}
@@ -725,7 +727,7 @@ function runCycleNow(){
  const tours=rows.map(r=>({id:r.id,name:r.name||'(名前なし)',dest:r.dest,inn:r.inn,price:r.price,title:r.title,copy:r.copy,sp1:r.sp1,sp2:r.sp2,sp3:r.sp3,ad:r.ad,imgScore:r.imgScore||0}));
  const ev=evaluate(tours,personas,o);
  state.cycles[o.stage]={results:ev.results,warn:ev.warn,assign:ev.assign,detail:ev.detail,voices:ev.voices,opts:o,at:new Date().toLocaleString('ja-JP')};
- save();renderResults();clearTimeout(window.__pt);clearTimeout(window.__pb);window.__plazaAnim=true;showTab('plaza');setTimeout(()=>drawPlaza(true),150);window.__pb=setTimeout(()=>{const c=state.cycles[state.stage];if(!c||document.querySelector('.tabpane.on').dataset.pane!=='plaza')return;const L=state.rows.filter(r=>c.results[r.id]).sort((a,b)=>c.results[b.id].revenue-c.results[a.id].revenue);if(L.length){const t=L[0];showBanner(t.name+'さんが 今回の1位！',t.dest+'のツアー　'+c.results[t.id].count+'人 ／ '+c.results[t.id].revenue+'万円')}},5800);window.__pt=setTimeout(()=>{window.__plazaAnim=false;showTab('result');setTimeout(showRankPrompt,1500)},9500);
+ save();renderResults();clearTimeout(window.__pt);clearTimeout(window.__pb);clearTimeout(window.__pd);window.__plazaAnim=true;showTab('plaza');setTimeout(()=>drawPlaza(true),150);window.__pd=setTimeout(()=>{if(document.querySelector('.tabpane.on').dataset.pane==='plaza')SFX.drum()},4300);window.__pb=setTimeout(()=>{const c=state.cycles[state.stage];if(!c||document.querySelector('.tabpane.on').dataset.pane!=='plaza')return;const L=state.rows.filter(r=>c.results[r.id]).sort((a,b)=>c.results[b.id].revenue-c.results[a.id].revenue);if(L.length){const t=L[0];showBanner(t.name+'さんが 今回の1位！',t.dest+'のツアー　'+c.results[t.id].count+'人 ／ '+c.results[t.id].revenue+'万円')}},5800);window.__pt=setTimeout(()=>{window.__plazaAnim=false;showTab('result');setTimeout(showRankPrompt,1500)},9500);
  renderFlow();ringBackup();if(state.autoDl!==false)backupNow(true);
 }
 function dupDests(){const seen={},d=[];state.rows.forEach(r=>{if(!r.dest)return;if(seen[r.dest]&&!d.includes(r.dest))d.push(r.dest);seen[r.dest]=true});return d}
@@ -831,6 +833,7 @@ const SFX={
  rattle(){tone(300+Math.random()*500,.04,'sawtooth',.05)},
  done(){[523,659,784].forEach((f,i)=>tone(f,.2,'triangle',.1,i*.1))},
  fanfare(){[523,659,784,1047,784,1047].forEach((f,i)=>tone(f,.22,'triangle',.13,i*.11))},
+ drum(){for(let i=0;i<16;i++)tone(110+(i%2)*40,.09,'triangle',.12,i*.085)},
  good(){tone(784,.12,'triangle',.12);tone(1175,.3,'triangle',.12,.12)},
  bad(){tone(330,.18,'sawtooth',.08);tone(247,.34,'sawtooth',.08,.17)}
 };
@@ -939,7 +942,7 @@ const QUIZ=[
 
 function renderCards(){
  const g=document.getElementById('cardGrid');if(!g)return;
- g.innerHTML=Object.keys(PREF).map(k=>{const [d,tg]=PREF[k];const di=DIST[d];const cls=d==='近い'?'d0':d==='少し遠い'?'d1':'d2';return '<div class="pcard '+cls+'"><div class="e">'+(EMO[k]||'📍')+'</div><b>'+k+'</b><small><b style="display:inline">'+d+'</b>・交通費 −'+di.cost+'万</small><small>値段の基本 '+di.base+'万</small><small>'+tg.replace(/,/g,'・')+'</small></div>'}).join('');
+ g.innerHTML=Object.keys(PREF).map(k=>{const [d,tg]=PREF[k];const di=DIST[d];const cls=d==='近い'?'d0':d==='少し遠い'?'d1':'d2';return '<div class="pcard '+cls+'"><img class="cimg" src="'+posterSvg({dest:k,title:k})+'" alt=""><b>'+k+'</b><small><b style="display:inline">'+d+'</b>・交通費 −'+di.cost+'万</small><small>値段の基本 '+di.base+'万</small><small>'+tg.replace(/,/g,'・')+'</small></div>'}).join('');
  document.getElementById('cardPrint').onclick=()=>window.print();
 }
 function csvDownload(name,lines){const csv='\ufeff'+lines.map(l=>l.map(v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"').join(',')).join('\n');download(name,csv,'text/csv')}
@@ -1013,7 +1016,7 @@ function renderRankBar(){
  const big=document.getElementById('rankBig');if(!big)return;
  if(!d.length){big.innerHTML='<div class="sub">まだありません</div>';return}
  const mx=Math.max(START,...d.map(x=>x.lg.final));
- big.innerHTML=d.map((x,i)=>'<div class="card" style="display:flex;align-items:center;gap:14px;'+(i===0?'background:linear-gradient(135deg,#fff3bf,#ffd43b);color:#3b2a00;':'')+'"><div style="font-size:'+(i<3?'2.4rem':'1.5rem')+';min-width:3.2rem;text-align:center">'+(i<3?med[i]:(i+1)+'位')+'</div>'+(toursOf(x.r).find(t=>t.ad&&t.img)?'<img src="'+toursOf(x.r).find(t=>t.ad&&t.img).img+'" style="width:84px;height:64px;object-fit:cover;border-radius:8px">':'')+'<div style="flex:1"><div style="font-size:'+(i===0?'1.5rem':'1.15rem')+';font-weight:800">'+esc(x.r.name||'(名前なし)')+'　<span style="font-weight:500;font-size:.9rem">'+esc(joinT(x.r,'dest'))+'・'+esc(joinT(x.r,'title','／'))+'</span></div><div style="height:10px;border-radius:5px;background:rgba(120,140,160,.25);margin-top:6px"><div style="height:10px;border-radius:5px;width:'+Math.max(2,x.lg.final/mx*100)+'%;background:linear-gradient(90deg,#4dabf7,#69db7c)"></div></div></div><div style="font-size:1.5rem;font-weight:800">'+x.lg.final+'<span style="font-size:.9rem">万</span></div></div>').join('');
+ big.innerHTML=d.map((x,i)=>'<div class="card" style="display:flex;align-items:center;gap:14px;'+(i===0?'background:linear-gradient(135deg,#fff3bf,#ffd43b);color:#3b2a00;':'')+'"><div style="font-size:'+(i<3?'2.4rem':'1.5rem')+';min-width:3.2rem;text-align:center">'+(i<3?med[i]:(i+1)+'位')+'</div>'+'<img src="'+tourPic(toursOf(x.r)[0])+'" style="width:96px;height:36px;object-fit:cover;object-position:50% 100%;border-radius:8px" alt="">'+'<div style="flex:1"><div style="font-size:'+(i===0?'1.5rem':'1.15rem')+';font-weight:800">'+esc(x.r.name||'(名前なし)')+'　<span style="font-weight:500;font-size:.9rem">'+esc(joinT(x.r,'dest'))+'・'+esc(joinT(x.r,'title','／'))+'</span></div><div style="height:10px;border-radius:5px;background:rgba(120,140,160,.25);margin-top:6px"><div style="height:10px;border-radius:5px;width:'+Math.max(2,x.lg.final/mx*100)+'%;background:linear-gradient(90deg,#4dabf7,#69db7c)"></div></div></div><div style="font-size:1.5rem;font-weight:800">'+x.lg.final+'<span style="font-size:.9rem">万</span></div></div>').join('');
 }
 function renderSheet(){
  renderRankBar();renderManual();
@@ -1093,7 +1096,7 @@ function rankShow(){
   setTimeout(()=>{
    const x=data[i];const d=document.createElement('div');
    d.style.cssText='margin:10px 0;padding:14px 18px;border-radius:16px;background:'+(i===0?'linear-gradient(135deg,#ffd43b,#f08c00)':'rgba(255,255,255,.14)')+';color:'+(i===0?'#3b2a00':'#fff')+';font-size:'+(i===0?'1.6rem':'1.2rem')+';font-weight:800;transform:scale(.2);opacity:0;transition:all .5s cubic-bezier(.2,1.6,.4,1)';
-   d.innerHTML=(toursOf(x.r).find(t=>t.ad&&t.img)?'<img src="'+toursOf(x.r).find(t=>t.ad&&t.img).img+'" style="max-width:260px;max-height:150px;border-radius:12px;display:block;margin:0 auto 6px">':'')+medals[i]+' '+(i+1)+'位　'+esc(x.r.name)+'<div style="font-size:.9rem;font-weight:500">'+esc(joinT(x.r,'dest'))+'・'+esc(joinT(x.r,'title','／'))+'</div><div>💰 '+x.lg.final+'万円</div>';
+   d.innerHTML='<img src="'+tourPic(toursOf(x.r)[0])+'" style="max-width:260px;max-height:150px;border-radius:12px;display:block;margin:0 auto 6px" alt="">'+medals[i]+' '+(i+1)+'位　'+esc(x.r.name)+'<div style="font-size:.9rem;font-weight:500">'+esc(joinT(x.r,'dest'))+'・'+esc(joinT(x.r,'title','／'))+'</div><div>💰 '+x.lg.final+'万円</div>';
    list.insertBefore(d,list.firstChild);
    requestAnimationFrame(()=>requestAnimationFrame(()=>{d.style.transform='scale(1)';d.style.opacity='1'}));
    if(i===0){SFX.fanfare();confetti()}else SFX.coin();
@@ -1134,6 +1137,17 @@ function exportLedgerCsv(){
 }
 /* ===== いまやること（動線） ===== */
 const NEED={1:['行き先'],2:['宿','値段'],3:['タイトル','キャッチコピー'],4:['観光スポット1〜3'],5:['広告を出すか']};
+function hueOf(t){let h=0;for(const c of String(t||'x'))h=(h*31+c.charCodeAt(0))%360;return h}
+function posterSvg(r,w,h){
+ w=w||240;h=h||90;const hh=hueOf(r.dest);const emo=EMO[r.dest]||'🗾';const t=String(r.title||r.dest||'').slice(0,12);
+ const sv='<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'" viewBox="0 0 240 90"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="hsl('+hh+',75%,72%)"/><stop offset="1" stop-color="hsl('+((hh+40)%360)+',80%,92%)"/></linearGradient></defs>'+
+ '<rect width="240" height="90" fill="url(#g)"/><circle cx="200" cy="22" r="14" fill="#fff6a8" opacity=".9"/>'+
+ '<ellipse cx="50" cy="96" rx="100" ry="34" fill="hsl('+((hh+110)%360)+',45%,58%)"/><ellipse cx="190" cy="100" rx="90" ry="32" fill="hsl('+((hh+140)%360)+',40%,50%)"/>'+
+ '<text x="120" y="56" font-size="44" text-anchor="middle">'+emo+'</text>'+
+ '<rect x="0" y="66" width="240" height="24" fill="rgba(255,255,255,.78)"/><text x="120" y="83" font-size="14" font-weight="700" text-anchor="middle" fill="#1c2733" font-family="sans-serif">'+String(t).replace(/[<>&]/g,'')+'</text></svg>';
+ return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(sv);
+}
+function tourPic(r){return (r.ad&&r.img)?r.img:posterSvg(r)}
 function burst(emos,n,dur){
  const list=emos||['🎉','✨','⭐','🪙','🎊'];n=n||50;
  for(let i=0;i<n;i++){const c=document.createElement('div');c.textContent=list[i%list.length];
@@ -1157,6 +1171,7 @@ function renderAwards(){
  const pop=best(x=>x.res.count);a.push(['🏅','人気者賞',pop.r.name+'（'+pop.res.count+'人）']);
  const ear=best(x=>x.res.revenue);a.push(['💰','稼ぎ王',ear.r.name+'（'+ear.res.revenue+'万円）']);
  const net=best(x=>x.net);a.push(['🎯','もうけ名人',net.r.name+'（'+(Math.round(net.net*10)/10)+'万円）']);
+ if(state.stage>=2&&state.cycles[state.stage-1]){const P=persons().filter(r=>r.dest&&r.inn);const rk=(upto)=>{const arr=P.map(r=>[r.id,ledgerPerson(r,upto).final]).sort((a,b)=>b[1]-a[1]);const m={};arr.forEach((x,i)=>m[x[0]]=i+1);return m};const a0=rk(state.stage-1),a1=rk(state.stage);let bj=null,bd=0;P.forEach(r=>{const d=a0[r.id]-a1[r.id];if(d>bd){bd=d;bj=r}});if(bj)a.push(['🚀','ジャンプアップ賞',bj.name+'（'+a0[bj.id]+'位→'+a1[bj.id]+'位）'])}
  const ads=L.filter(x=>x.r.ad&&state.stage>=5);if(ads.length){const ad=ads.slice().sort((p,q)=>q.res.count-p.res.count)[0];a.push(['📣','広告の達人',ad.r.name+'（'+ad.res.count+'人）'])}
  el.innerHTML='<div class="card"><h3 style="margin:0 0 6px">🏆 この回の表彰</h3>'+a.map((x,i)=>'<span class="award" style="animation-delay:'+(i*0.15)+'s">'+x[0]+' '+x[1]+'：<b>'+esc(x[2])+'</b></span>').join('')+'</div>';
 }
@@ -1230,7 +1245,7 @@ function renderSummaries(){
   const cost=costAt(r,state.stage);
   const gain=Math.round((res.revenue-cost)*10)/10;
   h+='<div class="tsum" id="tsum_'+r.id+'"><h3>'+(EMO[r.dest]||'🗾')+' '+esc(r.name||'(名前なし)')+'さんのツアー　<span class="sub">'+esc(r.dest)+'・'+esc(r.inn)+'・'+r.price+'万円'+((r.ad&&state.stage>=5)?'・広告あり':'')+'</span></h3>';
-  if(r.ad&&r.img)h+='<img src="'+r.img+'" style="max-width:220px;border-radius:10px;float:right;margin-left:10px">';
+  h+='<img src="'+tourPic(r)+'" style="max-width:220px;border-radius:10px;float:right;margin-left:10px" alt="">';
   h+='<div style="font-size:1.25rem;font-weight:800">💰 稼いだ金額：<span class="plus">'+res.revenue+'万円</span>　<span class="sub" style="font-weight:400">（'+res.count+'人 × '+r.price+'万円'+((res.scale||1)!==1?' × '+Math.round((res.scale||1)*100)+'%':'')+(res.topUp?' ＋保証の補填 '+res.topUp+'万':'')+'。この回の費用'+cost+'万円を引くと もうけ <b class="'+(gain>=0?'plus':'minus')+'">'+(gain>=0?'+':'')+gain+'万円</b>）</span></div>';
   h+='<div style="margin:4px 0"><b>買った人の声のまとめ（'+res.count+'人）</b></div>'+summarize(res);
   const first=res.voices.slice(0,3);
@@ -1283,7 +1298,7 @@ function drawPlaza(animate){
  const o=currentOpts();const ps=makePersonas(o.seed,cur&&cur.opts&&cur.opts.n);
  const host=el.parentElement;const avail=Math.max(320,(host&&host.clientWidth?host.clientWidth:1000)-2);
  const PER=avail>=1000?5:avail>=760?4:avail>=520?3:2;
- const colW=Math.floor(avail/PER),AV=36,perRow=Math.max(2,Math.floor((colW-16)/AV)),cardH=190;
+ const colW=Math.floor(avail/PER),AV=36,perRow=Math.max(2,Math.floor((colW-16)/AV)),cardH=206;
  const W=PER*colW;
  const assign=cur&&cur.assign?cur.assign:{};
  const cnts={};Object.values(assign).forEach(a=>{cnts[a.tid]=(cnts[a.tid]||0)+1});
@@ -1306,7 +1321,7 @@ function drawPlaza(animate){
   const g=Math.floor(i/PER),cI=i%PER;
   const c=document.createElement('div');c.className='tcard'+((r.ad&&state.stage>=5)?' ad':'');
   c.style.left=(cI*colW+6)+'px';c.style.top=(rowTop[g]+6)+'px';c.style.width=(colW-12)+'px';
-  c.innerHTML='<div class="awn"></div><div class="em">'+(EMO[r.dest]||'🗾')+'</div><b>'+esc(r.name||'(名前なし)')+'</b>'+esc(r.dest)+'・'+esc(r.inn)+'<br>'+r.price+'万円'+((r.ad&&state.stage>=5)?' 📣':'')+'<br><span class="cnt" id="cnt_'+r.id+'">'+(cur&&cur.results[r.id]&&!animate?cur.results[r.id].count+'人 💰'+cur.results[r.id].revenue+'万円':'')+'</span>';
+  c.innerHTML='<div class="awn"></div><img class="pst" src="'+tourPic(r)+'" alt=""><b>'+esc(r.name||'(名前なし)')+'</b>'+esc(r.dest)+'・'+esc(r.inn)+'<br>'+r.price+'万円'+((r.ad&&state.stage>=5)?' 📣':'')+'<br><span class="cnt" id="cnt_'+r.id+'">'+(cur&&cur.results[r.id]&&!animate?cur.results[r.id].count+'人 💰'+cur.results[r.id].revenue+'万円':'')+'</span>';
   c.onclick=()=>{const t=document.getElementById('tsum_'+r.id);if(t)t.scrollIntoView({behavior:'smooth',block:'start'})};
   el.appendChild(c);pos[r.id]={i,g,cI,k:0,top:rowTop[g]+cardH+16};
  });
