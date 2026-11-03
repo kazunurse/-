@@ -684,32 +684,48 @@ function evaluate(tours,personas,opts){
  const topUp={};
  const rev=id=>{const t=valid.find(x=>x.t.id===id).t;return Math.round(buyers[id].length*t.price*sc100*10)/10};
  if(opts.guard!=='none'){
+  const snapB={};valid.forEach(({t})=>snapB[t.id]=buyers[t.id].slice());const snapA=Object.assign({},assigned);
+  const balance=()=>{
   for(let round=0;round<400;round++){
-   const need=valid.filter(({t})=>rev(t.id)<target[t.id]).sort((a,b)=>(target[a.t.id]-rev(a.t.id))-(target[b.t.id]-rev(b.t.id)));
-   if(!need.length)break;
-   const {t}=need[0];
-   // まだ買っていない人から、好みが近い順
-   let cand=personas.filter(p=>!assigned[p.id]).sort((a,b)=>scores[b.id][t.id].interest-scores[a.id][t.id].interest);
-   let pick=cand[0];
-   if(!pick){
-    // 余裕のあるツアーから、そのツアーへの好みが低い人を移す
-    let donor=null,dp=null,dv=1e9;
-    valid.forEach(({t:u})=>{
-     if(u.id===t.id)return;
-     if(rev(u.id)-u.price*sc100<target[u.id])return;
-     buyers[u.id].forEach(b=>{
-      const v=scores[b.p.id][u.id].interest-scores[b.p.id][t.id].interest+(b.guarantee?-1:0);
-      if(v<dv){dv=v;donor=u;dp=b}
+    const need=valid.filter(({t})=>rev(t.id)<target[t.id]).sort((a,b)=>(target[a.t.id]-rev(a.t.id))-(target[b.t.id]-rev(b.t.id)));
+    if(!need.length)break;
+    const {t}=need[0];
+    // まだ買っていない人から、好みが近い順
+    let cand=personas.filter(p=>!assigned[p.id]).sort((a,b)=>scores[b.id][t.id].interest-scores[a.id][t.id].interest);
+    let pick=cand[0];
+    if(!pick){
+     // 余裕のあるツアーから、そのツアーへの好みが低い人を移す
+     let donor=null,dp=null,dv=1e9;
+     valid.forEach(({t:u})=>{
+      if(u.id===t.id)return;
+      if(rev(u.id)-u.price*sc100<target[u.id])return;
+      buyers[u.id].forEach(b=>{
+       const v=scores[b.p.id][u.id].interest-scores[b.p.id][t.id].interest+(b.guarantee?-1:0);
+       if(v<dv){dv=v;donor=u;dp=b}
+      });
      });
-    });
-    if(!donor)break;
-    buyers[donor.id]=buyers[donor.id].filter(b=>b!==dp);
-    pick=dp.p;
+     if(!donor)break;
+     buyers[donor.id]=buyers[donor.id].filter(b=>b!==dp);
+     pick=dp.p;
+    }
+    buyers[t.id].push({p:pick,guarantee:true});assigned[pick.id]=t.id;
    }
-   buyers[t.id].push({p:pick,guarantee:true});assigned[pick.id]=t.id;
-  }
   let need=sc100;valid.forEach(({t})=>{const n=buyers[t.id].length;if(n>0&&target[t.id]>0){const x=target[t.id]/(n*t.price);if(x>need)need=x}});
-  if(need>sc100){sc100=Math.min(3,Math.ceil(need*1000)/1000);warn.push('売上の大きさを '+Math.round(baseScale*1000)/10+'% → '+Math.round(sc100*1000)/10+'% に自動で調整しました（全員同じ率）。お客さんの人数や値段は、そのままです。')}
+   return need;
+  };
+  const reset=()=>{valid.forEach(({t})=>buyers[t.id]=snapB[t.id].slice());Object.keys(assigned).forEach(k=>delete assigned[k]);Object.assign(assigned,snapA)};
+  let need=balance();
+  if(need>sc100){
+   // 売上の大きさを上げると配り直しが楽になる。必要な最小の率を探す
+   let lo=sc100,hi=Math.min(3,Math.ceil(need*1000)/1000),best=null;
+   for(let i=0;i<12&&hi>lo+0.004;i++){
+    const mid=(lo+hi)/2;sc100=mid;reset();const n2=balance();
+    if(n2<=mid){hi=mid;best=true}else lo=mid;
+   }
+   sc100=Math.ceil(hi*1000)/1000;reset();need=balance();
+   if(need>sc100)sc100=Math.min(3,Math.ceil(need*1000)/1000);
+   warn.push('売上の大きさを '+Math.round(baseScale*1000)/10+'% → '+Math.round(sc100*1000)/10+'% に自動で調整しました（全員同じ率）。お客さんの人数や値段は、そのままです。')
+  }
  }
  const nearMiss={};valid.forEach(({t})=>nearMiss[t.id]=[]);
  const allVoices=[];
