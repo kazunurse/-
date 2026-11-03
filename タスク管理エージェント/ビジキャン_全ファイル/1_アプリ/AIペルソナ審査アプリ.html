@@ -177,6 +177,18 @@ input,select{font-size:1rem;border-radius:12px;border-width:2px}
 .vt-who{background:rgba(150,150,170,.18)}.vt-like{background:rgba(77,171,247,.22)}.vt-stay{background:rgba(151,117,250,.22)}.vt-price{background:rgba(255,169,77,.28)}.vt-warn{background:rgba(255,107,107,.28);font-weight:700}.vt-loc{background:rgba(32,201,151,.22)}.vt-ad{background:rgba(247,131,172,.25)}.vt-dec{background:rgba(105,219,124,.3);font-weight:700}
 .vtlegend{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.vtlegend .vt{padding:2px 10px;font-size:.85rem}
 .gaugeBig{columns:2;column-gap:20px}.gaugeBig .gg{font-size:.9rem;break-inside:avoid}.gauge{margin:4px 0}.gg{display:flex;align-items:center;gap:4px;font-size:.78rem;margin:1px 0}.gg span{min-width:5.2em;text-align:left}.gg em{font-style:normal;font-size:.7rem;color:#e8890c;letter-spacing:-1px}.gg i{flex:1;height:8px;border-radius:4px;background:var(--line)}.gg b{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#ffd43b,#ff6b6b)}.pcard .who{color:var(--accent);font-weight:700}
+
+.mapgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.msq{position:relative;border:3px solid var(--line);border-radius:18px;padding:10px 12px;background:#fff;min-height:190px}
+.msq .no{position:absolute;top:-14px;left:10px;background:var(--accent);color:#fff;border-radius:999px;padding:1px 12px;font-weight:800}
+.msq h4{margin:6px 0 4px;font-size:1.15rem}
+.msq .ai{font-size:.9rem;background:#eef6ff;border-radius:10px;padding:6px 8px;margin:4px 0}
+.msq .me{font-size:.9rem;background:#fff6e0;border-radius:10px;padding:6px 8px;margin:4px 0}
+.msq.goal{background:linear-gradient(135deg,#fff3bf,#ffe066);border-color:#f08c00}
+.msq.has{border-color:var(--accent);box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.tok{display:inline-block;margin:3px 3px 0 0;padding:3px 10px;border-radius:999px;color:#fff;font-weight:800;font-size:.95rem;cursor:pointer;animation:bob 1.6s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@media(max-width:900px){.mapgrid{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
@@ -200,7 +212,7 @@ input,select{font-size:1rem;border-radius:12px;border-width:2px}
 <div id="bannerOv"><div class="crown">👑</div><div class="t" id="bnT"></div><div class="u" id="bnU"></div></div>
 <div id="mascot" title="さわると ヒントが かわるよ"><div class="b" id="mascotMsg">こんにちは！ビジキャンくんだよ</div><div class="m">🧳</div></div>
 <div id="rankPrompt" style="display:none;position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:40"><button id="rankGo" style="font-size:1.3rem;padding:14px 28px;border-radius:999px;background:linear-gradient(135deg,#f59f00,#ff6b6b);box-shadow:0 8px 24px rgba(0,0,0,.35);animation:bob 1.4s ease-in-out infinite">🏆 ランキングを見る ▶</button></div>
-<div id="tabs" class="tabs"><button data-tab="rules">📖 ルール</button><button data-tab="howto">📘 やり方</button><button data-tab="sched">📅 予定</button><button data-tab="input">✏️ 入力</button><button data-tab="plaza">🎪 広場</button><button data-tab="result">📋 結果</button><button data-tab="rank">🏆 順位</button><button data-tab="money">💰 収支</button><button data-tab="game">🎲 サイコロ</button><button data-tab="cards">🗾 カード</button><button data-tab="words">🔍 ことば</button><button data-tab="quiz">🎯 クイズ</button><button data-tab="persona">👥 しくみ</button></div>
+<div id="tabs" class="tabs"><button data-tab="rules">📖 ルール</button><button data-tab="howto">📘 やり方</button><button data-tab="sched">📅 予定</button><button data-tab="map">🗺️ すごろく</button><button data-tab="input">✏️ 入力</button><button data-tab="plaza">🎪 広場</button><button data-tab="result">📋 結果</button><button data-tab="rank">🏆 順位</button><button data-tab="money">💰 収支</button><button data-tab="game">🎲 サイコロ</button><button data-tab="cards">🗾 カード</button><button data-tab="words">🔍 ことば</button><button data-tab="quiz">🎯 クイズ</button><button data-tab="persona">👥 しくみ</button></div>
 <div id="rankBar"></div></div>
 <div class="tabpane" data-pane="rank"><h2>ランキング</h2><div class="row" style="margin:14px 0"><button id="rankShowC" style="font-size:1.1rem;padding:10px 22px;background:linear-gradient(135deg,#37b24d,#69db7c);border-radius:12px">📋 この回のランキング発表</button><button id="rankShow" style="font-size:1.1rem;padding:10px 22px;background:linear-gradient(135deg,#f59f00,#ff6b6b);border-radius:12px">🏆 ぜんたいのランキング発表</button></div>
 <h3 id="rankCycleT">📋 この回のランキング</h3><div class="sub">この回で、いくら 稼いだか（売上）の じゅんばんだよ。</div><div id="rankCycle"></div>
@@ -343,9 +355,13 @@ input,select{font-size:1rem;border-radius:12px;border-width:2px}
 <div id="wcRes" style="margin-top:12px"></div></div>
 <h2>📚 カテゴリー（お客さんの すきな もの）</h2><div class="sub" style="font-size:1.05rem">お客さんは、12この カテゴリーの うち 2つが すき。ツアーに その ことばが 入っていると、えらばれやすく なるよ。</div>
 <div id="catTable" class="kids"></div></div>
+<div class="tabpane" data-pane="map"><h2>🗺️ ツアーづくり すごろく（みんなの いまの ばしょ）</h2>
+<div class="sub" style="font-size:1.05rem">入力した内容で、自動で コマが すすむよ。🏁 ゴールを めざそう！　5〜7 は、先生が コマを クリックして すすめてね（もう一度 おすと 次のマス）。</div>
+<div class="card"><div id="mapBoard"></div><div class="row" style="margin-top:10px"><button class="sec" id="mapReset">5〜7の進み具合を リセット</button><span class="sub" id="mapInfo"></span></div></div>
+<div class="card" id="aiRule"></div></div>
 <div class="tabpane" data-pane="quiz"><h2>ご当地クイズ（47都道府県）</h2>
-<div class="card"><div class="row" style="align-items:flex-end"><div><label>都道府県</label><select id="qzPref"></select></div><button id="qzRand">🎲 ランダムで出す</button><button class="sec" id="qzAll">一覧を表示／隠す（先生用・答え付き）</button></div>
-<div id="qzBox" style="margin-top:12px"></div></div>
+<div class="card"><div class="row" style="align-items:flex-end"><div><label>都道府県</label><select id="qzPref"></select></div><div><label>問題</label><select id="qzSet"><option value="0">1問目</option><option value="1">2問目（もっと）</option></select></div><button id="qzRand">🎲 ランダムで出す</button><button class="sec" id="qzAll">一覧を表示／隠す（先生用・答え付き）</button></div>
+<div id="qzScore" class="sub" style="margin-top:10px;font-size:1.05rem"></div><div id="qzBox" style="margin-top:12px"></div></div>
 <div class="tbl hide" id="qzList"><table><thead><tr><th>県</th><th>問題</th><th>答え</th><th>ひとこと</th></tr></thead><tbody id="qzBody"></tbody></table></div></div>
 <div class="tabpane" data-pane="persona">
 <h2>👥 お客さんの ひみつ（ペルソナ）</h2>
@@ -1186,19 +1202,31 @@ function exportAllJson(){
  const o=currentOpts();
  download('ビジキャン全データ_'+stamp()+'.json',JSON.stringify({seed:o.seed,personas:makePersonas(o.seed),state},null,1),'application/json');
 }
+const QUIZ2=[["北海道", "富良野（ふらの）で有名な、夏に広がる紫色の花畑の花は？", ["ラベンダー", "チューリップ", "コスモス"], 0, "富良野のラベンダー畑は、夏の北海道の人気スポットです。"], ["青森", "夏に大きな灯り（灯籠）が町を練り歩く、青森のお祭りは？", ["竿燈まつり", "ねぶた祭", "七夕まつり"], 1, "青森市のねぶた祭です。（竿燈は秋田です）"], ["岩手", "平泉にある、金色のお堂で有名な世界遺産のお寺は？", ["清水寺", "法隆寺", "中尊寺"], 2, "中尊寺の金色堂です。"], ["宮城", "日本三景の一つで、小さな島がたくさん浮かぶ湾は？", ["松島", "天橋立", "宮島"], 0, "宮城の松島です。"], ["秋田", "「泣く子はいねがー」と言って家をまわる、秋田の行事は？", ["どんど焼き", "なまはげ", "ねぶた"], 1, "男鹿半島のなまはげです。"], ["山形", "蔵王で冬に見られる、木が雪や氷でおおわれた景色は？", ["かまくら", "雪だるま", "樹氷"], 2, "「樹氷」は、スノーモンスターとも呼ばれます。"], ["福島", "会津の郷土玩具で、赤い牛の置き物は？", ["赤べこ", "こけし", "だるま"], 0, "赤べこは、会津の縁起物です。"], ["茨城", "国営ひたち海浜公園で、春に丘を青くそめる花は？", ["バラ", "ネモフィラ", "チューリップ"], 1, "ネモフィラの青い丘が有名です。"], ["栃木", "栃木県が生産量日本一の果物は？", ["ぶどう", "なし", "いちご"], 2, "「とちおとめ」などのいちごが有名です。"], ["群馬", "群馬の高崎で多く作られる、縁起物の置き物は？", ["だるま", "招き猫", "こけし"], 0, "高崎だるまは、全国のだるまの大部分を占めます。"], ["埼玉", "埼玉の秩父で、12月に行われる有名なお祭りは？", ["祇園祭", "秩父夜祭", "三社祭"], 1, "秩父夜祭は、日本三大曳山祭の一つです。"], ["千葉", "千葉県にある、日本の空の玄関口になっている空港は？", ["関西国際空港", "中部国際空港", "成田国際空港"], 2, "成田国際空港です。"], ["東京", "東京の浅草にある、大きな赤い提灯で有名な門は？", ["雷門", "朱雀門", "羅生門"], 0, "浅草寺の雷門です。"], ["神奈川", "神奈川の箱根にある、観光船が走る湖は？", ["琵琶湖", "芦ノ湖", "浜名湖"], 1, "箱根の芦ノ湖です。"], ["新潟", "新潟の佐渡島で大切に育てられている、国の特別天然記念物の鳥は？", ["ツル", "コウノトリ", "トキ"], 2, "佐渡のトキです。"], ["富山", "春の夜、富山湾で青く光りながらとれる生き物は？", ["ホタルイカ", "クラゲ", "ホタル"], 0, "ホタルイカの身投げは、春の富山の風物詩です。"], ["石川", "石川の輪島で作られる、つやつやした漆（うるし）の伝統工芸は？", ["有田焼", "輪島塗", "西陣織"], 1, "輪島塗です。"], ["福井", "福井の東尋坊は、どんな景色で有名？", ["広い砂浜", "大きな滝", "断崖絶壁"], 2, "海に切り立つ崖が続く名所です。"], ["山梨", "山梨名物の、平たい麺をみその汁で煮こむ料理は？", ["ほうとう", "きりたんぽ", "ひつまぶし"], 0, "ほうとうは、かぼちゃなどの野菜と煮こみます。"], ["長野", "長野県が全国生産量で日本一の、きのこは？", ["しいたけ", "えのきたけ", "まいたけ"], 1, "長野はえのきたけの大産地です。"], ["岐阜", "岐阜の長良川で行われる、鳥を使った伝統の漁は？", ["地引き網", "一本釣り", "鵜飼（うかい）"], 2, "鵜飼は、1000年以上続くといわれます。"], ["静岡", "浜名湖（浜松）の名物で、ふっくら焼いた魚料理は？", ["うなぎ", "まぐろ", "あじ"], 0, "浜名湖周辺は、うなぎの産地です。"], ["愛知", "金のしゃちほこがのっている、名古屋のお城は？", ["姫路城", "名古屋城", "松本城"], 1, "名古屋城です。"], ["三重", "三重の伊勢・志摩で、海にもぐって貝などをとる人は？", ["舞妓", "巫女", "海女（あま）"], 2, "海女さんの伝統が今も残っています。"], ["滋賀", "彦根城のマスコットキャラクターは？", ["ひこにゃん", "くまモン", "ふなっしー"], 0, "ひこにゃんは、彦根城の人気キャラです。"], ["京都", "京都の祇園で見かける、白くおしろいをぬった女性は？", ["海女", "舞妓", "巫女"], 1, "舞妓さんです。"], ["大阪", "豊臣秀吉が建てた、大阪のお城は？", ["名古屋城", "熊本城", "大阪城"], 2, "大阪城です。"], ["兵庫", "兵庫の神戸で有名な、ブランド牛肉は？", ["神戸牛", "松阪牛", "近江牛"], 0, "神戸牛です。"], ["奈良", "奈良の法隆寺は、世界で最も古い何の建物といわれる？", ["石造りのお城", "木造建築", "鉄の橋"], 1, "法隆寺は、世界最古の木造建築群といわれます。"], ["和歌山", "和歌山の白浜にある、ジャイアントパンダがいる施設は？", ["旭山動物園", "上野動物園", "アドベンチャーワールド"], 2, "アドベンチャーワールドです。"], ["鳥取", "鳥取県で有名な、冬のカニは？", ["松葉がに", "タラバガニ", "毛ガニ"], 0, "松葉がには、ズワイガニのオスのことです。"], ["島根", "島根県にある、世界遺産の銀山は？", ["佐渡金山", "石見銀山", "足尾銅山"], 1, "石見銀山です。"], ["岡山", "岡山県の特産で、白くてやわらかい桃は？", ["白桃", "みかん", "りんご"], 0, "岡山の白桃は、全国的に有名です。"], ["広島", "広島県が生産量日本一の海の食べ物は？", ["のり", "ほたて", "かき"], 2, "広島は、かきの大産地です。"], ["山口", "山口の下関が有名な、毒をもつ魚の料理は？", ["ふぐ", "たい", "さば"], 0, "下関のふぐは、「ふく」とも呼ばれます。"], ["徳島", "徳島の鳴門海峡で見られる、海に回る水の流れは？", ["波乗り", "渦潮（うずしお）", "潮干狩り"], 1, "鳴門の渦潮は、世界最大級です。"], ["香川", "香川県の、あだ名は？", ["みかん県", "いちご県", "うどん県"], 2, "香川は、「うどん県」と名乗っています。"], ["愛媛", "愛媛・松山にある、天守が残るお城は？", ["松山城", "犬山城", "彦根城"], 0, "松山城は、現存する天守の一つです。"], ["高知", "高知県出身の、幕末の有名な人は？", ["織田信長", "坂本龍馬", "徳川家康"], 1, "坂本龍馬です。"], ["福岡", "福岡の名物で、たらこをからくした食べ物は？", ["梅干し", "キムチ", "明太子"], 2, "博多の明太子です。"], ["佐賀", "佐賀で毎年秋に開かれる、空に大きな熱気球が浮かぶ大会は？", ["バルーンフェスタ", "花火大会", "凧揚げ大会"], 0, "佐賀インターナショナルバルーンフェスタです。"], ["長崎", "江戸時代に、外国との貿易をした長崎の人工島は？", ["軍艦島", "出島", "猿島"], 1, "出島です。"], ["熊本", "世界最大級のカルデラをもつ、熊本の火山は？", ["桜島", "雲仙岳", "阿蘇山"], 2, "阿蘇山です。"], ["大分", "大分の別府で有名な、熱いお湯や泥がわく観光は？", ["地獄めぐり", "海めぐり", "空めぐり"], 0, "別府の「地獄めぐり」です。"], ["宮崎", "宮崎生まれの、揚げた鶏肉にタルタルソースをかける料理は？", ["から揚げ", "チキン南蛮", "とんかつ"], 1, "チキン南蛮です。"], ["鹿児島", "屋久島にある、樹齢が数千年ともいわれる杉は？", ["平安杉", "弥生杉", "縄文杉"], 2, "縄文杉です。"], ["沖縄", "沖縄にある、世界遺産の昔の王様のお城は？", ["首里城", "大阪城", "熊本城"], 0, "琉球王国の首里城です。（火災のあと、再建中です）"]];
+const QZ={set:0,ok:0,n:0,streak:0};
+function qzData(){return QZ.set===0?QUIZ:QUIZ2}
 function qzShow(i){
- const q=QUIZ[i];const box=document.getElementById('qzBox');
+ const q=qzData()[i];const box=document.getElementById('qzBox');
  const opts=q[2].map((t,k)=>({t,ok:k===q[3]}));for(let a=opts.length-1;a>0;a--){const b=Math.floor(Math.random()*(a+1));[opts[a],opts[b]]=[opts[b],opts[a]]}
- box.innerHTML='<div style="font-size:1.3rem;font-weight:800;margin-bottom:8px">'+(EMO[q[0]]||'📍')+' '+esc(q[0])+'のクイズ</div><div style="font-size:1.15rem;margin-bottom:10px">'+esc(q[1])+'</div><div class="row">'+opts.map((o,k)=>'<button class="sec qzOpt" data-ok="'+(o.ok?1:0)+'" style="font-size:1.05rem">'+['①','②','③'][k]+' '+esc(o.t)+'</button>').join('')+'</div><div id="qzAns" style="margin-top:12px;font-size:1.1rem;font-weight:700"></div>';
- box.querySelectorAll('.qzOpt').forEach(b=>b.onclick=()=>{const ok=b.dataset.ok==='1';box.querySelectorAll('.qzOpt').forEach(x=>{x.disabled=true;if(x.dataset.ok==='1')x.style.background='#b2f2bb'});if(!ok)b.style.background='#ffc9c9';document.getElementById('qzAns').innerHTML=(ok?'<span class="plus">⭕ 正解！</span>':'<span class="minus">❌ ざんねん…</span>')+' <span style="font-weight:400">'+esc(q[4])+'</span>';(ok?SFX.good:SFX.bad)()});
+  box.innerHTML='<div style="font-size:1.3rem;font-weight:800;margin-bottom:8px">'+(EMO[q[0]]||'📍')+' '+esc(q[0])+'のクイズ</div><div style="font-size:1.15rem;margin-bottom:10px">'+esc(q[1])+'</div><div class="row">'+opts.map((o,k)=>'<button class="sec qzOpt" data-ok="'+(o.ok?1:0)+'" style="font-size:1.05rem">'+['①','②','③'][k]+' '+esc(o.t)+'</button>').join('')+'</div><div style="margin-top:10px"><button class="sec" id="qzHint">💡 わからない時は AIに きいてみよう</button><div id="qzHintBox" class="hide" style="margin-top:6px;background:#eef6ff;border-radius:10px;padding:8px 10px">🤖 こう聞いてみよう：「次のクイズの ヒントを3つ、小学生にもわかるように教えて。答えは まだ言わないでね。→ '+esc(q[1])+'」<br><span class="sub">AIのヒントを 読んで、自分で 答えを えらぼう。</span></div></div><div id="qzAns" style="margin-top:12px;font-size:1.1rem;font-weight:700"></div><div id="qzMore"></div>';
+ document.getElementById('qzHint').onclick=()=>document.getElementById('qzHintBox').classList.toggle('hide');
+ box.querySelectorAll('.qzOpt').forEach(b=>b.onclick=()=>{const ok=b.dataset.ok==='1';box.querySelectorAll('.qzOpt').forEach(x=>{x.disabled=true;if(x.dataset.ok==='1')x.style.background='#b2f2bb'});if(!ok)b.style.background='#ffc9c9';
+  QZ.n++;if(ok){QZ.ok++;QZ.streak++}else QZ.streak=0;
+  document.getElementById('qzAns').innerHTML=(ok?'<span class="plus">⭕ 正解！</span>':'<span class="minus">❌ ざんねん…</span>')+' <span style="font-weight:400">'+esc(q[4])+'</span>';
+  const tp=PREF_SCORE[q[0]]?TAGS.slice().sort((x,y)=>PREF_SCORE[q[0]][y]-PREF_SCORE[q[0]][x]).filter(g=>PREF_SCORE[q[0]][g]>=4).slice(0,3):[];
+  document.getElementById('qzMore').innerHTML=tp.length?'<div class="card" style="margin-top:10px;background:#f4fbf4">🧭 <b>ツアーのヒント：</b>'+esc(q[0])+'は '+tp.map(g=>CATINFO[g].e+g).join('・')+' が好きな お客さんに 人気だよ。タイトルや広告に、このことばを つかってみよう！</div>':'';
+  if(ok&&QZ.streak>=3){burst(['⭐','🎉','🏆'],22,1800);document.getElementById('qzAns').innerHTML+=' 🔥 '+QZ.streak+'問れんぞく せいかい！'}
+  (ok?SFX.good:SFX.bad)();qzScore()});
 }
+function qzScore(){const e=document.getElementById('qzScore');if(e)e.innerHTML='🎯 せいかい <b>'+QZ.ok+'</b> / '+QZ.n+'問'+(QZ.streak>=2?'　🔥 '+QZ.streak+'れんぞく':'')+'　<button class="sec" id="qzRst" style="padding:2px 10px">0にもどす</button>';const r=document.getElementById('qzRst');if(r)r.onclick=()=>{QZ.ok=QZ.n=QZ.streak=0;qzScore()}}
 function initQuiz(){
  const sel=document.getElementById('qzPref');sel.innerHTML=QUIZ.map((q,i)=>'<option value="'+i+'">'+q[0]+'</option>').join('');
  sel.onchange=()=>qzShow(Number(sel.value));
+ document.getElementById('qzSet').onchange=e=>{QZ.set=Number(e.target.value);qzShow(Number(sel.value))};
  document.getElementById('qzRand').onclick=()=>{const i=Math.floor(Math.random()*QUIZ.length);sel.value=i;qzShow(i)};
  document.getElementById('qzAll').onclick=()=>document.getElementById('qzList').classList.toggle('hide');
- document.getElementById('qzBody').innerHTML=QUIZ.map(q=>'<tr><td>'+q[0]+'</td><td>'+esc(q[1])+'<br><span class="sub">'+q[2].map(esc).join(' / ')+'</span></td><td><b>'+esc(q[2][q[3]])+'</b></td><td class="sub">'+esc(q[4])+'</td></tr>').join('');
- qzShow(0);
+ document.getElementById('qzBody').innerHTML=QUIZ.map((q,i)=>[q,QUIZ2[i]]).map(([a,b])=>[a,b].map((q,k)=>'<tr><td>'+q[0]+(k?'<br><span class="sub">2問目</span>':'')+'</td><td>'+esc(q[1])+'<br><span class="sub">'+q[2].map(esc).join(' / ')+'</span></td><td><b>'+esc(q[2][q[3]])+'</b></td><td class="sub">'+esc(q[4])+'</td></tr>').join('')).join('');
+ qzShow(0);qzScore();
 }
 function renderManual(){
  const who=document.getElementById('mkWho');if(!who)return;
@@ -1372,6 +1400,41 @@ function exportLedgerCsv(){
  const csv='\ufeff'+lines.map(l=>l.map(v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"').join(',')).join('\n');
  download('ドリームコイン積み上げ表.csv',csv,'text/csv');
 }
+
+/* ===== すごろく（みんなの いまの ばしょ） ===== */
+const MAPSQ=[
+ {ic:'🗺️',n:'行き先',ai:'「◯◯県は どんなところ？ 小学生にも わかるように おしえて」',me:'どの県にするか、自分で決める'},
+ {ic:'🏨',n:'宿・値段',ai:'「◯◯県の ゲストハウス・ホテル・高級旅館は、なにが ちがうの？」',me:'お客さんの予算を見て、値段は自分で決める'},
+ {ic:'✍️',n:'タイトル',ai:'「◯◯県で △△が好きな人向けの ツアー名を5つ 考えて」',me:'1つ選ぶ／自分のことばに直す（そのまま写さない）'},
+ {ic:'📍',n:'観光スポット',ai:'「◯◯県の 観光スポットを10こ。子どもも楽しめるのは？」',me:'行く3か所を、自分で選ぶ'},
+ {ic:'🎯',n:'地域調べ・クイズ',ai:'「◯◯県の 名物と歴史を 3行で」→ クイズタブで ためす',me:'3行メモを自分の言葉でまとめる'},
+ {ic:'📣',n:'広告',ai:'画像AIに「◯◯県ツアーの ポスター」をたのむ',me:'出すか出さないか（10万円）は自分で決める'},
+ {ic:'🎤',n:'ミニ発表',ai:'「30秒で話す 原稿のたたき台」をたのむ',me:'本番は AI なし！ 自分の言葉で話す'},
+ {ic:'🏁',n:'ゴール',ai:'',me:'最終ピッチ → 購入 → 精算・表彰'}
+];
+function mapPos(r){
+ const T=toursOf(r);let m=5;
+ T.forEach(t=>{const d=[!!t.dest,!!(t.inn&&t.price),!!t.title,!!(t.sp1&&t.sp2&&t.sp3)];let k=d.indexOf(false);k=k<0?5:k+1;if(k<m)m=k});
+ if(m<5)return m;
+ state.mapPos=state.mapPos||{};return Math.min(8,Math.max(5,state.mapPos[r.id]||5));
+}
+function renderMap(){
+ const b=document.getElementById('mapBoard');if(!b)return;
+ state.mapPos=state.mapPos||{};state.mapDone=state.mapDone||{};
+ const P=persons().filter(r=>r.name||r.dest);
+ const at=Array.from({length:8},()=>[]);
+ P.forEach(r=>{at[mapPos(r)-1].push(r)});
+ b.innerHTML='<div class="mapgrid">'+MAPSQ.map((q,i)=>'<div class="msq'+(i===7?' goal':'')+(at[i].length?' has':'')+'"><span class="no">'+(i+1)+'</span><h4>'+q.ic+' '+q.n+'</h4>'+(q.ai?'<div class="ai">🤖 AIに きく：'+esc(q.ai)+'</div>':'')+'<div class="me">🧑 自分で：'+esc(q.me)+'</div><div>'+at[i].map(r=>'<span class="tok" data-id="'+r.id+'" style="background:hsl('+hueOf(r.name||r.dest)+',55%,42%)">'+(EMO[r.dest]||'🙂')+' '+esc(r.name||r.dest)+'</span>').join('')+'</div></div>').join('')+'</div>';
+ b.querySelectorAll('.tok').forEach(el=>el.onclick=()=>{
+  const r=state.rows.find(x=>x.id===el.dataset.id);if(!r)return;const p=mapPos(r);
+  if(p<5){alert('1〜4は、入力すると自動ですすむよ（'+MAPSQ[p-1].n+'が まだ）');return}
+  state.mapPos[r.id]=p>=8?5:p+1;save();SFX.good();renderMap();
+  if(state.mapPos[r.id]===8&&!state.mapDone[r.id]){state.mapDone[r.id]=1;save();SFX.fanfare();burst(['🏁','🎉','⭐'],24,2200)}
+ });
+ const n=at[7].length;document.getElementById('mapInfo').textContent='🏁 ゴール '+n+' / '+P.length+'人';
+ document.getElementById('aiRule').innerHTML='<h3>🤖 AIを つかう タイミング</h3><div class="row" style="align-items:flex-start"><div style="flex:1;min-width:240px"><b>✅ AIに たのんで いいとき</b><ul><li>アイデアを たくさん 出したい（名前・スポット）</li><li>わからないことを しらべたい（宿のちがい・名物）</li><li>文の「たたき台」や ポスター画像を つくる</li></ul></div><div style="flex:1;min-width:240px"><b>🙅 自分で やること</b><ul><li>1つに 決める（AIの答えを そのまま写さない）</li><li>値段・広告を出すか など お金のこと</li><li>発表（本番）／名前や学校など 個人の情報は 入れない</li></ul></div></div><div class="sub">コツ：「AIに聞く → 自分で選ぶ → 直す」の 3ステップ。</div>';
+}
+setInterval(()=>{const p=document.querySelector('.tabpane[data-pane=map]');if(p&&p.classList.contains('on')&&!document.hidden&&!document.activeElement.closest('.tabpane[data-pane=map]')){try{renderMap()}catch(e){}}},4000);
 /* ===== いまやること（動線） ===== */
 const NEED={1:['行き先'],2:['宿','値段'],3:['タイトル'],4:['観光スポット1〜3'],5:['広告を出すか']};
 function hueOf(t){let h=0;for(const c of String(t||'x'))h=(h*31+c.charCodeAt(0))%360;return h}
@@ -1423,6 +1486,7 @@ function renderAwards(){
 function showRankPrompt(){const p=document.getElementById('rankPrompt');const on=document.querySelector('.tabpane.on');if(p&&on&&on.dataset.pane==='result')p.style.display='block'}
 function showTab(t){
  if(t==='howto'){try{renderHowto()}catch(e){}}
+ if(t==='map'){try{renderMap()}catch(e){}}
  try{mascotSay(t)}catch(e){}
  const rp=document.getElementById('rankPrompt');if(rp&&t!=='result')rp.style.display='none';
  const rf=document.getElementById('runFloat');if(rf)rf.style.display=(t==='input')?'block':'none';
@@ -1753,7 +1817,7 @@ function sampleRows(){
 function init(){
  load();
  if(!state.rows.length){state.rows=[newRow()]}
- rlState();diceState();renderStage();renderInputs();renderResDist();renderResults();renderPersonas();renderRoulette();renderDice();renderMute();renderFlow();initQuiz();renderCards();initWords();{const h=document.querySelector('.hero');if(h){['🌸','🍜','♨️','🚅','🗻','🐟','🎡','⛩️'].forEach((e,i)=>{const sp=document.createElement('span');sp.className='floatemo';sp.textContent=e;sp.style.left=(8+i*12)+'%';sp.style.top=(20+(i%3)*25)+'%';sp.style.animationDelay=(i*0.5)+'s';h.appendChild(sp)})}}document.getElementById('expPersona').onclick=exportPersonasCsv;document.getElementById('expDetail').onclick=exportDetailCsv;document.getElementById('expAll').onclick=exportAllJson;renderSheet();document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b){SFX.click();clearTimeout(window.__pt);clearTimeout(window.__pb);window.__plazaAnim=false;showTab(b.dataset.tab)}});showTab(state.tab||'input');
+ rlState();diceState();renderStage();renderInputs();renderResDist();document.getElementById('mapReset').onclick=()=>{if(confirm('5〜7の進み具合を リセットしますか？')){state.mapPos={};state.mapDone={};save();renderMap()}};renderResults();renderPersonas();renderRoulette();renderDice();renderMute();renderFlow();initQuiz();renderCards();initWords();{const h=document.querySelector('.hero');if(h){['🌸','🍜','♨️','🚅','🗻','🐟','🎡','⛩️'].forEach((e,i)=>{const sp=document.createElement('span');sp.className='floatemo';sp.textContent=e;sp.style.left=(8+i*12)+'%';sp.style.top=(20+(i%3)*25)+'%';sp.style.animationDelay=(i*0.5)+'s';h.appendChild(sp)})}}document.getElementById('expPersona').onclick=exportPersonasCsv;document.getElementById('expDetail').onclick=exportDetailCsv;document.getElementById('expAll').onclick=exportAllJson;renderSheet();document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b){SFX.click();clearTimeout(window.__pt);clearTimeout(window.__pb);window.__plazaAnim=false;showTab(b.dataset.tab)}});showTab(state.tab||'input');
  document.getElementById('run').onclick=runCycle;
  document.getElementById('runFloat').onclick=runCycle;
  document.getElementById('addRow').onclick=()=>{if(persons().length>=15){alert('最大15人です');return}state.rows.push(newRow());save();renderInputs()};
