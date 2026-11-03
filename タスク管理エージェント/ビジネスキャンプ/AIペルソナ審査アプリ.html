@@ -164,6 +164,14 @@ input,select{font-size:1rem;border-radius:12px;border-width:2px}
 .kcard .kbar{height:12px;border-radius:6px;background:var(--line);margin:8px 0 2px}.kcard .kbar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#ffd43b,#ff6b6b)}
 .kcard.first{border-color:#ffc233;box-shadow:0 6px 0 #e8a800}
 .staff{margin:14px 0}.staff>summary{cursor:pointer;font-weight:800;padding:8px 14px;background:var(--accent2);border-radius:14px;display:inline-block}
+
+.howcard{background:var(--card);border:3px solid var(--line);border-radius:28px;box-shadow:0 6px 0 rgba(120,80,20,.1);padding:18px 26px 20px;max-width:900px;margin:12px auto}
+.howtop{display:flex;justify-content:space-between;align-items:center}.howno{background:var(--accent2);border-radius:999px;padding:2px 14px;font-weight:800}.howe{font-size:3.6rem;animation:bob 2.4s ease-in-out infinite}
+.howt{font-size:1.9rem;margin:4px 0 10px}.hows{font-size:1.25rem;line-height:2;padding-left:1.4em;margin:6px 0}.hows li{margin:4px 0}
+.howp{background:var(--goldbg);border:3px dashed var(--gold);border-radius:18px;padding:10px 16px;margin:12px 0}.howpl{font-weight:800;margin-bottom:4px}.howpt{font-size:1.2rem;font-weight:700;line-height:1.7;margin-bottom:8px}
+.howtip{background:var(--accent2);border-radius:16px;padding:8px 16px;font-size:1.1rem;margin-top:10px}
+.hownav{display:flex;align-items:center;justify-content:space-between;margin-top:16px}.hownav button{font-size:1.15rem;padding:12px 24px;background:var(--accent);color:#fff}
+.howdots{display:flex;gap:7px}.howdots i{width:14px;height:14px;border-radius:50%;background:var(--line);cursor:pointer}.howdots i.on{background:var(--accent);transform:scale(1.3)}
 </style>
 </head>
 <body>
@@ -174,7 +182,7 @@ input,select{font-size:1rem;border-radius:12px;border-width:2px}
 <div class="card" style="background:var(--accent2)">
 <h3 style="margin-top:0">使い方（3ステップ）</h3>
 <ol style="margin:4px 0 0 1.2em;padding:0">
-<li><b>参加者の情報を入力</b>する（行き先・宿・値段・タイトル・キャッチコピー・観光スポット・広告）。</li>
+<li><b>参加者の情報を入力</b>する（行き先・宿・値段・タイトル・観光スポット・広告）。</li>
 <li><b>いまの回（1〜6回目）を選んで</b>、「ペルソナ100人に見せる」ボタンを押す。</li>
 <li><b>結果</b>（誰が何人に買われたか、売上、ドリームコイン）と、<b>アンケート</b>（選んだ理由）を見る。気づいたことを直して、次の回へ。</li></ol></div>
 
@@ -187,7 +195,7 @@ input,select{font-size:1rem;border-radius:12px;border-width:2px}
 <div id="bannerOv"><div class="crown">👑</div><div class="t" id="bnT"></div><div class="u" id="bnU"></div></div>
 <div id="mascot" title="さわると ヒントが かわるよ"><div class="b" id="mascotMsg">こんにちは！ビジキャンくんだよ</div><div class="m">🧳</div></div>
 <div id="rankPrompt" style="display:none;position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:40"><button id="rankGo" style="font-size:1.3rem;padding:14px 28px;border-radius:999px;background:linear-gradient(135deg,#f59f00,#ff6b6b);box-shadow:0 8px 24px rgba(0,0,0,.35);animation:bob 1.4s ease-in-out infinite">🏆 ランキングを見る ▶</button></div>
-<div id="tabs" class="tabs"><button data-tab="rules">📖 ルール</button><button data-tab="sched">📅 予定</button><button data-tab="input">✏️ 入力</button><button data-tab="plaza">🎪 広場</button><button data-tab="result">📋 結果</button><button data-tab="rank">🏆 順位</button><button data-tab="money">💰 収支</button><button data-tab="game">🎲 サイコロ</button><button data-tab="cards">🗾 カード</button><button data-tab="quiz">🎯 クイズ</button><button data-tab="persona">👥 しくみ</button></div>
+<div id="tabs" class="tabs"><button data-tab="rules">📖 ルール</button><button data-tab="howto">📘 やり方</button><button data-tab="sched">📅 予定</button><button data-tab="input">✏️ 入力</button><button data-tab="plaza">🎪 広場</button><button data-tab="result">📋 結果</button><button data-tab="rank">🏆 順位</button><button data-tab="money">💰 収支</button><button data-tab="game">🎲 サイコロ</button><button data-tab="cards">🗾 カード</button><button data-tab="quiz">🎯 クイズ</button><button data-tab="persona">👥 しくみ</button></div>
 <div id="rankBar"></div></div>
 <div class="tabpane" data-pane="rank"><h2>ランキング</h2><div class="row" style="margin:14px 0"><button id="rankShow" style="font-size:1.1rem;padding:10px 22px;background:linear-gradient(135deg,#f59f00,#ff6b6b);border-radius:12px">🏆 ランキング発表（トップ5）</button></div>
 <div id="rankBig"></div></div>
@@ -211,9 +219,9 @@ input,select{font-size:1rem;border-radius:12px;border-width:2px}
 <div class="tabpane" data-pane="input">
 <h2>✏️ ツアーを にゅうりょく（運営）</h2>
 <div id="dupWarn"></div>
-<div class="sub">行き先・宿・値段・タイトル・キャッチコピー・観光スポット3か所・広告を入力します。値段は5万円刻みで、「上限」の数字までです。宿と行き先を変えると、上限も変わります。</div>
+<div class="sub">行き先・宿・値段・タイトル・観光スポット3か所・広告を入力します。値段は5万円刻みで、「上限」の数字までです。宿と行き先を変えると、上限も変わります。</div>
 <div class="card tbl"><table id="inputTbl"><thead><tr>
-<th>#</th><th>名前</th><th data-need="1">行き先</th><th data-need="2">宿</th><th data-need="2">値段(万)</th><th>上限</th><th data-need="3">タイトル</th><th data-need="3">キャッチコピー</th><th data-need="4">観光スポット1</th><th data-need="4">観光スポット2</th><th data-need="4">観光スポット3</th><th data-need="5">広告を出す<br>(広告費10万円)</th></tr></thead><tbody></tbody></table>
+<th>#</th><th>名前</th><th data-need="1">行き先</th><th data-need="2">宿</th><th data-need="2">値段(万)</th><th>上限</th><th data-need="3">タイトル</th><th data-need="4">観光スポット1</th><th data-need="4">観光スポット2</th><th data-need="4">観光スポット3</th><th data-need="5">広告を出す<br>(広告費10万円)</th></tr></thead><tbody></tbody></table>
 <div style="margin-top:8px"><button class="sec" id="addRow">参加者を追加</button> <span class="sub">（最大15人）</span></div></div>
 
 
@@ -318,8 +326,9 @@ input,select{font-size:1rem;border-radius:12px;border-width:2px}
 </div></div></div>
 
 </div>
-<div class="tabpane" data-pane="rules"><h2>ルール説明（子どもにも分かる版）</h2><div class="cardgrid"><div class="rcard"><div class="remo">🧳</div><h3>きみは「旅行会社の社長」だよ！</h3><p>AI（えーあい）という、かしこいコンピューターと、いっしょに、<br>たのしい旅行ツアーを作って、売ろう！</p><p>いちばんお金が多い社長が、<b>ゆうしょう</b>！</p></div><div class="rcard"><div class="remo">💰</div><h3>さいしょのお金は、150万円</h3><p>このゲームの中だけで使う、お金の名前は<b>「ドリームコイン」</b>。</p><p>さいしょに、みんなに 150万円ずつ、くばるよ。</p><p>ツアーが売れると、お金が<b>どんどん ふえていく</b>！</p></div><div class="rcard"><div class="remo">🗾</div><h3>① 行き先を えらぼう</h3><p>都道府県のカードから、じゃんけんで、じゅんばんに えらぶよ。</p><p><b>同じ県は、えらべません。</b></p><p>遠いほど、行くのにお金がかかる。</p><p>近い −10万　／　ちょっと遠い −20万　／　北海道・沖縄 −30万</p></div><div class="rcard"><div class="remo">🎒</div><h3>ツアーは、1人 2つ 作るよ！</h3><p>行き先と宿を、<b>2セット</b> えらぼう。</p><p>同じ県は、<b>だれとも かぶれません</b>。（じぶんの2つも ダメ）</p><p>2つとも、さいごまで ずっと 育てていくよ。</p><p>そのぶん、お金も 2つぶん かかる。よく 考えよう！</p></div><div class="rcard"><div class="remo">🏨</div><h3>② とまる宿を えらぼう</h3><p>ゲストハウス −10万　／　ホテル −30万　／　高級旅館 −60万</p><p>いい宿ほど、高い ねだんを つけられる。でも、お金は へるよ。</p></div><div class="rcard"><div class="remo">🏷️</div><h3>③ ツアーの ねだんを きめよう</h3><p>5万円ずつ えらべるよ。ただし、つけられる いちばん高い ねだんが きまってる。</p><p>遠い所や いい宿ほど、高く つけられる。</p><p>でも、高すぎると、お客さんは 買ってくれない！</p></div><div class="rcard"><div class="remo">✍️</div><h3>④ ツアーを 作ろう</h3><p>ツアーの名前（タイトル）と、人をひきつける ひとこと（キャッチコピー）、</p><p>ポスターの絵、行ってほしい 見どころ 3つ。</p><p>AIに聞いて、いい言葉を 考えよう！</p></div><div class="rcard"><div class="remo">🤖</div><h3>⑤ AIの お客さん 100人が 買うよ</h3><p>コンピューターが、いろんな人（100人）の、ふりをして、</p><p>「どのツアーを 買うか」を えらぶよ。</p><p><b>買ってくれた人の数 × ねだん</b> が、きみの もうけ！</p><p>1日目に 5回、2日目に 1回、結果が 出るよ。</p><p>「3・2・1！」のあと、お客さんが ツアーに むかって 走りだす！</p><p>そのあと、ランキングが 発表されるよ。</p></div><div class="rcard"><div class="remo">📣</div><h3>⑥ 広告を 出そう（出さなくても OK）</h3><p>お金 10万円で、ツアーを たくさんの人に 知らせられるよ。</p><p>広告を出すと、お客さんが 買いやすくなる！</p><p>ルーレットでも、当たりやすくなるよ。</p></div><div class="rcard"><div class="remo">🎲</div><h3>サイコロ（ひとり 3回）</h3><p>1：+20万　　2：−10万</p><p>3：チャンスカード！（クリアしたら +20万）</p><p>4：AIの せんせいに 見てもらって、6点以上なら +10万</p><p>5：+30万　　6：−20万</p></div><div class="rcard"><div class="remo">🎡</div><h3>お客さん団体 ルーレット（ぜんぶで 4回）</h3><p>ルーレットで 当たった人の ツアーに、団体のお客さんが やってくる！</p><p>もらえるお金は<b>「ねだん × 団体の人数」</b>。大きく ふえるチャンス！</p><p>広告を出した人は、名前が 2つぶん 入るから、当たりやすいよ。</p></div><div class="rcard"><div class="remo">🎤</div><h3>2日目：さいごの 発表（ピッチ）</h3><p>ツアーの いいところを、みんなの前で 発表しよう！</p><p>みんなが、<b>お客さんコイン 50万円</b> を もらって、</p><p>友だちの ツアーを 買うよ。</p><p>さいごに、AIの お客さんも 買うよ。</p></div><div class="rcard"><div class="remo">🏆</div><h3>ゆうしょうは だれ？</h3><p>ドリームコインが いちばん 多い人が ゆうしょう！</p><p>AIが 高く 評価した人には、しょうきんも あるよ。</p><p>みんなに、しょうじょうが あるよ。</p></div><div class="rcard"><div class="remo">🔒</div><h3>AIを つかうときの おやくそく</h3><p>自分や 友だち、おうちの人の<br>名前・住所・電話番号・学校の名前・顔の写真は、AIに 入れない。</p><p>AIの 答えは、まちがうことが あるよ。自分でも たしかめよう。</p><p>つかい おわったら、チャットの きろくを 消そう。</p></div></div></div>
-<div class="tabpane" data-pane="sched"><h2>スケジュール（14時スタート・時間は仮です）</h2><h3>1日目</h3><div class="card tbl"><table><tbody><tr><td class="t" style="white-space:nowrap;width:1%"><b>14:00〜14:20</b></td><td>開会。ドリームコイン150万円を配る。ルール説明</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>14:20〜15:00</b></td><td>学び（AIの使い方30分＋ツアーの作り方10分）</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>15:00〜15:15</b></td><td>行き先を選ぶ（交通費を払う）</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>15:15〜15:30</b></td><td>AIサイクル①：行き先だけを入れる</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>15:30〜15:50</b></td><td>地域調べ（ご当地クイズ）</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>15:50〜16:00</b></td><td>宿を選ぶ（宿代を払う）</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>16:00〜16:15</b></td><td>AIサイクル②：行き先＋宿</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>16:15〜16:30</b></td><td>おやつ、休憩</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>16:30〜17:05</b></td><td>タイトル・キャッチコピー・ポスター画像を作る</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>17:05〜17:20</b></td><td>AIサイクル③</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>17:20〜17:40</b></td><td>旅行スケジュールを作る（観光スポット3か所）</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>17:40〜17:55</b></td><td>AIサイクル④</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>17:55〜18:05</b></td><td>広告を作る（出すかは自由・10万円）</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>18:05〜18:35</b></td><td>ミニ発表（30秒）とAIサイクル⑤</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>18:35〜19:00</b></td><td>かけっこ（25分）</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>19:00〜19:20</b></td><td>サイコロ1・2回目、団体客ルーレット1回目、振り返り</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>19:20〜20:20</b></td><td>夕食（施設で鍋）</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>20:20〜21:10</b></td><td>入浴（班ごとに交代）</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>21:10〜21:45</b></td><td>スマイルゲーム、自由時間（短め）</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>21:45〜22:00</b></td><td>就寝準備（22:00消灯）</td></tr></tbody></table></div><h3>2日目</h3><div class="card tbl"><table><tbody><tr><td class="t" style="white-space:nowrap;width:1%"><b>7:00〜9:00</b></td><td>起床、朝食、準備</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>9:00〜9:15</b></td><td>開始、サイコロ3回目</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>9:15〜9:30</b></td><td>学び（広告・キャッチコピー・伝え方）</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>9:30〜10:45</b></td><td>考える時間（作る75分・自由に動いてよい）。10:00ごろ団体客ルーレット2回目</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>10:45〜10:55</b></td><td>団体客ルーレット3回目、最終ピッチの準備</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>10:55〜11:50</b></td><td>最終ピッチ（1人2〜3分）＋AIサイクル⑥</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>11:50〜12:05</b></td><td>購入：AIペルソナ＋お客さんコイン50万円で友だちが買う</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>12:05〜12:15</b></td><td>団体客ルーレット4回目、親へのLINE投票</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>12:15〜13:00</b></td><td>精算、表彰</td></tr><tr><td class="t" style="white-space:nowrap;width:1%"><b>13:00〜</b></td><td>昼食、解散準備</td></tr></tbody></table></div></div>
+<div class="tabpane" data-pane="rules"><h2>📖 ルール</h2><div class="cardgrid"><div class="rcard"><div class="remo">🧳</div><h3>きみは「旅行会社の社長」だよ！</h3><p>AI（えーあい）という、かしこいコンピューターと、いっしょに、<br>たのしい旅行ツアーを作って、売ろう！</p><p>いちばんお金が多い社長が、<b>ゆうしょう</b>！</p></div><div class="rcard"><div class="remo">💰</div><h3>さいしょのお金は、150万円</h3><p>このゲームの中だけで使う、お金の名前は<b>「ドリームコイン」</b>。</p><p>さいしょに、みんなに 150万円ずつ、くばるよ。</p><p>ツアーが売れると、お金が<b>どんどん ふえていく</b>！</p></div><div class="rcard"><div class="remo">🗾</div><h3>① 行き先を えらぼう</h3><p>都道府県のカードから、じゃんけんで、じゅんばんに えらぶよ。</p><p><b>同じ県は、えらべません。</b></p><p>遠いほど、行くのにお金がかかる。</p><p>近い −10万　／　ちょっと遠い −20万　／　北海道・沖縄 −30万</p></div><div class="rcard"><div class="remo">🎒</div><h3>ツアーは、1人 2つ 作るよ！</h3><p>行き先と宿を、<b>2セット</b> えらぼう。</p><p>同じ県は、<b>だれとも かぶれません</b>。（じぶんの2つも ダメ）</p><p>2つとも、さいごまで ずっと 育てていくよ。</p><p>そのぶん、お金も 2つぶん かかる。よく 考えよう！</p></div><div class="rcard"><div class="remo">🏨</div><h3>② とまる宿を えらぼう</h3><p>ゲストハウス −10万　／　ホテル −30万　／　高級旅館 −60万</p><p>いい宿ほど、高い ねだんを つけられる。でも、お金は へるよ。</p></div><div class="rcard"><div class="remo">🏷️</div><h3>③ ツアーの ねだんを きめよう</h3><p>5万円ずつ えらべるよ。ただし、つけられる いちばん高い ねだんが きまってる。</p><p>遠い所や いい宿ほど、高く つけられる。</p><p>でも、高すぎると、お客さんは 買ってくれない！</p></div><div class="rcard"><div class="remo">✍️</div><h3>④ ツアーを 作ろう</h3><p>ツアーの名前（タイトル）と、行ってほしい 見どころ 3つを 決めよう。</p><p>広告を出す人は、ポスターの絵も 作るよ。</p><p>AIに聞いて、いい言葉を 考えよう！</p></div><div class="rcard"><div class="remo">🤖</div><h3>⑤ AIの お客さん 100人が 買うよ</h3><p>コンピューターが、いろんな人（100人）の、ふりをして、</p><p>「どのツアーを 買うか」を えらぶよ。</p><p><b>買ってくれた人の数 × ねだん</b> が、きみの もうけ！</p><p>1日目に 5回、2日目に 1回、結果が 出るよ。</p><p>「3・2・1！」のあと、お客さんが ツアーに むかって 走りだす！</p><p>そのあと、ランキングが 発表されるよ。</p></div><div class="rcard"><div class="remo">📣</div><h3>⑥ 広告を 出そう（出さなくても OK）</h3><p>お金 10万円で、ツアーを たくさんの人に 知らせられるよ。</p><p>広告を出すと、お客さんが 買いやすくなる！</p><p>ルーレットでも、当たりやすくなるよ。</p></div><div class="rcard"><div class="remo">🎲</div><h3>サイコロ（ひとり 3回）</h3><p>1：+20万　　2：−10万</p><p>3：チャンスカード！（クリアしたら +20万）</p><p>4：AIの せんせいに 見てもらって、6点以上なら +10万</p><p>5：+30万　　6：−20万</p></div><div class="rcard"><div class="remo">🎡</div><h3>お客さん団体 ルーレット（ぜんぶで 4回）</h3><p>ルーレットで 当たった人の ツアーに、団体のお客さんが やってくる！</p><p>もらえるお金は<b>「ねだん × 団体の人数」</b>。大きく ふえるチャンス！</p><p>広告を出した人は、名前が 2つぶん 入るから、当たりやすいよ。</p></div><div class="rcard"><div class="remo">🎤</div><h3>2日目：さいごの 発表（ピッチ）</h3><p>ツアーの いいところを、みんなの前で 発表しよう！</p><p>みんなが、<b>お客さんコイン 50万円</b> を もらって、</p><p>友だちの ツアーを 買うよ。</p><p>さいごに、AIの お客さんも 買うよ。</p></div><div class="rcard"><div class="remo">🏆</div><h3>ゆうしょうは だれ？</h3><p>ドリームコインが いちばん 多い人が ゆうしょう！</p><p>AIが 高く 評価した人には、しょうきんも あるよ。</p><p>みんなに、しょうじょうが あるよ。</p></div><div class="rcard"><div class="remo">🔒</div><h3>AIを つかうときの おやくそく</h3><p>自分や 友だち、おうちの人の<br>名前・住所・電話番号・学校の名前・顔の写真は、AIに 入れない。</p><p>AIの 答えは、まちがうことが あるよ。自分でも たしかめよう。</p><p>つかい おわったら、チャットの きろくを 消そう。</p></div></div></div>
+<div class="tabpane" data-pane="howto"><h2>📘 やり方（スライド）</h2><div class="sub" style="font-size:1.05rem">「◀ ▶」で すすめるよ。AIへの 聞き方は「コピー」を おすと、そのまま つかえるよ。</div><div id="howtoBox"></div></div>
+<div class="tabpane" data-pane="sched"><h2>📅 スケジュール（14時スタート・時間は仮です）</h2><h3>1日目</h3><div class="card tbl"><table><thead><tr><th>時間</th><th>やること</th><th>くわしく</th></tr></thead><tbody><tr><td class="t" style="white-space:nowrap"><b>14:00〜14:20</b></td><td><b>開会</b></td><td>ドリームコイン150万円を1人ずつ配る。ルール説明スライドを見て、全体の流れをつかむ。</td></tr><tr><td class="t" style="white-space:nowrap"><b>14:20〜15:00</b></td><td><b>学び（AIの使い方）</b></td><td>AIの使い方30分（質問のコツ3つ・個人情報は入れない）と、ツアーの作り方10分。1人1台のiPadをセットする。</td></tr><tr><td class="t" style="white-space:nowrap"><b>15:00〜15:15</b></td><td><b>行き先を選ぶ</b></td><td>じゃんけん（またはかけっこ）で順番を決めて、都道府県カードを選ぶ。1人2つ。同じ県は選べない。交通費（−10/−20/−30万）を払う。</td></tr><tr><td class="t" style="white-space:nowrap"><b>15:15〜15:30</b></td><td><b>お客さんに見せる①（行き先だけ）</b></td><td>運営が行き先を入力して、「見せる」。3・2・1のあと、お客さんが集まる。どのツアーが人気か、見てみよう。</td></tr><tr><td class="t" style="white-space:nowrap"><b>15:30〜15:40</b></td><td><b>サイコロ1回目</b></td><td>1人ずつ振る。出た目で、お金が増えたり減ったりする。3はチャンスカード、4はAIに頼む。</td></tr><tr><td class="t" style="white-space:nowrap"><b>15:40〜16:00</b></td><td><b>地域調べ（ご当地クイズ）</b></td><td>AIに「〇〇県の名物と観光地」を聞いて、3行メモにまとめる。「クイズ」タブでも、挑戦できる。</td></tr><tr><td class="t" style="white-space:nowrap"><b>16:00〜16:10</b></td><td><b>宿と値段を決める</b></td><td>ゲストハウス／ホテル／高級旅館から1つ選ぶ。宿代を払う。値段を5万円きざみで決める（上限あり）。</td></tr><tr><td class="t" style="white-space:nowrap"><b>16:10〜16:25</b></td><td><b>お客さんに見せる②（宿・値段）</b></td><td>宿と値段を入力して、見せる。高いと売れにくいかも？ 結果を見て、値段を直すか考える。</td></tr><tr><td class="t" style="white-space:nowrap"><b>16:25〜16:40</b></td><td><b>おやつ・休憩</b></td><td></td></tr><tr><td class="t" style="white-space:nowrap"><b>16:40〜16:50</b></td><td><b>ルーレット1回目・サイコロ2回目</b></td><td>団体客ルーレットを回す。当たった人のツアーに、団体のお客さんが来る。続けて、サイコロ2回目。</td></tr><tr><td class="t" style="white-space:nowrap"><b>16:50〜17:15</b></td><td><b>タイトルを作る</b></td><td>AIに「〇〇県で、△△が好きな人向けの旅行ツアーの名前を5つ考えて」と聞いて、1つ選ぶか、自分で直す。</td></tr><tr><td class="t" style="white-space:nowrap"><b>17:15〜17:30</b></td><td><b>お客さんに見せる③（タイトル）</b></td><td>タイトルを入力して、見せる。お客さんの こえ（買った理由）を読んでみよう。</td></tr><tr><td class="t" style="white-space:nowrap"><b>17:30〜17:50</b></td><td><b>観光スポットを決める</b></td><td>AIに「〇〇県の観光スポット」を聞いて、ツアーで行く3か所を決める。</td></tr><tr><td class="t" style="white-space:nowrap"><b>17:50〜18:05</b></td><td><b>お客さんに見せる④（観光スポット）</b></td><td>3か所を入力して、見せる。</td></tr><tr><td class="t" style="white-space:nowrap"><b>18:05〜18:20</b></td><td><b>広告を作る（出す人だけ）</b></td><td>広告費10万円。ChatGPTでポスター画像を作って、運営に出す。出さない人は休憩。運営が画像をアプリに貼る。</td></tr><tr><td class="t" style="white-space:nowrap"><b>18:20〜18:45</b></td><td><b>ミニ発表（30秒）・お客さんに見せる⑤</b></td><td>自分のツアーを30秒で発表する。広告を出した人は、広告も入れて見せる。</td></tr><tr><td class="t" style="white-space:nowrap"><b>18:45〜19:10</b></td><td><b>かけっこ</b></td><td>体を動かす時間。</td></tr><tr><td class="t" style="white-space:nowrap"><b>19:10〜19:20</b></td><td><b>今日のふりかえり</b></td><td>ランキングを見て、明日やり直すところを考える。</td></tr><tr><td class="t" style="white-space:nowrap"><b>19:20〜20:20</b></td><td><b>夕食（鍋）</b></td><td></td></tr><tr><td class="t" style="white-space:nowrap"><b>20:20〜21:10</b></td><td><b>入浴</b></td><td>班ごとに交代。</td></tr><tr><td class="t" style="white-space:nowrap"><b>21:10〜21:45</b></td><td><b>スマイルゲーム・自由時間（短め）</b></td><td></td></tr><tr><td class="t" style="white-space:nowrap"><b>21:45〜22:00</b></td><td><b>就寝準備</b></td><td>22:00消灯。</td></tr></tbody></table></div><h3>2日目</h3><div class="card tbl"><table><thead><tr><th>時間</th><th>やること</th><th>くわしく</th></tr></thead><tbody><tr><td class="t" style="white-space:nowrap"><b>7:00〜9:00</b></td><td><b>起床・朝食・準備</b></td><td></td></tr><tr><td class="t" style="white-space:nowrap"><b>9:00〜9:15</b></td><td><b>開始・サイコロ3回目</b></td><td>昨日のランキングを見る。1人ずつサイコロ。</td></tr><tr><td class="t" style="white-space:nowrap"><b>9:15〜9:30</b></td><td><b>学び</b></td><td>広告・タイトル・伝え方のコツ。</td></tr><tr><td class="t" style="white-space:nowrap"><b>9:30〜10:45</b></td><td><b>考える時間（75分）</b></td><td>昨日の結果を見て、値段・タイトル・観光スポット・広告を直す。AIにもう一度聞く。早く終わった人は、動画づくりや発表の練習。自由に動いてよい。9:30にルーレット2回目。</td></tr><tr><td class="t" style="white-space:nowrap"><b>10:45〜10:55</b></td><td><b>ルーレット3回目・最終ピッチの準備</b></td><td>発表の順番と、持ち時間（2〜3分）を確認する。</td></tr><tr><td class="t" style="white-space:nowrap"><b>10:55〜11:50</b></td><td><b>最終ピッチ・お客さんに見せる⑥</b></td><td>1人2〜3分。値段を発表する。1日目からの全部を見せる（最後の一発勝負）。</td></tr><tr><td class="t" style="white-space:nowrap"><b>11:50〜12:05</b></td><td><b>購入</b></td><td>AIのお客さんが買う。みんなは、お客さんコイン50万円で、友だちのツアーを買う。</td></tr><tr><td class="t" style="white-space:nowrap"><b>12:05〜12:15</b></td><td><b>ルーレット4回目・親へのLINE投票</b></td><td></td></tr><tr><td class="t" style="white-space:nowrap"><b>12:15〜13:00</b></td><td><b>精算・表彰</b></td><td>ドリームコインが一番多い人が優勝。全員に賞状。</td></tr><tr><td class="t" style="white-space:nowrap"><b>13:00〜</b></td><td><b>昼食・解散準備</b></td><td></td></tr></tbody></table></div></div>
 <div class="tabpane" data-pane="cards"><h2>都道府県カード（47枚）</h2><div class="row"><button id="cardPrint">🖨 カードを印刷する</button><span class="sub">切り取って、配れます。じゃんけんの順に、1人1枚えらびます。</span></div><div id="cardGrid" class="cardgrid2"></div></div>
 <div class="tabpane" data-pane="quiz"><h2>ご当地クイズ（47都道府県）</h2>
 <div class="card"><div class="row" style="align-items:flex-end"><div><label>都道府県</label><select id="qzPref"></select></div><button id="qzRand">🎲 ランダムで出す</button><button class="sec" id="qzAll">一覧を表示／隠す（先生用・答え付き）</button></div>
@@ -334,7 +343,7 @@ input,select{font-size:1rem;border-radius:12px;border-width:2px}
 <h2>🔍 どうやって 買うツアーを きめるの？</h2>
 <div class="card"><ul>
 <li>お客さん役の<b>ペルソナ100人</b>が、ツアーを1つずつ見て、いちばん気に入ったものを1つだけ買います。</li>
-<li>気に入る基準は3つ：<b>好み</b>（行き先の特徴やキャッチコピーの言葉が好きか）／<b>値段</b>（自分の予算に合うか）／<b>知名度</b>（そのツアーを知っているか。広告を出すと知ってもらえる人が増える）。</li>
+<li>気に入る基準は3つ：<b>好み</b>（行き先の特徴やタイトルの言葉が好きか）／<b>値段</b>（自分の予算に合うか）／<b>知名度</b>（そのツアーを知っているか。広告を出すと知ってもらえる人が増える）。</li>
 <li><b>稼いだ金額 ＝ 買った人数 × 値段</b>。そこから元手（交通費＋宿代＋広告費）を引いたものが、もうけです。</li>
 <li><b>赤字にならない保証</b>：売上が元手に届かないツアーがあれば、好みが近い人をそのツアーに回して届くようにします（「保証枠」と表示）。</li>
 <li>ペルソナはみんな、買った理由・買わなかった理由を「ひとこと」で話します。</li></ul></div>
@@ -389,7 +398,7 @@ const INC = {'低':{n:30,b:20},'中':{n:40,b:30},'高':{n:30,b:45}};
 const STAGES=[
  {n:1,name:'1回目',when:'行き先を選んだあと',desc:'ペルソナには「行き先の特徴」だけを見せます（チュートリアル）。値段・宿・コピーはまだ見せません。',show:[1,0,0,0,0]},
  {n:2,name:'2回目',when:'宿を選んだあと',desc:'行き先に加えて、「宿」と「値段」を見せます。',show:[1,1,0,0,0]},
- {n:3,name:'3回目',when:'タイトル・キャッチコピー・画像を作ったあと',desc:'タイトルとキャッチコピー（文字）を見せます。画像は見ません。',show:[1,1,1,0,0]},
+ {n:3,name:'3回目',when:'タイトルを作ったあと',desc:'タイトル（文字）を見せます。画像は見ません。',show:[1,1,1,0,0]},
  {n:4,name:'4回目',when:'旅行スケジュールを作ったあと',desc:'観光スポット3か所を見せます。',show:[1,1,1,1,0]},
  {n:5,name:'5回目',when:'広告を作って、ミニ発表をするとき',desc:'広告を見せます。広告を出したツアーは、ペルソナに知ってもらえる人が増えます。',show:[1,1,1,1,1]},
  {n:6,name:'6回目',when:'2日目の最終ピッチ',desc:'1日目からの全部を見せます（最後の一発勝負）。',show:[1,1,1,1,1]}];
@@ -440,8 +449,8 @@ function tourInfo(t){
 function tagStrength(t,info,stage){
  const s={};TAGS.forEach(g=>s[g]=0);
  info.tags.forEach((g,i)=>{s[g]+=i<2?1:0.7});
- const text=(stage>=3?[t.title||'',t.copy||''].join(' '):'')+' '+(stage>=4?[t.sp1,t.sp2,t.sp3].join(' '):'');
- const copyText=stage>=3?[t.title||'',t.copy||''].join(' '):'';
+ const text=(stage>=3?(t.title||''):'')+' '+(stage>=4?[t.sp1,t.sp2,t.sp3].join(' '):'');
+ const copyText=stage>=3?(t.title||''):'';
  const spText=stage>=4?[t.sp1||'',t.sp2||'',t.sp3||''].join(' '):'';
  TAGS.forEach(g=>{
   let hc=0,hs=0;KW[g].forEach(k=>{if(copyText.includes(k))hc++;if(spText.includes(k))hs++});
@@ -539,7 +548,7 @@ function hint(t,info,stage,rows){
  // rows: 全ペルソナ×このツアーのスコア
  const out=[];
  const fit=rows.filter(x=>x.sc.interest>=0.55);
- if(rows.length&&fit.length<20)out.push('好みが合う人が少なめ。キャッチコピーや観光スポットに「自然」「グルメ」「温泉」などの言葉を入れてみよう');
+ if(rows.length&&fit.length<20)out.push('好みが合う人が少なめ。タイトルや観光スポットに「自然」「グルメ」「温泉」などの言葉を入れてみよう');
  if(stage>=2){const hi=rows.filter(x=>x.sc.interest>=0.5&&x.sc.price<0.4).length;if(hi>=10)out.push('気に入ったのに値段が高いと感じた人が'+hi+'人。値段を下げるのも手');}
  if(stage>=5&&!t.ad){const un=rows.filter(x=>!x.sc.aware&&x.sc.interest>=0.5).length;if(un>=10)out.push('好みが合うのに知らなかった人が'+un+'人。広告を出すと届く人が増える');}
  if(!out.length)out.push('バランスがよい。このまま磨こう');
@@ -658,7 +667,7 @@ function toursOf(r){return [r].concat(kidsOf(r))}
 function persons(){return state.rows.filter(r=>!r.parent)}
 function ownerOf(id){const r=state.rows.find(x=>x.id===id);return r?(r.parent||r.id):id}
 function joinT(r,k,sep){return toursOf(r).map(t=>t[k]).filter(v=>v!=null&&v!=='').join(sep||'＋')}
-function newRow(){return {id:uid(),name:'',dest:'京都',inn:'ホテル',price:20,title:'',copy:'',sp1:'',sp2:'',sp3:'',ad:false,extra:0}}
+function newRow(){return {id:uid(),name:'',dest:'京都',inn:'ホテル',price:20,title:'',sp1:'',sp2:'',sp3:'',ad:false,extra:0}}
 function limitOf(r){const i=tourInfo({dest:r.dest,inn:r.inn});return i?i.limit:0}
 function renderStage(){
  const sn=document.getElementById('startNote');if(sn)sn.textContent=START;
@@ -690,7 +699,6 @@ function renderInputs(){
   '<td data-need="2"><input type="number" data-k="price" value="'+r.price+'" min="5" step="5" max="'+lim+'"></td>'+
   '<td class="sub">'+lim+'</td>'+
   '<td data-need="3"><input type="text" data-k="title" value="'+esc(r.title)+'"></td>'+
-  '<td data-need="3"><input type="text" data-k="copy" value="'+esc(r.copy)+'"></td>'+
   '<td data-need="4"><input type="text" class="sp" data-k="sp1" value="'+esc(r.sp1)+'"></td>'+
   '<td data-need="4"><input type="text" class="sp" data-k="sp2" value="'+esc(r.sp2)+'"></td>'+
   '<td data-need="4"><input type="text" class="sp" data-k="sp3" value="'+esc(r.sp3)+'"></td>'+
@@ -748,7 +756,7 @@ function runCycle(){
 }
 function showCalcOv(done){
  const ov=document.getElementById('calcOv');ov.style.display='flex';
- const msgs=['ペルソナ100人が集まっています…','ツアーのポスターを見ています…','キャッチコピーを読んでいます…','お財布と相談しています…','どれにするか、迷っています…','まもなく、結果発表！'];
+ const msgs=['ペルソナ100人が集まっています…','ツアーのポスターを見ています…','タイトルを読んでいます…','お財布と相談しています…','どれにするか、迷っています…','まもなく、結果発表！'];
  const bar=document.getElementById('calcBar'),mt=document.getElementById('calcMsg');let i=0,finished=false;const timers=[];
  bar.style.width='0%';
  const finish=()=>{if(finished)return;finished=true;timers.forEach(clearTimeout);clearInterval(iv);ov.style.display='none';SFX.fanfare();done()};
@@ -767,7 +775,7 @@ function runCycleNow(){
  o.costToDate={};o.prevSales={};o.costNow={};
  rows.forEach(r=>{let c=0,p=0;for(let k=1;k<=o.stage;k++)c+=costAt(r,k);for(let k=1;k<o.stage;k++){const cc=state.cycles[k];if(cc&&cc.results[r.id])p+=cc.results[r.id].revenue}o.costNow[r.id]=costAt(r,o.stage);o.costToDate[r.id]=c;o.prevSales[r.id]=p});
  o.n=PN();const personas=makePersonas(o.seed,o.n);
- const tours=rows.map(r=>({id:r.id,name:r.name||'(名前なし)',dest:r.dest,inn:r.inn,price:r.price,title:r.title,copy:r.copy,sp1:r.sp1,sp2:r.sp2,sp3:r.sp3,ad:r.ad,imgScore:r.imgScore||0}));
+ const tours=rows.map(r=>({id:r.id,name:r.name||'(名前なし)',dest:r.dest,inn:r.inn,price:r.price,title:r.title,sp1:r.sp1,sp2:r.sp2,sp3:r.sp3,ad:r.ad,imgScore:r.imgScore||0}));
  const ev=evaluate(tours,personas,o);
  state.cycles[o.stage]={results:ev.results,warn:ev.warn,assign:ev.assign,detail:ev.detail,voices:ev.voices,opts:o,at:new Date().toLocaleString('ja-JP')};
  save();renderResults();clearTimeout(window.__pt);clearTimeout(window.__pb);clearTimeout(window.__pd);window.__plazaAnim=true;showTab('plaza');setTimeout(()=>drawPlaza(true),150);window.__pd=setTimeout(()=>{if(document.querySelector('.tabpane.on').dataset.pane==='plaza')SFX.drum()},4300);window.__pb=setTimeout(()=>{const c=state.cycles[state.stage];if(!c||document.querySelector('.tabpane.on').dataset.pane!=='plaza')return;const L=state.rows.filter(r=>c.results[r.id]).sort((a,b)=>c.results[b.id].revenue-c.results[a.id].revenue);if(L.length){const t=L[0];showBanner(t.name+'さんが 今回の1位！',t.dest+'のツアー　'+c.results[t.id].count+'人 ／ '+c.results[t.id].revenue+'万円')}},5800);window.__pt=setTimeout(()=>{window.__plazaAnim=false;showTab('result');setTimeout(showRankPrompt,1500)},9500);
@@ -840,7 +848,7 @@ function renderCalc(){
  let h='<h2>数字のしくみ（どうやって選んでいるか）</h2>';
  h+='<div class="card"><h3 style="margin-top:0">計算のルール（いまの回：'+st+'回目）</h3><ol class="reasons">'+
  '<li>ペルソナ1人が、見えているツアーそれぞれに<b>点数（0〜1）</b>をつけます。'+w+'</li>'+
- '<li><b>好み（0〜1）</b>：ペルソナが好きな2つ（例：自然・グルメ）が、ツアーの特徴にどれだけ合うか。行き先の特徴（1つ目と2つ目は1点、3つ目は0.7点）に、キャッチコピーの言葉（1語で+0.4、最大+1）と観光スポットの言葉（1語で+0.25、最大+0.75）を足し、合計を1.5で割った数の平均。家族向けの言葉や宿との相性で、少し足したり引いたりします。</li>'+
+ '<li><b>好み（0〜1）</b>：ペルソナが好きな2つ（例：自然・グルメ）が、ツアーの特徴にどれだけ合うか。行き先の特徴（1つ目と2つ目は1点、3つ目は0.7点）に、タイトルの言葉（1語で+0.4、最大+1）と観光スポットの言葉（1語で+0.25、最大+0.75）を足し、合計を1.5で割った数の平均。家族向けの言葉や宿との相性で、少し足したり引いたりします。</li>'+
  '<li><b>値段（0〜1）</b>：ペルソナの予算（所得が低20・中30・高45万円）に対する、ツアーの値段の割合 r。r が1以下なら <b>1 − 0.4×r</b>、1を超えたら <b>0.6 − 1.2×(r−1)</b>（0より下にはならない）。</li>'+
  '<li><b>行きやすさ（−0.04〜+0.06）</b>：ペルソナの居住地（関西・関東など）と、ツアーの行き先の地方が近いほどプラス。同じ地方なら +0.06、となりの地方なら +0.02、2つ離れると −0.01、3つ以上離れると −0.04。</li>'+
  '<li><b>知っているか</b>：5回目以降は、ペルソナごとの情報感度（0.2〜0.55）＋広告ありなら0.45 の確率で知っている（上限0.95）。知らないツアーは選べません。</li>'+
@@ -882,7 +890,7 @@ const SFX={
 };
 function renderMute(){const b=document.getElementById('muteBtn');if(b)b.textContent=state.mute?'🔇 音なし':'🔊 音あり'}
 /* ===== サイコロ ===== */
-const CHANCE=['自分のツアーの魅力を10秒で言う','隣の人とジェスチャーで、行き先の名物を伝える','行き先の名産品を3つ言う','5秒間、ツアーのCMのように決めポーズをする','キャッチコピーを歌にして歌う','ほかの人のツアーを、ほめる一言を言う','行き先の方言を1つ言う（分からなければAIに聞いてOK）','自分が選んだ宿の自慢を15秒で話す','行き先の有名な場所を、絵で3秒で描いて当ててもらう','自分のツアーを一言（5文字以内）で表す'];
+const CHANCE=['自分のツアーの魅力を10秒で言う','隣の人とジェスチャーで、行き先の名物を伝える','行き先の名産品を3つ言う','5秒間、ツアーのCMのように決めポーズをする','タイトルを歌にして歌う','ほかの人のツアーを、ほめる一言を言う','行き先の方言を1つ言う（分からなければAIに聞いてOK）','自分が選んだ宿の自慢を15秒で話す','行き先の有名な場所を、絵で3秒で描いて当ててもらう','自分のツアーを一言（5文字以内）で表す'];
 const DICE_FACES=['⚀','⚁','⚂','⚃','⚄','⚅'];
 function diceState(){if(!state.dice)state.dice={history:[],deck:[]};return state.dice}
 function randInt(n){try{const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]%n}catch(e){return Math.floor(Math.random()*n)}}
@@ -1179,7 +1187,7 @@ function exportLedgerCsv(){
  download('ドリームコイン積み上げ表.csv',csv,'text/csv');
 }
 /* ===== いまやること（動線） ===== */
-const NEED={1:['行き先'],2:['宿','値段'],3:['タイトル','キャッチコピー'],4:['観光スポット1〜3'],5:['広告を出すか']};
+const NEED={1:['行き先'],2:['宿','値段'],3:['タイトル'],4:['観光スポット1〜3'],5:['広告を出すか']};
 function hueOf(t){let h=0;for(const c of String(t||'x'))h=(h*31+c.charCodeAt(0))%360;return h}
 function posterSvg(r,w,h){
  w=w||240;h=h||90;const hh=hueOf(r.dest);const emo=EMO[r.dest]||'🗾';const t=String(r.title||r.dest||'').slice(0,12);
@@ -1228,6 +1236,7 @@ function renderAwards(){
 }
 function showRankPrompt(){const p=document.getElementById('rankPrompt');const on=document.querySelector('.tabpane.on');if(p&&on&&on.dataset.pane==='result')p.style.display='block'}
 function showTab(t){
+ if(t==='howto'){try{renderHowto()}catch(e){}}
  try{mascotSay(t)}catch(e){}
  const rp=document.getElementById('rankPrompt');if(rp&&t!=='result')rp.style.display='none';
  const rf=document.getElementById('runFloat');if(rf)rf.style.display=(t==='input')?'block':'none';
@@ -1239,6 +1248,20 @@ function showTab(t){
  try{const pn=document.querySelector('.tabpane.on'),sk=document.querySelector('.stick');if(pn&&sk)window.scrollTo({top:Math.max(0,pn.getBoundingClientRect().top+window.scrollY-sk.offsetHeight-8),behavior:'auto'})}catch(e){}
  if(t==='money'||t==='rank'){renderSheet();renderLedger()}
 }
+
+const HOWTO=[{"e": "🗾", "t": "行き先を えらぶ", "steps": ["じゃんけん（かけっこ）で 順番を きめる。", "都道府県カードから 1つ えらぶ。1人 2つ。", "同じ県は えらべないよ。", "交通費を 払う（近い −10／ちょっと遠い −20／北海道・沖縄 −30）。"], "tip": "遠い所は お金がかかるけど、「行きたい！」と思う人も いるよ。"}, {"e": "👀", "t": "お客さんに 見せる（まいかい）", "steps": ["運営が、きみの ツアーの 情報を 入力する。", "「▶ お客さんに見せる」を おす。", "3・2・1 のあと、お客さんが 走って ツアーを えらぶ。", "「結果」で、何人 来たか、いくら もうかったか 見よう。", "「お客さんの こえ」を 読んで、よくするところを 考える。"], "tip": "お客さんの こえは、ヒントの たからばこ！"}, {"e": "🔍", "t": "地域調べ（AIに 聞く）", "steps": ["AIに 行き先の ことを 聞く。", "聞いた ことを 3行で メモする。", "「クイズ」タブで、ご当地クイズにも 挑戦！"], "prompt": "〇〇県の 有名な 食べ物と 観光地を、小学生にも わかる ことばで 3つずつ おしえて。", "tip": "AIの 答えは まちがうことも あるよ。ほんとうかな？と 思ったら 先生に 聞こう。"}, {"e": "🏨", "t": "宿と ねだんを きめる", "steps": ["ゲストハウス（−10万）／ホテル（−30万）／高級旅館（−60万）から 1つ えらぶ。", "ねだんを 5万円ずつで きめる。", "上限が あるよ（遠い所・いい宿ほど 高くできる）。"], "tip": "高すぎると 売れない。安すぎると もうからない。ちょうどいい ねだんを さがそう！"}, {"e": "✍️", "t": "タイトルを 作る", "steps": ["AIに ツアーの 名前を 考えてもらう。", "気に入った ものを えらぶ。自分で 直しても いいよ。", "お客さんが 行きたくなる ことばを 入れよう（温泉・グルメ・自然…）。"], "prompt": "〇〇県で、△△が すきな 人に 売る 旅行ツアーの 名前を、10文字くらいで 5つ 考えて。", "tip": "お客さんは タイトルの ことばを 見て えらぶよ。"}, {"e": "📍", "t": "観光スポットを きめる", "steps": ["AIに 行き先の 観光スポットを 聞く。", "ツアーで 行く 3か所を えらぶ。", "タイトルと 合う場所だと、お客さんに にんき！"], "prompt": "〇〇県で、△△が すきな 人に おすすめの 観光スポットを 5つ おしえて。1つずつ ひとこと 説明して。", "tip": "「お客さんに 来てほしい 場所」を えらぼう。"}, {"e": "📣", "t": "広告を 作る（出す人だけ）", "steps": ["広告費 10万円を 払うと、お客さんに 知ってもらいやすく なる。", "ChatGPTに ポスターの 絵を 作ってもらう。", "できた 絵を 運営に 出す。", "運営が アプリに 貼ってくれる。"], "prompt": "「〇〇ツアー」の 旅行ポスターを 作って。〇〇県の 名物と 名所が 入った、明るくて たのしい 絵で。文字は 入れないで。", "tip": "自分や 友だちの 名前・顔写真は 入れない！ 作りなおしは 3回まで。"}, {"e": "🎤", "t": "ミニ発表（30秒）", "steps": ["自分の ツアーを 30秒で 紹介する。", "「どこに行くか」「どんなところが いいか」「ねだん」を 話す。", "広告を 出した人は、ポスターも 見せる。"], "tip": "大きな こえで、ゆっくり！"}, {"e": "🎲", "t": "サイコロ・ルーレット", "steps": ["サイコロは 1人 3回。出た 目で お金が かわる。", "3は チャンスカード、4は AIに 頼んで 審査員に 見てもらう。", "ルーレットで 当たると、団体の お客さんが 来る！", "広告を 出した人は ルーレットで 当たりやすい。"], "tip": "運も 大事。ドキドキを たのしもう！"}, {"e": "🏆", "t": "最終ピッチ（2日目）", "steps": ["1日目の 結果を 見て、ツアーを よくする。", "1人 2〜3分で 発表する。", "みんなは お客さんコイン 50万円で、友だちの ツアーを 買う。", "AIの お客さんも 買う。ドリームコインが 一番 多い人が 優勝！"], "tip": "友だちに 「行きたい！」と 思わせよう。"}, {"e": "🔒", "t": "AIを つかう おやくそく", "steps": ["自分や 友だち、おうちの人の 名前・住所・電話番号・学校の名前・顔の写真は、AIに 入れない。", "AIの 答えは まちがうことが ある。自分でも たしかめる。", "つかい おわったら、チャットの きろくを 消す。"], "tip": "わからない ときは、すぐ 先生に 聞いてね。"}];
+let howIdx=0;
+function renderHowto(){
+ const box=document.getElementById('howtoBox');if(!box)return;
+ const h=HOWTO[howIdx];
+ box.innerHTML='<div class="howcard"><div class="howtop"><span class="howno">'+(howIdx+1)+' / '+HOWTO.length+'</span><span class="howe">'+h.e+'</span></div><h3 class="howt">'+esc(h.t)+'</h3><ol class="hows">'+h.steps.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ol>'+(h.prompt?'<div class="howp"><div class="howpl">🤖 AIへの 聞き方（れい）</div><div class="howpt" id="howPrompt">'+esc(h.prompt)+'</div><button id="howCopy">📋 コピー</button></div>':'')+(h.tip?'<div class="howtip">💡 '+esc(h.tip)+'</div>':'')+'<div class="hownav"><button id="howPrev">◀ まえへ</button><span class="howdots">'+HOWTO.map((_,i)=>'<i data-i="'+i+'" class="'+(i===howIdx?'on':'')+'"></i>').join('')+'</span><button id="howNext">つぎへ ▶</button></div></div>';
+ document.getElementById('howPrev').onclick=()=>{howIdx=Math.max(0,howIdx-1);SFX.pop();renderHowto()};
+ document.getElementById('howNext').onclick=()=>{howIdx=Math.min(HOWTO.length-1,howIdx+1);SFX.pop();renderHowto()};
+ box.querySelectorAll('.howdots i').forEach(d=>d.onclick=()=>{howIdx=Number(d.dataset.i);renderHowto()});
+ const cp=document.getElementById('howCopy');if(cp)cp.onclick=()=>{const t=document.getElementById('howPrompt').textContent;try{navigator.clipboard.writeText(t).then(()=>{cp.textContent='✅ コピーしたよ！'},()=>{prompt('コピーして つかってね',t)})}catch(e){prompt('コピーして つかってね',t)}};
+}
+function showHowto(i){howIdx=Math.max(0,Math.min(HOWTO.length-1,i));showTab('howto');renderHowto()}
+const STAGE_HOW={1:1,2:3,3:4,4:5,5:6,6:9};
 function renderFlow(){
  const el=document.getElementById('flow');if(!el)return;
  const st=state.stage,done=state.cycles[st];
@@ -1253,8 +1276,10 @@ function renderFlow(){
  }else{
   h+='<div style="font-size:1.05rem"><b>✓ 6回目（最終ピッチ）の結果が出ました。</b> サイコロ・団体客ルーレットを回して、最終のドリームコインを決めましょう。</div>';
  }
+  h+='<div style="margin-top:6px"><button id="flowHow" class="sec">📘 この回の やり方を 見る</button></div>';
  h+='<div class="sub" style="margin-top:4px">※ 前の回の入力を変えたときは、その回をもう一度押すと、お金が計算し直されます。</div></div>';
  el.innerHTML=h;
+ const fh=document.getElementById('flowHow');if(fh)fh.onclick=()=>showHowto(STAGE_HOW[state.stage]||0);
  const nb=document.getElementById('nextStage');if(nb)nb.onclick=()=>{state.stage=st+1;save();renderStage();renderResults();markNeed();clearTimeout(window.__pt);showTab('input');document.getElementById('flow').scrollIntoView({behavior:'smooth',block:'start'})};
  markNeed();
 }
@@ -1506,10 +1531,10 @@ function renderResDist(){
 function download(name,text,type){const b=new Blob([text],{type});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click()}
 function sampleRows(){
  state.rows=[
-  {id:'T1',name:'たろう',dest:'北海道',inn:'ゲストハウス',price:25,title:'北海道まるごとごちそう旅',copy:'海鮮と雪景色を、みんなで味わおう',sp1:'小樽の寿司',sp2:'旭山動物園',sp3:'富良野の花畑',ad:false,extra:0},
-  {id:'T2',name:'ゆい',dest:'沖縄',inn:'高級旅館',price:35,title:'ジンベエザメと泳ぐ夏休み',copy:'海も、島のごはんも、全部とくべつ',sp1:'美ら海水族館',sp2:'青の洞窟',sp3:'国際通りでおみやげ',ad:true,extra:0},
-  {id:'T3',name:'けんと',dest:'福岡',inn:'ホテル',price:20,title:'屋台とラーメンの食べ歩き',copy:'友だちと行く、おいしい博多',sp1:'中洲の屋台',sp2:'太宰府天満宮',sp3:'キャナルシティで買い物',ad:true,extra:0},
-  {id:'T4',name:'みさき',dest:'京都',inn:'高級旅館',price:35,title:'古都でゆったり温泉と歴史',copy:'お寺めぐりとのんびり露天風呂',sp1:'清水寺',sp2:'嵐山',sp3:'伏見稲荷',ad:false,extra:0}];
+  {id:'T1',name:'たろう',dest:'北海道',inn:'ゲストハウス',price:25,title:'北海道まるごとごちそう旅',sp1:'小樽の寿司',sp2:'旭山動物園',sp3:'富良野の花畑',ad:false,extra:0},
+  {id:'T2',name:'ゆい',dest:'沖縄',inn:'高級旅館',price:35,title:'ジンベエザメと泳ぐ夏休み',sp1:'美ら海水族館',sp2:'青の洞窟',sp3:'国際通りでおみやげ',ad:true,extra:0},
+  {id:'T3',name:'けんと',dest:'福岡',inn:'ホテル',price:20,title:'屋台とラーメンの食べ歩き',sp1:'中洲の屋台',sp2:'太宰府天満宮',sp3:'キャナルシティで買い物',ad:true,extra:0},
+  {id:'T4',name:'みさき',dest:'京都',inn:'高級旅館',price:35,title:'古都でゆったり温泉と歴史',sp1:'清水寺',sp2:'嵐山',sp3:'伏見稲荷',ad:false,extra:0}];
  state.nextId=5;
 }
 function init(){
