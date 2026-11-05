@@ -201,6 +201,16 @@ input,select{font-size:1rem;border-radius:12px;border-width:2px}
 #sheet table td:nth-child(2){font-weight:800}
 .gg span{white-space:nowrap}
 .gg span{min-width:6.6em}
+
+.aisum{border:3px solid #74c0fc;border-radius:18px;background:#f3faff;padding:12px 14px}
+.aihead{font-size:1.35rem;font-weight:800;margin-bottom:8px}
+.aichips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.aichips span{padding:6px 12px;border-radius:999px;font-weight:800;font-size:1.05rem}
+.aivoices{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.aibub{display:flex;gap:8px;align-items:flex-start;background:#fff;border-radius:16px;padding:10px;border:2px solid #e7f5ff;font-size:1.05rem}
+.aiav{font-size:2rem;line-height:1}
+.aiodd{margin-top:8px;background:#fff0f0;border-radius:10px;padding:6px 10px;font-weight:700}
+.ainext{margin-top:6px;background:#fff9db;border-radius:10px;padding:6px 10px;font-weight:700}
 </style>
 </head>
 <body>
@@ -262,7 +272,7 @@ input,select{font-size:1rem;border-radius:12px;border-width:2px}
 <li><b>📋 結果タブ</b>（ツアーごと）：「AIせんせいに 見てもらう」＝売れた理由・おかしいところ ／「お客さんの声を AIで書き直す」</li>
 <li><b>🎲 サイコロタブ</b>の下：「AIに キャッチコピーを 採点してもらう」</li></ol>
 <div class="sub">※ AIは インターネットを 検索しません。アプリが わたした データ（行き先・タイトル・結果）だけを 読んで、文章を 書きます。買う判断・お金は AIでは なく、いつもの 仕組みです。</div></div>
-<label style="display:block;margin-top:8px;cursor:pointer"><input type="checkbox" id="aiAuto" checked> 結果が出たら、AIせんせい と 声の書き直し（10人）を 自動で 全ツアーぶん 出す</label>
+<label style="display:block;margin-top:8px;cursor:pointer"><input type="checkbox" id="aiAuto" checked> 結果が出たら、AIが「なぜ選ばれたか・お客さんの声3人・次にやること」を 自動で 全ツアーぶん まとめる</label>
 <div class="row" style="margin-top:8px"><button class="sec" id="aiTest">つながるか テスト</button><button id="aiClose">とじる</button></div><div id="aiTestRes" class="sub" style="margin-top:6px"></div></div></div>
 <button id="aiFab" style="position:fixed;right:14px;bottom:130px;z-index:80;border-radius:999px;padding:10px 16px;box-shadow:0 4px 14px rgba(0,0,0,.3)">🤖 AIせってい</button>
 
@@ -1490,14 +1500,14 @@ function aiCache(tid,k,html){const c=state.cycles[state.stage];if(!c)return;c.ai
 function aiAutoOn(){try{return localStorage.getItem('aiPersonaApp.aiauto')!=='0'}catch(e){return true}}
 function aiFillCache(){
  const c=state.cycles[state.stage];if(!c||!c.ai)return;
- Object.keys(c.ai).forEach(tid=>{const t=document.getElementById('tsum_'+tid);if(!t)return;const a=t.querySelector('.aiwhybox'),v=t.querySelector('.aivoicebox');if(a&&c.ai[tid].why)a.innerHTML=c.ai[tid].why;if(v&&c.ai[tid].voices)v.innerHTML=c.ai[tid].voices})
+ Object.keys(c.ai).forEach(tid=>{const t=document.getElementById('tsum_'+tid);if(!t)return;const a=t.querySelector('.aisumbox');if(a&&c.ai[tid].sum)a.innerHTML=c.ai[tid].sum})
 }
 async function aiAuto(){
  if(!aiKey()||!aiAutoOn())return;
  await new Promise(r=>setTimeout(r,600));
  const c=state.cycles[state.stage];if(!c)return;
  const ids=state.rows.filter(r=>c.results[r.id]).map(r=>r.id);
- const jobs=[];ids.forEach(id=>{jobs.push(()=>{const t=document.getElementById('tsum_'+id);const b=t&&t.querySelector('.aiwhybox');return b?aiWhy(id,b):0});jobs.push(()=>{const t=document.getElementById('tsum_'+id);const b=t&&t.querySelector('.aivoicebox');return b?aiVoices(id,b):0})});
+ const jobs=[];ids.forEach(id=>{jobs.push(()=>{const t=document.getElementById('tsum_'+id);const b=t&&t.querySelector('.aisumbox');return b?aiSummary(id,b):0})});
  let i=0;const worker=async()=>{while(i<jobs.length){const j=jobs[i++];try{await j()}catch(e){}}};
  await Promise.all([worker(),worker(),worker()]);
 }
@@ -1530,6 +1540,37 @@ async function aiIdeas(){
  }catch(e){out.innerHTML='<span class="minus">つながりませんでした（'+esc(e.message||'error')+'）。自分で考えてみよう。</span>'}
 }
 function renderIdeaWho(){const sel=document.getElementById('ideaWho');if(!sel)return;const cur=sel.value;sel.innerHTML=state.rows.filter(r=>r.dest).map(r=>'<option value="'+r.id+'">'+esc((r.name||'(名前なし)')+(r.parent?'（2本目）':'')+'：'+r.dest)+'</option>').join('');if(cur)sel.value=cur}
+
+const FAM_EMO={'一人':'🧑','夫婦':'👫','小さい子連れ':'👶','小中学生連れ':'🧒','三世代':'👪','友人グループ':'👯'};
+function famOf(who){const k=Object.keys(FAM_EMO).find(x=>String(who).includes(x));return k||''}
+async function aiSummary(tid,box){
+ if(!aiKey()){openAi();return}
+ const cur=state.cycles[state.stage];const r=state.rows.find(x=>x.id===tid);if(!cur||!r||!cur.results[tid])return;
+ const res=cur.results[tid];const nm=r.name||'';
+ const strip=t=>String(t).split(nm+'さんの').join('このツアーの').split(nm).join('このツアー');
+ // いろいろなタイプのお客さんを最大6人えらぶ
+ const V=res.voices||[];const seen={};const cand=[];
+ V.forEach(v=>{const k=famOf(v.who);if(!seen[k]&&cand.length<6){seen[k]=1;cand.push(v)}});
+ V.forEach(v=>{if(cand.length<6&&!cand.includes(v))cand.push(v)});
+ if(!cand.length){box.innerHTML='<span class="sub">買った人がいませんでした。</span>';return}
+ box.textContent='🤖 AIが まとめています…';
+ const w=res.why||{};
+ const data={行き先:r.dest,宿:r.inn,値段万円:r.price,タイトル:r.title||'',キャッチコピー:r.copy||'',観光スポット:[r.sp1,r.sp2,r.sp3].filter(Boolean),買った人数:res.count,お客さん全体:(cur.opts&&cur.opts.n)||100,理由の人数:{行き先の人気:w.dest||0,タイトル:w.title||0,キャッチコピー:w.copy||0,観光スポット:w.spot||0,宿が好み:w.inn||0,値段が予算に合う:w.price||0,広告:w.ad||0,行きやすさ:w.loc||0},ヒント:res.hints||[],候補の声:cand.map((v,i)=>({no:i+1,who:String(v.who).split('（')[0],text:strip(v.text)}))};
+ try{
+  const t=await callAI('あなたは、小中学生の「旅行会社ごっこ」を見守る やさしい先生です。AIのお客さんがツアーを選んだ結果のデータです。子どもがパッと読める、短い やさしい日本語でまとめてください。必ず次のJSONだけを返します。\n{"headline":"20字以内。なぜ選ばれたかを1行","reasons":["14字以内の理由","14字以内の理由","14字以内の理由"],"voices":[{"no":候補の番号,"text":"40字以内のお客さんの声（その人の言い方で・理由が分かる）"} を、違うタイプの人から3つ],"oddity":"おかしい点（行き先に合わない言葉・空欄・高すぎる値段など）があれば30字以内、なければ空文字","next":"次にやるとよいこと30字以内"}\n名前は出さない。理由は「理由の人数」の多い順。\n\n'+JSON.stringify(data),900);
+  const j=JSON.parse(t.match(/\{[\s\S]*\}/)[0]);
+  const reasons=(j.reasons||[]).slice(0,3);
+  const vs=(j.voices||[]).slice(0,3).map(x=>({c:cand[(x.no|0)-1],text:x.text})).filter(x=>x.c&&x.text);
+  const cl=['#fff3bf','#d3f9d8','#d0ebff'];
+  let h='<div class="aisum"><div class="aihead">🏆 '+esc(j.headline||'')+'</div>';
+  h+='<div class="aichips">'+reasons.map((x,i)=>'<span style="background:'+cl[i]+'">'+['①','②','③'][i]+' '+esc(x)+'</span>').join('')+'</div>';
+  h+='<div class="aivoices">'+vs.map(x=>'<div class="aibub"><div class="aiav">'+(FAM_EMO[famOf(x.c.who)]||'🙂')+'</div><div><div>'+esc(x.text)+'</div><div class="sub">'+esc(String(x.c.who).split('（')[0])+'</div></div></div>').join('')+'</div>';
+  if(j.oddity&&String(j.oddity).trim())h+='<div class="aiodd">⚠️ '+esc(j.oddity)+'</div>';
+  if(j.next)h+='<div class="ainext">💡 つぎは：'+esc(j.next)+'</div>';
+  h+='<div class="sub">🤖 AIの まとめ（参考。お金や順位には関係しません）</div></div>';
+  box.innerHTML=h;aiCache(tid,'sum',h);
+ }catch(e){box.innerHTML='<span class="minus">つながりませんでした（'+esc(e.message||'error')+'）。下の「くわしく」を見てね。</span>'}
+}
 async function aiWhy(tid,box){
  if(!aiKey()){openAi();return}
  const cur=state.cycles[state.stage];const r=state.rows.find(x=>x.id===tid);if(!cur||!r||!cur.results[tid]){return}
@@ -1542,7 +1583,7 @@ async function aiWhy(tid,box){
   box.innerHTML='<b>🤖 AIせんせいの コメント</b><div style="white-space:pre-wrap">'+esc(t.trim())+'</div><div class="sub">※ 参考です。お金や順位には関係しません。</div>';aiCache(tid,'why',box.innerHTML);
  }catch(e){box.innerHTML='<span class="minus">つながりませんでした（'+esc(e.message||'error')+'）。いつもの結果だけで続けられます。</span>'}
 }
-document.addEventListener('click',e=>{let b=e.target.closest('[data-aiwhy]');if(b){const box=b.parentElement.querySelector('.aiwhybox');if(box)aiWhy(b.dataset.aiwhy,box);return}b=e.target.closest('[data-aivoice]');if(b){if(!aiKey()){openAi();return}const box=b.parentElement.querySelector('.aivoicebox');if(box)aiVoices(b.dataset.aivoice,box)}});
+document.addEventListener('click',e=>{let b=e.target.closest('[data-aisum]');if(b){const box=b.parentElement.querySelector('.aisumbox');if(box)aiSummary(b.dataset.aisum,box);return}b=e.target.closest('[data-aiwhy]');if(b){const box=b.parentElement.querySelector('.aiwhybox');if(box)aiWhy(b.dataset.aiwhy,box);return}b=e.target.closest('[data-aivoice]');if(b){if(!aiKey()){openAi();return}const box=b.parentElement.querySelector('.aivoicebox');if(box)aiVoices(b.dataset.aivoice,box)}});
 function aiKey(){try{return localStorage.getItem(AIKEY)||''}catch(e){return ''}}
 function aiKeyShow(){const e=document.getElementById('aiKeyState');if(e)e.textContent=aiKey()?'✅ 保存ずみ（この端末だけ）':'（まだ 入っていません）';const f=document.getElementById('aiFab');if(f)f.textContent=aiKey()?'🤖 AI ✅':'🤖 AIせってい'}
 async function aiJudge(){
@@ -1776,7 +1817,7 @@ function whyHtml(res,r,stage){
  const mx=Math.max(...arr.map(x=>x.v));
  const top=arr[0];
  let h='<div class="card" style="margin:8px 0;background:#fffbea"><b>🏆 なんで 売れたの？（勝因）</b><div style="font-size:1.05rem;margin:4px 0">いちばんの理由は <b>'+esc(top.l)+'</b>（買った'+w.n+'人のうち '+top.v+'人）</div>';
- h+=arr.map(x=>'<div style="display:flex;align-items:center;gap:8px;margin:3px 0"><div style="min-width:15em;font-size:.95rem">'+esc(x.l)+'</div><div style="flex:1;height:14px;border-radius:7px;background:var(--line)"><i style="display:block;height:100%;width:'+(x.v/mx*100)+'%;border-radius:7px;background:linear-gradient(90deg,#ffd43b,#ff6b6b)"></i></div><b style="min-width:3.2em;text-align:right">'+x.v+'人</b></div>').join('');
+ h+=arr.map(x=>'<div style="display:flex;align-items:center;gap:8px;margin:3px 0"><div style="min-width:19em;font-size:.95rem">'+esc(x.l)+'</div><div style="flex:1;height:14px;border-radius:7px;background:var(--line)"><i style="display:block;height:100%;width:'+(x.v/mx*100)+'%;border-radius:7px;background:linear-gradient(90deg,#ffd43b,#ff6b6b)"></i></div><b style="min-width:3.2em;text-align:right">'+x.v+'人</b></div>').join('');
  const tip=[];const info=tourInfo(r);const tg=info?info.tags.slice(0,2).map(g=>(CATINFO[g]?CATINFO[g].e:'')+g).join('・'):'';
  if(stage>=3&&!(w.title||w.copy))tip.push('タイトルやキャッチコピーに、お客さんが好きな言葉（'+tg+'など）を入れると、もっと響くよ');
  if(stage>=4&&!w.spot)tip.push('観光スポットに、'+r.dest+'の有名な場所を入れてみよう');
@@ -1797,14 +1838,15 @@ function renderSummaries(){
   h+='<img src="'+tourPic(r)+'" style="max-width:220px;border-radius:10px;float:right;margin-left:10px" alt="">';
   if(r.copy)h+='<div style="font-size:1.1rem;margin:4px 0">📝 キャッチコピー：<b>「'+esc(r.copy)+'」</b></div>';
   h+=whyHtml(res,r,state.stage);
-  h+='<div style="margin:6px 0"><button class="sec" data-aiwhy="'+r.id+'">🤖 AIせんせいに 理由と おかしいところを 見てもらう</button> <button class=\"sec\" data-aivoice=\"'+r.id+'\">🤖 お客さんの声を AIで自然に書き直す</button> <select class=\"aivn\"><option value=\"3\">3人</option><option value=\"5\">5人</option><option value=\"10\" selected>10人</option></select><div class="aiwhybox" style="margin-top:6px"></div><div class="aivoicebox" style="margin-top:6px"></div></div>';
+  h+='<div style="margin:8px 0"><button class="sec" data-aisum="'+r.id+'">🤖 AIまとめを 出す（やり直す）</button><div class="aisumbox" style="margin-top:8px"></div></div>';
   h+='<div style="font-size:1.25rem;font-weight:800">💰 稼いだ金額：<span class="plus">'+res.revenue+'万円</span>　<span class="sub" style="font-weight:400">（'+res.count+'人 × '+r.price+'万円'+((res.scale||1)!==1?' × '+Math.round((res.scale||1)*100)+'%':'')+(res.topUp?' ＋保証の補填 '+res.topUp+'万':'')+'。この回の費用'+cost+'万円を引くと もうけ <b class="'+(gain>=0?'plus':'minus')+'">'+(gain>=0?'+':'')+gain+'万円</b>）</span></div>';
+  h+='<details'+(aiKey()?'':' open')+' style="margin:6px 0"><summary style="cursor:pointer;font-weight:800">📖 くわしく見る（買った人の ようす・ぜんぶの声）</summary>';
   h+='<div style="margin:4px 0"><b>買った人の声のまとめ（'+res.count+'人）</b></div>'+buyerAttr(res,cur)+summarize(res);
   const first=res.voices.slice(0,3);
   h+='<ul class="reasons">'+first.map(x=>'<li><span class="sub">'+esc(x.who)+'</span><br>'+voiceHtml(x)+(x.g?' <span class="tag">保証枠</span>':'')+'</li>').join('')+'</ul>';
   if(res.voices.length>3)h+='<details><summary style="cursor:pointer;font-weight:700">全員の声を開く（残り'+(res.voices.length-3)+'人）</summary><ol class="reasons" start="4">'+res.voices.slice(3).map(x=>'<li><span class="sub">'+esc(x.who)+'</span><br>'+voiceHtml(x)+(x.g?' <span class="tag">保証枠</span>':'')+'</li>').join('')+'</ol></details>';
   if(res.near&&res.near.length)h+='<details><summary style="cursor:pointer;font-weight:700">迷ったけれど選ばなかった人の声</summary><ul class="reasons">'+res.near.map(x=>'<li><span class="sub">'+esc(x.who)+'</span><br>'+esc(x.text)+'</li>').join('')+'</ul></details>';
-  h+='<div class="sub" style="margin-top:4px">改善のヒント：'+res.hints.map(esc).join('／')+'</div></div>';
+  h+='<div class="sub" style="margin-top:4px">改善のヒント：'+res.hints.map(esc).join('／')+'</div></details></div>';
  });
  el.innerHTML=h;try{aiFillCache()}catch(e){}
 }
