@@ -242,6 +242,9 @@ input,select{font-size:1rem;border-radius:12px;border-width:2px}
 <div class="card tbl"><table id="inputTbl"><thead><tr>
 <th>#</th><th>名前</th><th data-need="1">行き先</th><th data-need="2">宿</th><th data-need="2">値段(万)</th><th>上限</th><th data-need="3">タイトル</th><th data-need="3">キャッチコピー<br><span class="sub">長めでOK（60字まで）</span></th><th data-need="4">観光スポット1</th><th data-need="4">観光スポット2</th><th data-need="4">観光スポット3</th><th data-need="5">広告を出す<br>(広告費10万円)</th><th>ことばチェック</th></tr></thead><tbody></tbody></table>
 <div style="margin-top:8px"><button class="sec" id="addRow">参加者を追加</button> <span class="sub">（最大15人）</span></div></div>
+<details class="card"><summary style="cursor:pointer;font-weight:800">🤖 本物のAIにつなぐ（先生用・なくても動きます）</summary>
+<div class="sub" style="margin:6px 0">Claude の APIキーを この端末にだけ 保存します。ファイルやバックアップには入りません。つながらない時は、いつもの仕組みのままです。名前は送りません（タイトル・キャッチコピー・行き先だけ）。</div>
+<div class="row"><div><label>APIキー（sk-ant-…）</label><input type="password" id="aiKey" autocomplete="off" style="min-width:280px"></div><button class="sec" id="aiKeySave">保存</button><button class="sec" id="aiKeyDel">消す</button><span class="sub" id="aiKeyState"></span></div></details>
 
 
 <h2>▶ お客さんに 見せよう！</h2>
@@ -351,7 +354,7 @@ input,select{font-size:1rem;border-radius:12px;border-width:2px}
 <h2 style="margin-top:22px">📝 キャッチコピー投票（人が えらぶ）</h2>
 <div class="card"><div class="sub" style="font-size:1.05rem">タイトルと キャッチコピーだけ を 見て、いちばん ひかれた ツアーに 1票！（自分のには 入れられないよ）1票 = <b>2万円</b> が その人に 入るよ。</div>
 <div class="row" style="margin-top:8px"><div><label>投票する人</label><select id="voteWho"></select></div><button class="sec" id="voteReset">票を ぜんぶ 消す</button></div>
-<div id="voteList" style="margin-top:10px"></div><div id="voteTally" style="margin-top:10px"></div></div>
+<div class="row" style="margin-top:10px"><button id="aiJudgeBtn">🤖 AIに キャッチコピーを 採点してもらう</button><span class="sub">（APIキーを入れた時だけ）</span></div><div id="aiJudge" style="margin-top:8px"></div><div id="voteList" style="margin-top:10px"></div><div id="voteTally" style="margin-top:10px"></div></div>
 </div>
 <div class="tabpane" data-pane="rules"><h2>📖 ルール</h2><div class="cardgrid"><div class="rcard"><div class="remo">🧳</div><h3>きみは「旅行会社の社長」だよ！</h3><p>AI（えーあい）という、かしこいコンピューターと、いっしょに、<br>たのしい旅行ツアーを作って、売ろう！</p><p>いちばんお金が多い社長が、<b>ゆうしょう</b>！</p></div><div class="rcard"><div class="remo">💰</div><h3>さいしょのお金は、150万円</h3><p>このゲームの中だけで使う、お金の名前は<b>「ドリームコイン」</b>。</p><p>さいしょに、みんなに 150万円ずつ、くばるよ。</p><p>ツアーが売れると、お金が<b>どんどん ふえていく</b>！</p></div><div class="rcard"><div class="remo">🗾</div><h3>① 行き先を えらぼう</h3><p>都道府県のカードから、じゃんけんで、じゅんばんに えらぶよ。</p><p><b>同じ県は、えらべません。</b></p><p>遠いほど、行くのにお金が かかるよ。</p><p>かかるお金：近い 10万円　／　ちょっと遠い 20万円　／　北海道・沖縄 30万円</p></div><div class="rcard"><div class="remo">🎒</div><h3>ツアーは、1人 1つ 作るよ！</h3><p>行き先と宿を えらんで、<b>自分の ツアー</b>を 1つ 作ろう。</p><p>同じ県は、<b>だれとも かぶれません</b>。</p><p>もっと 作りたい人は、2つ目も つくれるよ（先生に 聞いてね）。そのぶん お金も かかるよ。</p></div><div class="rcard"><div class="remo">🏨</div><h3>② とまる宿を えらぼう</h3><p>かかるお金：ゲストハウス 10万円　／　ホテル 30万円　／　高級旅館 60万円</p><p>いい宿ほど、高い ねだんを つけられる。でも、お金は へるよ。</p></div><div class="rcard"><div class="remo">🏷️</div><h3>③ ツアーの ねだんを きめよう</h3><p>5万円ずつ えらべるよ。ただし、つけられる いちばん高い ねだんが きまってる。</p><p>遠い所や いい宿ほど、高く つけられる。</p><p>でも、高すぎると、お客さんは 買ってくれない！</p></div><div class="rcard"><div class="remo">✍️</div><h3>④ ツアーを 作ろう</h3><p>ツアーの名前（タイトル）と、行ってほしい 見どころ 3つを 決めよう。</p><p>広告を出す人は、ポスターの絵も 作るよ。</p><p>AIに聞いて、いい言葉を 考えよう！</p></div><div class="rcard"><div class="remo">🤖</div><h3>⑤ AIの お客さん 100人が 買うよ</h3><p>コンピューターが、いろんな人（100人）の、ふりをして、</p><p>「どのツアーを 買うか」を えらぶよ。</p><p><b>買ってくれた人の数 × ねだん</b> が、きみの もうけ！</p><p>1日目に 5回、2日目に 1回、結果が 出るよ。</p><p>「3・2・1！」のあと、お客さんが ツアーに むかって 走りだす！</p><p>そのあと、ランキングが 発表されるよ。</p></div><div class="rcard"><div class="remo">📣</div><h3>⑥ 広告を 出そう（出さなくても OK）</h3><p>お金 10万円で、ツアーを たくさんの人に 知らせられるよ。</p><p>広告を出すと、お客さんが 買いやすくなる！</p><p>ルーレットでも、当たりやすくなるよ。</p></div><div class="rcard"><div class="remo">🎲</div><h3>サイコロ（ひとり 3回）</h3><p>1：20万円 ふえる　　2：10万円 へる</p><p>3：チャンスカード！（クリアしたら 20万円 ふえる）</p><p>4：AIの せんせいに 見てもらって、6点以上なら 10万円 ふえる</p><p>5：30万円 ふえる　　6：20万円 へる</p></div><div class="rcard"><div class="remo">🎡</div><h3>お客さん団体 ルーレット（ぜんぶで 4回）</h3><p>ルーレットで 当たった人の ツアーに、団体のお客さんが やってくる！</p><p>もらえるお金は<b>「ねだん × 団体の人数」</b>。大きく ふえるチャンス！</p><p>広告を出した人は、名前が 2つぶん 入るから、当たりやすいよ。</p></div><div class="rcard"><div class="remo">🎤</div><h3>2日目：さいごの 発表（ピッチ）</h3><p>ツアーの いいところを、みんなの前で 発表しよう！</p><p>みんなが、<b>お客さんコイン 50万円</b> を もらって、</p><p>友だちの ツアーを 買うよ。</p><p>さいごに、AIの お客さんも 買うよ。</p></div><div class="rcard"><div class="remo">🏆</div><h3>ゆうしょうは だれ？</h3><p>ドリームコインが いちばん 多い人が ゆうしょう！</p><p>AIが 高く 評価した人には、しょうきんも あるよ。</p><p>みんなに、しょうじょうが あるよ。</p></div><div class="rcard"><div class="remo">🔒</div><h3>AIを つかうときの おやくそく</h3><p>自分や 友だち、おうちの人の<br>名前・住所・電話番号・学校の名前・顔の写真は、AIに 入れない。</p><p>AIの 答えは、まちがうことが あるよ。自分でも たしかめよう。</p><p>つかい おわったら、チャットの きろくを 消そう。</p></div></div></div>
 <div class="tabpane" data-pane="howto"><h2>📘 やり方（スライド）</h2><div class="sub" style="font-size:1.05rem">「◀ ▶」で すすめるよ。AIへの 聞き方は「コピー」を おすと、そのまま つかえるよ。</div><div id="howtoBox"></div></div>
@@ -1426,6 +1429,28 @@ function exportLedgerCsv(){
 }
 
 
+
+/* ===== 本物のAI（任意）：キーはこの端末の localStorage にだけ ===== */
+const AIKEY='aiPersonaApp.apikey';
+function aiKey(){try{return localStorage.getItem(AIKEY)||''}catch(e){return ''}}
+function aiKeyShow(){const e=document.getElementById('aiKeyState');if(e)e.textContent=aiKey()?'✅ 保存ずみ（この端末だけ）':'（まだ 入っていません）'}
+async function aiJudge(){
+ const out=document.getElementById('aiJudge');const key=aiKey();
+ if(!key){out.innerHTML='<span class="sub">先に「入力」タブの「本物のAIにつなぐ」で、APIキーを保存してね。</span>';return}
+ const T=state.rows.filter(r=>r.dest&&(r.copy||r.title));
+ if(!T.length){out.innerHTML='<span class="sub">タイトルかキャッチコピーを入れてね。</span>';return}
+ out.textContent='🤖 AIが読んでいます…';
+ const items=T.map((r,i)=>({no:i+1,dest:r.dest,title:r.title||'',copy:r.copy||''}));
+ try{
+  const ctrl=new AbortController();const to=setTimeout(()=>ctrl.abort(),25000);
+  const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',signal:ctrl.signal,headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-5-5',max_tokens:1500,messages:[{role:'user',content:'小中学生が作った旅行ツアーのキャッチコピーを、やさしく採点してください。各ツアーに score(1〜5の整数)と comment(40字以内・子ども向けのひらがな多め・良い点と、もう少しの点を1つずつ)を付けます。JSONの配列だけを返してください。形式: [{"no":1,"score":4,"comment":"…"}]\n\n'+JSON.stringify(items)}]})});
+  clearTimeout(to);
+  if(!res.ok)throw new Error('HTTP '+res.status);
+  const j=await res.json();const txt=(j.content||[]).map(c=>c.text||'').join('');
+  const m=txt.match(/\[[\s\S]*\]/);const arr=JSON.parse(m[0]);
+  out.innerHTML='<b>🤖 AIの採点</b>'+arr.map(a=>{const r=T[(a.no||0)-1];if(!r)return '';return '<div>'+'⭐'.repeat(Math.max(1,Math.min(5,a.score|0)))+' <b>'+esc(r.name||'')+'さん</b>「'+esc(r.copy||r.title)+'」<br><span class="sub">'+esc(a.comment||'')+'</span></div>'}).join('')+'<div class="sub">※ 参考です。お金や順位には 関係しません。</div>';
+ }catch(e){out.innerHTML='<span class="minus">つながりませんでした（'+esc(e.message||'error')+'）。いつもの仕組みのまま、続けられます。</span>'}
+}
 /* ===== ブームルーレット・キャッチコピー投票 ===== */
 const BOOM_MUL=[0.8,1,1,1.2,1.5,2];const VOTE_COIN=2;
 function voteList(){state.votes=state.votes||{};return state.votes}
@@ -1892,7 +1917,7 @@ function sampleRows(){
 function init(){
  load();
  if(!state.rows.length){state.rows=[newRow()]}
- rlState();diceState();renderStage();renderInputs();renderResDist();document.getElementById('boomSpin').onclick=boomSpin;document.getElementById('boomClear').onclick=()=>{state.boomNext=null;save();renderBoom()};document.getElementById('voteReset').onclick=()=>{if(confirm('票を ぜんぶ 消しますか？')){state.votes={};save();renderVote();renderLedger()}};document.getElementById('voteWho').onchange=renderVote;document.getElementById('mapReset').onclick=()=>{if(confirm('5〜7の進み具合を リセットしますか？')){state.mapPos={};state.mapDone={};save();renderMap()}};renderResults();renderPersonas();renderRoulette();renderDice();renderMute();renderFlow();initQuiz();renderCards();initWords();{const h=document.querySelector('.hero');if(h){['🌸','🍜','♨️','🚅','🗻','🐟','🎡','⛩️'].forEach((e,i)=>{const sp=document.createElement('span');sp.className='floatemo';sp.textContent=e;sp.style.left=(8+i*12)+'%';sp.style.top=(20+(i%3)*25)+'%';sp.style.animationDelay=(i*0.5)+'s';h.appendChild(sp)})}}document.getElementById('expPersona').onclick=exportPersonasCsv;document.getElementById('expDetail').onclick=exportDetailCsv;document.getElementById('expAll').onclick=exportAllJson;renderSheet();document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b){SFX.click();clearTimeout(window.__pt);clearTimeout(window.__pb);window.__plazaAnim=false;showTab(b.dataset.tab)}});showTab(state.tab||'input');
+ rlState();diceState();renderStage();renderInputs();renderResDist();document.getElementById('boomSpin').onclick=boomSpin;document.getElementById('aiJudgeBtn').onclick=aiJudge;aiKeyShow();document.getElementById('aiKeySave').onclick=()=>{const v=document.getElementById('aiKey').value.trim();if(!v){alert('キーを入れてね');return}try{localStorage.setItem(AIKEY,v)}catch(e){alert('保存できませんでした')}document.getElementById('aiKey').value='';aiKeyShow()};document.getElementById('aiKeyDel').onclick=()=>{try{localStorage.removeItem(AIKEY)}catch(e){}aiKeyShow()};document.getElementById('boomClear').onclick=()=>{state.boomNext=null;save();renderBoom()};document.getElementById('voteReset').onclick=()=>{if(confirm('票を ぜんぶ 消しますか？')){state.votes={};save();renderVote();renderLedger()}};document.getElementById('voteWho').onchange=renderVote;document.getElementById('mapReset').onclick=()=>{if(confirm('5〜7の進み具合を リセットしますか？')){state.mapPos={};state.mapDone={};save();renderMap()}};renderResults();renderPersonas();renderRoulette();renderDice();renderMute();renderFlow();initQuiz();renderCards();initWords();{const h=document.querySelector('.hero');if(h){['🌸','🍜','♨️','🚅','🗻','🐟','🎡','⛩️'].forEach((e,i)=>{const sp=document.createElement('span');sp.className='floatemo';sp.textContent=e;sp.style.left=(8+i*12)+'%';sp.style.top=(20+(i%3)*25)+'%';sp.style.animationDelay=(i*0.5)+'s';h.appendChild(sp)})}}document.getElementById('expPersona').onclick=exportPersonasCsv;document.getElementById('expDetail').onclick=exportDetailCsv;document.getElementById('expAll').onclick=exportAllJson;renderSheet();document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b){SFX.click();clearTimeout(window.__pt);clearTimeout(window.__pb);window.__plazaAnim=false;showTab(b.dataset.tab)}});showTab(state.tab||'input');
  document.getElementById('run').onclick=runCycle;
  document.getElementById('runFloat').onclick=runCycle;
  document.getElementById('addRow').onclick=()=>{if(persons().length>=15){alert('最大15人です');return}state.rows.push(newRow());save();renderInputs()};
