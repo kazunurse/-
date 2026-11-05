@@ -240,7 +240,7 @@ input,select{font-size:1rem;border-radius:12px;border-width:2px}
 <div id="dupWarn"></div>
 <div class="sub">行き先・宿・値段・タイトル・観光スポット3か所・広告を入力します。値段は5万円刻みで、「上限」の数字までです。宿と行き先を変えると、上限も変わります。</div>
 <div class="card tbl"><table id="inputTbl"><thead><tr>
-<th>#</th><th>名前</th><th data-need="1">行き先</th><th data-need="2">宿</th><th data-need="2">値段(万)</th><th>上限</th><th data-need="3">タイトル</th><th data-need="4">観光スポット1</th><th data-need="4">観光スポット2</th><th data-need="4">観光スポット3</th><th data-need="5">広告を出す<br>(広告費10万円)</th><th>ことばチェック</th></tr></thead><tbody></tbody></table>
+<th>#</th><th>名前</th><th data-need="1">行き先</th><th data-need="2">宿</th><th data-need="2">値段(万)</th><th>上限</th><th data-need="3">タイトル</th><th data-need="3">キャッチコピー<br><span class="sub">長めでOK（60字まで）</span></th><th data-need="4">観光スポット1</th><th data-need="4">観光スポット2</th><th data-need="4">観光スポット3</th><th data-need="5">広告を出す<br>(広告費10万円)</th><th>ことばチェック</th></tr></thead><tbody></tbody></table>
 <div style="margin-top:8px"><button class="sec" id="addRow">参加者を追加</button> <span class="sub">（最大15人）</span></div></div>
 
 
@@ -344,6 +344,14 @@ input,select{font-size:1rem;border-radius:12px;border-width:2px}
 <button class="warn" id="diceReset" style="margin-top:6px">サイコロの記録を消す</button>
 </div></div></div>
 
+<h2 style="margin-top:22px">🌈 ブームルーレット（ことしの 流行と 係数）</h2>
+<div class="card"><div class="sub" style="font-size:1.05rem">回すと、「どのカテゴリーが ブームか」と「売上の係数」が ランダムで きまるよ。つぎに「お客さんに見せる」を おす回に つかわれるよ！</div>
+<div class="row" style="margin-top:8px"><button id="boomSpin">🌈 ブームを 回す！</button><button class="sec" id="boomClear">取り消す</button></div>
+<div id="boomRes" style="margin-top:10px;font-size:1.3rem;font-weight:800"></div><div id="boomNote" class="sub"></div></div>
+<h2 style="margin-top:22px">📝 キャッチコピー投票（人が えらぶ）</h2>
+<div class="card"><div class="sub" style="font-size:1.05rem">タイトルと キャッチコピーだけ を 見て、いちばん ひかれた ツアーに 1票！（自分のには 入れられないよ）1票 = <b>2万円</b> が その人に 入るよ。</div>
+<div class="row" style="margin-top:8px"><div><label>投票する人</label><select id="voteWho"></select></div><button class="sec" id="voteReset">票を ぜんぶ 消す</button></div>
+<div id="voteList" style="margin-top:10px"></div><div id="voteTally" style="margin-top:10px"></div></div>
 </div>
 <div class="tabpane" data-pane="rules"><h2>📖 ルール</h2><div class="cardgrid"><div class="rcard"><div class="remo">🧳</div><h3>きみは「旅行会社の社長」だよ！</h3><p>AI（えーあい）という、かしこいコンピューターと、いっしょに、<br>たのしい旅行ツアーを作って、売ろう！</p><p>いちばんお金が多い社長が、<b>ゆうしょう</b>！</p></div><div class="rcard"><div class="remo">💰</div><h3>さいしょのお金は、150万円</h3><p>このゲームの中だけで使う、お金の名前は<b>「ドリームコイン」</b>。</p><p>さいしょに、みんなに 150万円ずつ、くばるよ。</p><p>ツアーが売れると、お金が<b>どんどん ふえていく</b>！</p></div><div class="rcard"><div class="remo">🗾</div><h3>① 行き先を えらぼう</h3><p>都道府県のカードから、じゃんけんで、じゅんばんに えらぶよ。</p><p><b>同じ県は、えらべません。</b></p><p>遠いほど、行くのにお金が かかるよ。</p><p>かかるお金：近い 10万円　／　ちょっと遠い 20万円　／　北海道・沖縄 30万円</p></div><div class="rcard"><div class="remo">🎒</div><h3>ツアーは、1人 1つ 作るよ！</h3><p>行き先と宿を えらんで、<b>自分の ツアー</b>を 1つ 作ろう。</p><p>同じ県は、<b>だれとも かぶれません</b>。</p><p>もっと 作りたい人は、2つ目も つくれるよ（先生に 聞いてね）。そのぶん お金も かかるよ。</p></div><div class="rcard"><div class="remo">🏨</div><h3>② とまる宿を えらぼう</h3><p>かかるお金：ゲストハウス 10万円　／　ホテル 30万円　／　高級旅館 60万円</p><p>いい宿ほど、高い ねだんを つけられる。でも、お金は へるよ。</p></div><div class="rcard"><div class="remo">🏷️</div><h3>③ ツアーの ねだんを きめよう</h3><p>5万円ずつ えらべるよ。ただし、つけられる いちばん高い ねだんが きまってる。</p><p>遠い所や いい宿ほど、高く つけられる。</p><p>でも、高すぎると、お客さんは 買ってくれない！</p></div><div class="rcard"><div class="remo">✍️</div><h3>④ ツアーを 作ろう</h3><p>ツアーの名前（タイトル）と、行ってほしい 見どころ 3つを 決めよう。</p><p>広告を出す人は、ポスターの絵も 作るよ。</p><p>AIに聞いて、いい言葉を 考えよう！</p></div><div class="rcard"><div class="remo">🤖</div><h3>⑤ AIの お客さん 100人が 買うよ</h3><p>コンピューターが、いろんな人（100人）の、ふりをして、</p><p>「どのツアーを 買うか」を えらぶよ。</p><p><b>買ってくれた人の数 × ねだん</b> が、きみの もうけ！</p><p>1日目に 5回、2日目に 1回、結果が 出るよ。</p><p>「3・2・1！」のあと、お客さんが ツアーに むかって 走りだす！</p><p>そのあと、ランキングが 発表されるよ。</p></div><div class="rcard"><div class="remo">📣</div><h3>⑥ 広告を 出そう（出さなくても OK）</h3><p>お金 10万円で、ツアーを たくさんの人に 知らせられるよ。</p><p>広告を出すと、お客さんが 買いやすくなる！</p><p>ルーレットでも、当たりやすくなるよ。</p></div><div class="rcard"><div class="remo">🎲</div><h3>サイコロ（ひとり 3回）</h3><p>1：20万円 ふえる　　2：10万円 へる</p><p>3：チャンスカード！（クリアしたら 20万円 ふえる）</p><p>4：AIの せんせいに 見てもらって、6点以上なら 10万円 ふえる</p><p>5：30万円 ふえる　　6：20万円 へる</p></div><div class="rcard"><div class="remo">🎡</div><h3>お客さん団体 ルーレット（ぜんぶで 4回）</h3><p>ルーレットで 当たった人の ツアーに、団体のお客さんが やってくる！</p><p>もらえるお金は<b>「ねだん × 団体の人数」</b>。大きく ふえるチャンス！</p><p>広告を出した人は、名前が 2つぶん 入るから、当たりやすいよ。</p></div><div class="rcard"><div class="remo">🎤</div><h3>2日目：さいごの 発表（ピッチ）</h3><p>ツアーの いいところを、みんなの前で 発表しよう！</p><p>みんなが、<b>お客さんコイン 50万円</b> を もらって、</p><p>友だちの ツアーを 買うよ。</p><p>さいごに、AIの お客さんも 買うよ。</p></div><div class="rcard"><div class="remo">🏆</div><h3>ゆうしょうは だれ？</h3><p>ドリームコインが いちばん 多い人が ゆうしょう！</p><p>AIが 高く 評価した人には、しょうきんも あるよ。</p><p>みんなに、しょうじょうが あるよ。</p></div><div class="rcard"><div class="remo">🔒</div><h3>AIを つかうときの おやくそく</h3><p>自分や 友だち、おうちの人の<br>名前・住所・電話番号・学校の名前・顔の写真は、AIに 入れない。</p><p>AIの 答えは、まちがうことが あるよ。自分でも たしかめよう。</p><p>つかい おわったら、チャットの きろくを 消そう。</p></div></div></div>
 <div class="tabpane" data-pane="howto"><h2>📘 やり方（スライド）</h2><div class="sub" style="font-size:1.05rem">「◀ ▶」で すすめるよ。AIへの 聞き方は「コピー」を おすと、そのまま つかえるよ。</div><div id="howtoBox"></div></div>
@@ -448,7 +456,7 @@ function analyzeText(text,dest){
  Object.keys(PREF).forEach(k=>{if(k!==dest&&t.includes(k)&&!mis.some(m=>m.word===k))mis.push({word:k,main:k,pref:k,kind:'県'})});
  return {hits,mis};
 }
-function tourText(r){return [r.title,r.sp1,r.sp2,r.sp3].filter(Boolean).join(' ')}
+function tourText(r){return [r.title,r.copy,r.sp1,r.sp2,r.sp3].filter(Boolean).join(' ')}
 function tourCheck(r){return analyzeText(tourText(r),r.dest)}
 const KIDS_KW=['家族','子ども','子供','親子','キッズ','ファミリー','みんなで'];
 const SOLO_KW=['ひとり','一人','おひとり','友だち','友達','仲間','カップル','ふたり','夫婦'];
@@ -511,10 +519,11 @@ function tourInfo(t){
  let tags=ord.filter(g=>(ps[g]||0)>=4);if(tags.length<2)tags=ord.slice(0,2);
  return {dist:pf[0],cost:d.cost+inn.cost,limit:d.base+inn.add,tags,ps};
 }
+let CUR_BOOM=null;
 function tagStrength(t,info,stage){
  const s={};TAGS.forEach(g=>s[g]=0);
  TAGS.forEach(g=>{s[g]+=(info.ps&&info.ps[g]?info.ps[g]/5:0)});
- let copyText=stage>=3?(t.title||''):'';
+ let copyText=stage>=3?((t.title||'')+' '+(t.copy||'')):'';
  let spText=stage>=4?[t.sp1||'',t.sp2||'',t.sp3||''].join(' '):'';
  const an=(stage>=3)?analyzeText((copyText+' '+spText),t.dest):{hits:[],mis:[]};
  an.mis.forEach(m=>{copyText=copyText.split(m.word).join(' ');spText=spText.split(m.word).join(' ')});
@@ -531,14 +540,17 @@ function tagStrength(t,info,stage){
  const spots=stage>=4?[t.sp1,t.sp2,t.sp3].filter(x=>x&&String(x).trim()):[];
  spots.forEach(x=>{if(an.mis.some(m=>x.includes(m.word)))return;const c=COMP.find(([w])=>x.includes(w));if(c){addComp(c[1],'spot',x);spText=spText.split(x).join(' ')}});
 
+ const fake=[];const rel=g=>{const v=(info.ps&&info.ps[g])||0;return v>=3?1:v>=1?0.6:0.15};
  TAGS.forEach(g=>{
   let hc=0,hs=0;KW[g].forEach(k=>{if(copyText.includes(k))hc++;if(spText.includes(k))hs++});
-  s[g]+=Math.min(1,hc*0.4)+Math.min(0.75,hs*0.25);
+  s[g]+=(Math.min(1,hc*0.4)+Math.min(0.75,hs*0.25))*rel(g);
+  if((hc||hs)&&rel(g)<0.6){const w=KW[g].find(k=>copyText.includes(k)||spText.includes(k));fake.push({cat:g,word:w})}
  });
  an.hits.forEach(h=>{s[h.cat]+=0.35});
- Object.keys(comp).forEach(g=>{s[g]+=Math.min(1,comp[g].title.length*0.4)+Math.min(0.75,comp[g].spot.filter(x=>!an.hits.some(h=>x.includes(h.name))).length*0.5)});
+ Object.keys(comp).forEach(g=>{s[g]+=(Math.min(1,comp[g].title.length*0.4)+Math.min(0.75,comp[g].spot.filter(x=>!an.hits.some(h=>x.includes(h.name))).length*0.5))*rel(g);if(rel(g)<0.6&&!fake.some(x=>x.cat===g))fake.push({cat:g,word:(comp[g].title[0]||comp[g].spot[0])})});
  TAGS.forEach(g=>s[g]=Math.min(1.5,s[g])/1.5);
- return {s,copyText,spText,an,comp};
+ if(CUR_BOOM&&s[CUR_BOOM]>0)s[CUR_BOOM]=Math.min(1,s[CUR_BOOM]*1.4);
+ return {s,copyText,spText,an,comp,fake};
 }
 function scoreOne(p,t,info,ts,stage,adOn){
  const matched=p.interests.filter(g=>ts.s[g]>=0.5);
@@ -558,16 +570,16 @@ function scoreOne(p,t,info,ts,stage,adOn){
  }
  const an=ts.an||{hits:[],mis:[]};
  const ev=[];
- const origSp=[t.sp1,t.sp2,t.sp3].join(' '),origTi=t.title||'';
+ const origSp=[t.sp1,t.sp2,t.sp3].join(' '),origTi=(t.title||'')+' '+(t.copy||'');const srcOf=w=>(!(t.title||'').includes(w)&&(t.copy||'').includes(w))?'copy':'title';const okc=g=>((info.ps&&info.ps[g])||0)>=1;
  p.interests.forEach(g=>{
-  if(ts.comp&&ts.comp[g]){const cp=ts.comp[g];if(stage>=4&&cp.spot.length){ev.push({src:'spot',cat:g,word:cp.spot[0]});return}if(stage>=3&&cp.title.length){ev.push({src:'title',cat:g,word:cp.title[0]});return}}
+  if(ts.comp&&ts.comp[g]){const cp=ts.comp[g];if(stage>=4&&cp.spot.length&&okc(g)){ev.push({src:'spot',cat:g,word:cp.spot[0]});return}if(stage>=3&&cp.title.length&&okc(g)){ev.push({src:srcOf(cp.title[0]),cat:g,word:cp.title[0]});return}}
   const sp=stage>=4?an.hits.find(h=>h.cat===g&&origSp.includes(h.name)):null;
   if(sp){ev.push({src:'spot',cat:g,word:sp.main});return}
   const tt=stage>=3?an.hits.find(h=>h.cat===g&&origTi.includes(h.name)):null;
-  if(tt){ev.push({src:'title',cat:g,word:tt.name});return}
-  const kt=stage>=3?KW[g].find(k=>ts.copyText.includes(k)):null;
-  if(kt){ev.push({src:'title',cat:g,word:kt});return}
-  const ks=stage>=4?KW[g].find(k=>ts.spText.includes(k)):null;
+  if(tt){ev.push({src:srcOf(tt.name),cat:g,word:tt.name});return}
+  const kt=(stage>=3&&okc(g))?KW[g].find(k=>ts.copyText.includes(k)):null;
+  if(kt){ev.push({src:srcOf(kt),cat:g,word:kt});return}
+  const ks=(stage>=4&&okc(g))?KW[g].find(k=>ts.spText.includes(k)):null;
   if(ks){ev.push({src:'spot',cat:g,word:[t.sp1,t.sp2,t.sp3].find(x=>x&&x.includes(ks))||ks});return}
   if(info.tags.includes(g))ev.push({src:'dest',cat:g,word:t.dest});
  });
@@ -584,15 +596,18 @@ function scoreOne(p,t,info,ts,stage,adOn){
  // 広告の後押し：広告を出したツアーは、乱数（人ごとにちがう）で選ばれやすくなる
  const adBoost=(adOn&&stage>=5)?(0.10+0.12*hash01(p.id+'|'+t.id+'|b')+0.02*(t.imgScore||0)):0;
  const loc=accessBonus(p.region,t.dest,p.style);
- return {interest,price,r,aware,total:aware?overall+adBoost+loc:0,matched,fitNote,adOn,words,adBoost,loc,willing,ev,mis:an.mis};
+ const fk=(stage>=3&&ts.fake)?ts.fake.filter(x=>p.interests.includes(x.cat)):[];
+ return {interest,price,r,aware,total:aware?overall+adBoost+loc:0,matched,fitNote,adOn,words,adBoost,loc,willing,ev,mis:an.mis,fk};
 }
 function evText(e,G,dest){
- if(e.src==='title'&&e.word===e.cat)return ['タイトルに「'+e.cat+'」って文字が入っていて、','タイトルに「'+e.cat+'」という文字が入っていて、','タイトルに「'+e.cat+'」という文字があって、'][G];
- if(e.src==='title')return ['タイトルの『'+e.word+'』って文字が「'+e.cat+'」っぽくて、','タイトルの『'+e.word+'』という文字が「'+e.cat+'」っぽくて、','タイトルの『'+e.word+'』という文字が「'+e.cat+'」を思わせて、'][G];
+ const L=e.src==='copy'?'キャッチコピー':'タイトル';
+ if((e.src==='title'||e.src==='copy')&&e.word===e.cat)return [L+'に「'+e.cat+'」って文字が入っていて、',L+'に「'+e.cat+'」という文字が入っていて、',L+'に「'+e.cat+'」という文字があって、'][G];
+ if(e.src==='title'||e.src==='copy')return [L+'の『'+e.word+'』って文字が「'+e.cat+'」っぽくて、',L+'の『'+e.word+'』という文字が「'+e.cat+'」っぽくて、',L+'の『'+e.word+'』という文字が「'+e.cat+'」を思わせて、'][G];
  if(e.src==='spot'&&e.word===e.cat)return ['観光スポットに「'+e.cat+'」って文字が入っていて、','観光スポットに「'+e.cat+'」という文字が入っていて、','観光スポットに「'+e.cat+'」という文字があって、'][G];
  if(e.src==='spot')return ['観光スポットの『'+e.word+'』が「'+e.cat+'」で気になって、','観光スポットの『'+e.word+'』が「'+e.cat+'」だと思って、','観光スポットの『'+e.word+'』が「'+e.cat+'」にぴったりで、'][G];
  return ['行き先の'+dest+'は「'+e.cat+'」で有名だから、','行き先の'+dest+'が「'+e.cat+'」で有名なので、','行き先の'+dest+'は「'+e.cat+'」で知られているので、'][G];
 }
+function fkText(sc,dest){const x=sc.fk&&sc.fk[0];return x?'ただ、『'+x.word+'』という言葉は気になったけれど、'+dest+'は「'+x.cat+'」で有名じゃないので、あまり決め手にならなかったです。':''}
 function misText(sc){const m=sc.mis&&sc.mis[0];if(!m)return '';return m.kind==='県'?'ただ、タイトルか観光スポットに別の県の名前『'+m.word+'』が入っていて、行き先と合わないのが気になりました。':'ただ、『'+m.word+'』は'+m.pref+'の'+(m.kind==='food'?'名物':'名所')+'なので、行き先と合わないのが気になりました。'}
 function reasonText(p,t,sc,stage,guarantee){
  const who=p.age+'・'+p.gender+'・'+p.family+'（所得'+p.income+'）';
@@ -630,6 +645,7 @@ function voiceBuyParts(p,t,sc,stage,fl){
  else if(fl.weak)P('dec',['ぴったりじゃないけど、ほかよりよさそうで'+nm+'にした！','ぴったりではなかったけれど、ほかよりよさそうだったので、'+nm+'にしました。','決め手には欠けましたが、ほかよりよいと思い、'+nm+'に決めました。'][G]);
  else P('dec',['よし、'+nm+'にする！',''+nm+'を買いました。','迷いましたが、'+nm+'に決めました。'][G]);
  if(stage>=3&&sc.mis&&sc.mis.length)P('warn',misText(sc));
+ else if(stage>=3&&sc.fk&&sc.fk.length)P('warn',fkText(sc,t.dest));
  else if(sc.fitNote.length){const fn=sc.fitNote.find(x=>/宿/.test(x))||sc.fitNote[0];P(/宿/.test(fn)?'stay':'like',fn+'。')}
  if(p.style==='近場派'&&sc.loc>=0.03)P('loc',p.region+'に住んでいて、近場がいいので行きやすいです。');else if(p.style==='遠出派'&&sc.loc>=0.03)P('loc','せっかくなら遠くへ行きたいので、ここがいいです。');
  if(stage>=2){
@@ -663,7 +679,7 @@ function hint(t,info,stage,rows){
 
 /* ===== 審査（1サイクル） ===== */
 function evaluate(tours,personas,opts){
- const stage=opts.stage,thr=opts.thr;
+ const stage=opts.stage,thr=opts.thr;CUR_BOOM=opts.boom||null;
  const valid=tours.map(t=>({t,info:tourInfo(t)})).filter(x=>x.info&&x.t.price>0);
  const warn=[];
  const rnd=mulberry32(opts.seed+stage*7919);
@@ -761,7 +777,9 @@ function evaluate(tours,personas,opts){
   const reasons=bl.map(b=>({id:b.p.id,text:reasonText(b.p,t,scores[b.p.id][t.id],stage,b.guarantee),guarantee:b.guarantee}));
   const voices=allVoices.filter(v=>v.bought&&v.tid===t.id);
   const near=(nearMiss[t.id]||[]).sort((a,b)=>b.interest-a.interest).slice(0,6);
-  results[t.id]={count:bl.length,revenue,cost:info.cost,target:target[t.id],reasons,voices,near,price:t.price,scale:sc100,hints:hint(t,info,stage,rows),adApplied:!!t.ad&&stage>=5,
+  const why={dest:0,title:0,copy:0,spot:0,inn:0,price:0,ad:0,loc:0,n:bl.length};
+  bl.forEach(b=>{const sc=scores[b.p.id][t.id];const seen={};(sc.ev||[]).forEach(e=>{seen[e.src]=1});Object.keys(seen).forEach(k=>why[k]++);if((sc.fitNote||[]).some(x=>/宿は.*合っていた/.test(x)))why.inn++;if(stage>=2&&sc.price>=0.7)why.price++;if(sc.adOn&&stage>=5)why.ad++;if(sc.loc>=0.03)why.loc++});
+  results[t.id]={why,count:bl.length,revenue,cost:info.cost,target:target[t.id],reasons,voices,near,price:t.price,scale:sc100,hints:hint(t,info,stage,rows),adApplied:!!t.ad&&stage>=5,
    guaranteeCount:bl.filter(b=>b.guarantee).length,topUp:0};
  });
  const assign={};
@@ -789,7 +807,7 @@ function toursOf(r){return [r].concat(kidsOf(r))}
 function persons(){return state.rows.filter(r=>!r.parent)}
 function ownerOf(id){const r=state.rows.find(x=>x.id===id);return r?(r.parent||r.id):id}
 function joinT(r,k,sep){return toursOf(r).map(t=>t[k]).filter(v=>v!=null&&v!=='').join(sep||'＋')}
-function newRow(){return {id:uid(),name:'',dest:'京都',inn:'ホテル',price:20,title:'',sp1:'',sp2:'',sp3:'',ad:false,extra:0}}
+function newRow(){return {id:uid(),name:'',dest:'京都',inn:'ホテル',price:20,title:'',copy:'',sp1:'',sp2:'',sp3:'',ad:false,extra:0}}
 function limitOf(r){const i=tourInfo({dest:r.dest,inn:r.inn});return i?i.limit:0}
 function renderStage(){
  const sn=document.getElementById('startNote');if(sn)sn.textContent=START;
@@ -821,6 +839,7 @@ function renderInputs(){
   '<td data-need="2"><input type="number" data-k="price" value="'+r.price+'" min="5" step="5" max="'+lim+'"></td>'+
   '<td class="sub">'+lim+'</td>'+
   '<td data-need="3"><input type="text" data-k="title" value="'+esc(r.title)+'"></td>'+
+  '<td data-need="3"><textarea data-k="copy" rows="2" maxlength="60" style="min-width:230px;font:inherit;padding:6px;border-radius:8px;border:1px solid var(--line)">'+esc(r.copy||'')+'</textarea></td>'+
   '<td data-need="4"><input type="text" class="sp" data-k="sp1" value="'+esc(r.sp1)+'"></td>'+
   '<td data-need="4"><input type="text" class="sp" data-k="sp2" value="'+esc(r.sp2)+'"></td>'+
   '<td data-need="4"><input type="text" class="sp" data-k="sp3" value="'+esc(r.sp3)+'"></td>'+
@@ -851,7 +870,7 @@ function adcostNow(){return state.cycles[5]&&state.cycles[5].opts?state.cycles[5
 function costAt(r,k){const pf=PREF[r.dest];if(!pf||!INN[r.inn])return 0;let c=0;if(k===1)c+=DIST[pf[0]].cost;if(k===2)c+=INN[r.inn].cost;if(k===5&&r.ad)c+=adcostNow();return c}
 function diceDelta(rowId){return diceState().history.filter(h=>h.rowId===rowId).reduce((a,h)=>a+(h.delta||0),0)}
 function manualList(){if(!state.manual)state.manual=[];return state.manual}
-function manualDelta(rowId){return manualList().reduce((a,m)=>a+(m.kind==='kidbuy'?(m.to===rowId?m.amount:0):(m.rowId===rowId?m.amount:0)),0)}
+function manualDelta(rowId){return (typeof voteDelta==='function'?voteDelta(rowId):0)+manualList().reduce((a,m)=>a+(m.kind==='kidbuy'?(m.to===rowId?m.amount:0):(m.rowId===rowId?m.amount:0)),0)}
 function coinUsed(rowId){return manualList().filter(m=>m.kind==='kidbuy'&&m.rowId===rowId).reduce((a,m)=>a+m.amount,0)}
 function ledgerFor(r,upto){
  const steps=[];let bal=START;
@@ -895,10 +914,11 @@ function runCycleNow(){
  if(!rows.length){alert('参加者を入力してください');return}
  SFX.click();
  const o=currentOpts();
+ {const b=state.boomNext;if(b&&b.stage===o.stage){o.boom=b.tag;o.mul=b.mul;o.scale=Math.round(o.scale*b.mul*1000)/1000}}
  o.costToDate={};o.prevSales={};o.costNow={};
  rows.forEach(r=>{let c=0,p=0;for(let k=1;k<=o.stage;k++)c+=costAt(r,k);for(let k=1;k<o.stage;k++){const cc=state.cycles[k];if(cc&&cc.results[r.id])p+=cc.results[r.id].revenue}o.costNow[r.id]=costAt(r,o.stage);o.costToDate[r.id]=c;o.prevSales[r.id]=p});
  o.n=PN();const personas=makePersonas(o.seed,o.n);
- const tours=rows.map(r=>({id:r.id,name:r.name||'(名前なし)',dest:r.dest,inn:r.inn,price:r.price,title:r.title,sp1:r.sp1,sp2:r.sp2,sp3:r.sp3,ad:r.ad,imgScore:r.imgScore||0}));
+ const tours=rows.map(r=>({id:r.id,name:r.name||'(名前なし)',dest:r.dest,inn:r.inn,price:r.price,title:r.title,copy:r.copy||'',sp1:r.sp1,sp2:r.sp2,sp3:r.sp3,ad:r.ad,imgScore:r.imgScore||0}));
  const ev=evaluate(tours,personas,o);
  state.cycles[o.stage]={results:ev.results,warn:ev.warn,assign:ev.assign,detail:ev.detail,voices:ev.voices,opts:o,at:new Date().toLocaleString('ja-JP')};
  save();renderResults();clearTimeout(window.__pt);clearTimeout(window.__pb);clearTimeout(window.__pd);window.__plazaAnim=true;showTab('plaza');setTimeout(()=>drawPlaza(true),150);window.__pd=setTimeout(()=>{if(document.querySelector('.tabpane.on').dataset.pane==='plaza')SFX.drum()},4300);window.__pb=setTimeout(()=>{const c=state.cycles[state.stage];if(!c||document.querySelector('.tabpane.on').dataset.pane!=='plaza')return;const L=state.rows.filter(r=>c.results[r.id]).sort((a,b)=>c.results[b.id].revenue-c.results[a.id].revenue);if(L.length){const t=L[0];showBanner(t.name+'さんが 今回の1位！',t.dest+'のツアー　'+c.results[t.id].count+'人 ／ '+c.results[t.id].revenue+'万円')}},5800);window.__pt=setTimeout(()=>{window.__plazaAnim=false;showTab('result');setTimeout(showRankPrompt,1500)},9500);
@@ -1401,6 +1421,38 @@ function exportLedgerCsv(){
  download('ドリームコイン積み上げ表.csv',csv,'text/csv');
 }
 
+
+/* ===== ブームルーレット・キャッチコピー投票 ===== */
+const BOOM_MUL=[0.8,1,1,1.2,1.5,2];const VOTE_COIN=2;
+function voteList(){state.votes=state.votes||{};return state.votes}
+function voteCount(rowId){return Object.values(voteList()).filter(v=>v===rowId).length}
+function voteDelta(rowId){const r=state.rows.find(x=>x.id===rowId);if(!r)return 0;return voteCount(rowId)*VOTE_COIN}
+function renderBoom(){
+ const res=document.getElementById('boomRes');if(!res)return;
+ const b=state.boomNext;
+ if(b&&b.stage===state.stage){res.innerHTML=(CATINFO[b.tag]?CATINFO[b.tag].e:'')+' ブーム：<b>'+esc(b.tag)+'</b>　　🎚 係数 <b>×'+b.mul+'</b>';document.getElementById('boomNote').textContent=state.stage+'回目に「お客さんに見せる」を押すと つかわれます。'+b.tag+'が好きなお客さんが、いつもより 気になります。'}
+ else{res.textContent='（まだ 回していません）';document.getElementById('boomNote').textContent=''}
+}
+function boomSpin(){
+ const res=document.getElementById('boomRes');let n=0;const btn=document.getElementById('boomSpin');btn.disabled=true;
+ const iv=setInterval(()=>{const g=TAGS[Math.floor(Math.random()*TAGS.length)];res.innerHTML=(CATINFO[g].e)+' '+esc(g)+'　🎚 ×'+BOOM_MUL[Math.floor(Math.random()*BOOM_MUL.length)];try{SFX.rattle()}catch(e){}
+  if(++n>=22){clearInterval(iv);const tag=TAGS[Math.floor(Math.random()*TAGS.length)];const mul=BOOM_MUL[Math.floor(Math.random()*BOOM_MUL.length)];
+   state.boomNext={stage:state.stage,tag,mul};save();btn.disabled=false;renderBoom();try{SFX.fanfare();burst([CATINFO[tag].e,'🌈','✨'],18,1600)}catch(e){}}},110);
+}
+function renderVote(){
+ const who=document.getElementById('voteWho');if(!who)return;
+ const P=persons().filter(r=>r.name);const cur=who.value;
+ who.innerHTML=P.map(r=>'<option value="'+r.id+'">'+esc(r.name)+'</option>').join('');if(cur&&P.some(r=>r.id===cur))who.value=cur;
+ const me=who.value;const V=voteList();
+ const T=state.rows.filter(r=>r.dest&&(r.copy||r.title));
+ const mine=id=>{const r=state.rows.find(x=>x.id===id);return r&&(r.id===me||r.parent===me)};
+ document.getElementById('voteList').innerHTML=T.filter(r=>!mine(r.id)).map(r=>'<div class="card" style="margin:6px 0;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap"><div style="flex:1;min-width:240px"><div style="font-size:1.1rem;font-weight:800">'+esc(r.title||'(タイトルなし)')+'</div><div style="font-size:1.05rem;font-style:italic">「'+esc(r.copy||'')+'」</div></div><button class="'+(V[me]===r.id?'':'sec')+'" data-vote="'+r.id+'">'+(V[me]===r.id?'✅ 投票ずみ':'👍 これに 投票')+'</button></div>').join('')||'<div class="sub">タイトルやキャッチコピーが入ると、ここに出ます。</div>';
+ document.querySelectorAll('[data-vote]').forEach(b=>b.onclick=()=>{V[me]=b.dataset.vote;save();SFX.good();renderVote();renderLedger&&renderLedger()});
+ const rows=T.map(r=>({r,v:voteCount(r.id)})).sort((a,b)=>b.v-a.v);
+ const cur2=state.cycles[state.stage];let ai='';
+ if(cur2){const arr=state.rows.filter(r=>cur2.results[r.id]&&cur2.results[r.id].why).map(r=>({r,v:cur2.results[r.id].why.copy||0})).sort((a,b)=>b.v-a.v);if(arr.length&&arr[0].v>0)ai='<div>🤖 AIのお客さんが いちばん ひかれた キャッチコピー：<b>'+esc(arr[0].r.name)+'さん</b>（'+arr[0].v+'人）</div>'}
+ document.getElementById('voteTally').innerHTML='<b>🏅 人気ランキング（人の票）</b>'+rows.map((x,i)=>'<div>'+(['🥇','🥈','🥉'][i]||'　')+' '+esc(x.r.name||'')+'さん：'+x.v+'票（+'+x.v*VOTE_COIN+'万円）<span class="sub">　「'+esc(x.r.copy||'')+'」</span></div>').join('')+ai;
+}
 /* ===== すごろく（みんなの いまの ばしょ） ===== */
 const MAPSQ=[
  {ic:'🗺️',n:'行き先',ai:'「◯◯県は どんなところ？ 小学生にも わかるように おしえて」',me:'どの県にするか、自分で決める'},
@@ -1414,7 +1466,7 @@ const MAPSQ=[
 ];
 function mapPos(r){
  const T=toursOf(r);let m=5;
- T.forEach(t=>{const d=[!!t.dest,!!(t.inn&&t.price),!!t.title,!!(t.sp1&&t.sp2&&t.sp3)];let k=d.indexOf(false);k=k<0?5:k+1;if(k<m)m=k});
+ T.forEach(t=>{const d=[!!t.dest,!!(t.inn&&t.price),!!(t.title),!!(t.sp1&&t.sp2&&t.sp3)];let k=d.indexOf(false);k=k<0?5:k+1;if(k<m)m=k});
  if(m<5)return m;
  state.mapPos=state.mapPos||{};return Math.min(8,Math.max(5,state.mapPos[r.id]||5));
 }
@@ -1436,7 +1488,7 @@ function renderMap(){
 }
 setInterval(()=>{const p=document.querySelector('.tabpane[data-pane=map]');if(p&&p.classList.contains('on')&&!document.hidden&&!document.activeElement.closest('.tabpane[data-pane=map]')){try{renderMap()}catch(e){}}},4000);
 /* ===== いまやること（動線） ===== */
-const NEED={1:['行き先'],2:['宿','値段'],3:['タイトル'],4:['観光スポット1〜3'],5:['広告を出すか']};
+const NEED={1:['行き先'],2:['宿','値段'],3:['タイトル','キャッチコピー'],4:['観光スポット1〜3'],5:['広告を出すか']};
 function hueOf(t){let h=0;for(const c of String(t||'x'))h=(h*31+c.charCodeAt(0))%360;return h}
 function posterSvg(r,w,h){
  w=w||240;h=h||90;const hh=hueOf(r.dest);const emo=EMO[r.dest]||'🗾';const t=String(r.title||r.dest||'').slice(0,12);
@@ -1467,7 +1519,7 @@ function renderKidResult(){
  if(!cur){el.innerHTML='<div class="card" style="text-align:center;font-size:1.2rem">まだ けっかは ありません。<br>「▶ ペルソナ100人に見せる」を おしてね！</div>';return}
  const L=state.rows.filter(r=>cur.results[r.id]).map(r=>({r,res:cur.results[r.id]})).sort((a,b)=>b.res.revenue-a.res.revenue);
  const mx=Math.max(1,...L.map(x=>x.res.revenue));const med=['🥇','🥈','🥉'];
- el.innerHTML='<div class="kids">'+L.map((x,i)=>'<div class="kcard'+(i===0?' first':'')+'" style="animation-delay:'+(i*0.08)+'s"><img class="kp" src="'+tourPic(x.r)+'" alt=""><div class="km">'+(med[i]||'')+'</div><div class="kb"><div class="kn">'+esc(x.r.name||'')+'</div><div class="kd">'+esc(x.r.dest)+'・'+esc(x.r.title||'')+'</div><div class="kbig">👥 '+x.res.count+'人　💰 +'+x.res.revenue+'万</div><div class="kbar"><i style="width:'+Math.max(4,x.res.revenue/mx*100)+'%"></i></div></div></div>').join('')+'</div>';
+ el.innerHTML='<div class="kids">'+L.map((x,i)=>'<div class="kcard'+(i===0?' first':'')+'" style="animation-delay:'+(i*0.08)+'s"><img class="kp" src="'+tourPic(x.r)+'" alt=""><div class="km">'+(med[i]||'')+'</div><div class="kb"><div class="kn">'+esc(x.r.name||'')+'</div><div class="kd">'+esc(x.r.dest)+'・'+esc(x.r.title||'')+'</div>'+(x.r.copy?'<div class="sub" style="font-style:italic;white-space:normal">「'+esc(x.r.copy)+'」</div>':'')+'<div class="kbig">👥 '+x.res.count+'人　💰 +'+x.res.revenue+'万</div><div class="kbar"><i style="width:'+Math.max(4,x.res.revenue/mx*100)+'%"></i></div></div></div>').join('')+'</div>';
 }
 function renderAwards(){
  const el=document.getElementById('awards');if(!el)return;
@@ -1493,7 +1545,7 @@ function showTab(t){
  try{state.tab=t;save()}catch(e){}
  document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
  document.querySelectorAll('.tabpane').forEach(p=>p.classList.toggle('on',p.dataset.pane===t));
- if(t==='game'){try{renderRoulette();renderDice()}catch(e){}}
+ if(t==='game'){try{renderRoulette();renderDice();renderBoom();renderVote()}catch(e){}}
  if(t==='plaza'&&typeof drawPlaza==='function'&&!window.__plazaAnim)setTimeout(()=>drawPlaza(false),30);
  try{const pn=document.querySelector('.tabpane.on'),sk=document.querySelector('.stick');if(pn&&sk)window.scrollTo({top:Math.max(0,pn.getBoundingClientRect().top+window.scrollY-sk.offsetHeight-8),behavior:'auto'})}catch(e){}
  if(t==='money'||t==='rank'){renderSheet();renderLedger()}
@@ -1573,6 +1625,23 @@ function buyerAttr(res,cur){
   return '<div class="card" style="margin:8px 0"><b>👥 買ってくれた お客さんは どんな人？</b><div>💰 お客さんの 予算の へいきん：<b>'+avg+'万円</b>（'+chips(cnt(p=>'予算'+p.budget+'万円（所得'+p.income+'）'))+'）</div><div>年代：'+chips(cnt(p=>p.age))+'</div><div>家族：'+chips(cnt(p=>p.family))+'</div><div>すきな もの：'+chips(Object.entries(ints).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([g,v])=>[(CATINFO[g]?CATINFO[g].e+' ':'')+g,v]))+'</div><div>すんでる 所：'+chips(cnt(p=>p.region).slice(0,4))+'</div></div>';
  }catch(e){return ''}
 }
+
+function whyHtml(res,r,stage){
+ const w=res.why;if(!w||!w.n)return '';
+ const L=[['dest','🗾 行き先の人気（'+r.dest+'の有名なもの）'],['title','✍️ タイトルの言葉'],['copy','📝 キャッチコピーの言葉'],['spot','📍 観光スポット'],['inn','🏨 宿が好みに合った'],['price','💴 値段が予算に合った'],['ad','📣 広告で知った'],['loc','🚃 行きやすい場所']];
+ const arr=L.map(([k,l])=>({k,l,v:w[k]||0})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v);
+ if(!arr.length)return '';
+ const mx=Math.max(...arr.map(x=>x.v));
+ const top=arr[0];
+ let h='<div class="card" style="margin:8px 0;background:#fffbea"><b>🏆 なんで 売れたの？（勝因）</b><div style="font-size:1.05rem;margin:4px 0">いちばんの理由は <b>'+esc(top.l)+'</b>（買った'+w.n+'人のうち '+top.v+'人）</div>';
+ h+=arr.map(x=>'<div style="display:flex;align-items:center;gap:8px;margin:3px 0"><div style="min-width:15em;font-size:.95rem">'+esc(x.l)+'</div><div style="flex:1;height:14px;border-radius:7px;background:var(--line)"><i style="display:block;height:100%;width:'+(x.v/mx*100)+'%;border-radius:7px;background:linear-gradient(90deg,#ffd43b,#ff6b6b)"></i></div><b style="min-width:3.2em;text-align:right">'+x.v+'人</b></div>').join('');
+ const tip=[];const info=tourInfo(r);const tg=info?info.tags.slice(0,2).map(g=>(CATINFO[g]?CATINFO[g].e:'')+g).join('・'):'';
+ if(stage>=3&&!(w.title||w.copy))tip.push('タイトルやキャッチコピーに、お客さんが好きな言葉（'+tg+'など）を入れると、もっと響くよ');
+ if(stage>=4&&!w.spot)tip.push('観光スポットに、'+r.dest+'の有名な場所を入れてみよう');
+ if(stage>=2&&w.price<w.n*0.4)tip.push('値段が少し高めかも。お客さんの予算も見てみよう');
+ if(tip.length)h+='<div class="sub" style="margin-top:4px">💡 のびしろ：'+tip.map(esc).join('／')+'</div>';
+ return h+'</div>';
+}
 function renderSummaries(){
  const el=document.getElementById('survey');if(!el)return;
  const cur=state.cycles[state.stage];if(!cur){el.innerHTML='';return}
@@ -1584,6 +1653,8 @@ function renderSummaries(){
   const gain=Math.round((res.revenue-cost)*10)/10;
   h+='<div class="tsum" id="tsum_'+r.id+'"><h3>'+(EMO[r.dest]||'🗾')+' '+esc(r.name||'(名前なし)')+'さんのツアー　<span class="sub">'+esc(r.dest)+'・'+esc(r.inn)+'・'+r.price+'万円'+((r.ad&&state.stage>=5)?'・広告あり':'')+'</span></h3>';
   h+='<img src="'+tourPic(r)+'" style="max-width:220px;border-radius:10px;float:right;margin-left:10px" alt="">';
+  if(r.copy)h+='<div style="font-size:1.1rem;margin:4px 0">📝 キャッチコピー：<b>「'+esc(r.copy)+'」</b></div>';
+  h+=whyHtml(res,r,state.stage);
   h+='<div style="font-size:1.25rem;font-weight:800">💰 稼いだ金額：<span class="plus">'+res.revenue+'万円</span>　<span class="sub" style="font-weight:400">（'+res.count+'人 × '+r.price+'万円'+((res.scale||1)!==1?' × '+Math.round((res.scale||1)*100)+'%':'')+(res.topUp?' ＋保証の補填 '+res.topUp+'万':'')+'。この回の費用'+cost+'万円を引くと もうけ <b class="'+(gain>=0?'plus':'minus')+'">'+(gain>=0?'+':'')+gain+'万円</b>）</span></div>';
   h+='<div style="margin:4px 0"><b>買った人の声のまとめ（'+res.count+'人）</b></div>'+buyerAttr(res,cur)+summarize(res);
   const first=res.voices.slice(0,3);
@@ -1817,7 +1888,7 @@ function sampleRows(){
 function init(){
  load();
  if(!state.rows.length){state.rows=[newRow()]}
- rlState();diceState();renderStage();renderInputs();renderResDist();document.getElementById('mapReset').onclick=()=>{if(confirm('5〜7の進み具合を リセットしますか？')){state.mapPos={};state.mapDone={};save();renderMap()}};renderResults();renderPersonas();renderRoulette();renderDice();renderMute();renderFlow();initQuiz();renderCards();initWords();{const h=document.querySelector('.hero');if(h){['🌸','🍜','♨️','🚅','🗻','🐟','🎡','⛩️'].forEach((e,i)=>{const sp=document.createElement('span');sp.className='floatemo';sp.textContent=e;sp.style.left=(8+i*12)+'%';sp.style.top=(20+(i%3)*25)+'%';sp.style.animationDelay=(i*0.5)+'s';h.appendChild(sp)})}}document.getElementById('expPersona').onclick=exportPersonasCsv;document.getElementById('expDetail').onclick=exportDetailCsv;document.getElementById('expAll').onclick=exportAllJson;renderSheet();document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b){SFX.click();clearTimeout(window.__pt);clearTimeout(window.__pb);window.__plazaAnim=false;showTab(b.dataset.tab)}});showTab(state.tab||'input');
+ rlState();diceState();renderStage();renderInputs();renderResDist();document.getElementById('boomSpin').onclick=boomSpin;document.getElementById('boomClear').onclick=()=>{state.boomNext=null;save();renderBoom()};document.getElementById('voteReset').onclick=()=>{if(confirm('票を ぜんぶ 消しますか？')){state.votes={};save();renderVote();renderLedger()}};document.getElementById('voteWho').onchange=renderVote;document.getElementById('mapReset').onclick=()=>{if(confirm('5〜7の進み具合を リセットしますか？')){state.mapPos={};state.mapDone={};save();renderMap()}};renderResults();renderPersonas();renderRoulette();renderDice();renderMute();renderFlow();initQuiz();renderCards();initWords();{const h=document.querySelector('.hero');if(h){['🌸','🍜','♨️','🚅','🗻','🐟','🎡','⛩️'].forEach((e,i)=>{const sp=document.createElement('span');sp.className='floatemo';sp.textContent=e;sp.style.left=(8+i*12)+'%';sp.style.top=(20+(i%3)*25)+'%';sp.style.animationDelay=(i*0.5)+'s';h.appendChild(sp)})}}document.getElementById('expPersona').onclick=exportPersonasCsv;document.getElementById('expDetail').onclick=exportDetailCsv;document.getElementById('expAll').onclick=exportAllJson;renderSheet();document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b){SFX.click();clearTimeout(window.__pt);clearTimeout(window.__pb);window.__plazaAnim=false;showTab(b.dataset.tab)}});showTab(state.tab||'input');
  document.getElementById('run').onclick=runCycle;
  document.getElementById('runFloat').onclick=runCycle;
  document.getElementById('addRow').onclick=()=>{if(persons().length>=15){alert('最大15人です');return}state.rows.push(newRow());save();renderInputs()};
