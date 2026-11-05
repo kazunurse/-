@@ -189,6 +189,9 @@ input,select{font-size:1rem;border-radius:12px;border-width:2px}
 .tok{display:inline-block;margin:3px 3px 0 0;padding:3px 10px;border-radius:999px;color:#fff;font-weight:800;font-size:.95rem;cursor:pointer;animation:bob 1.6s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @media(max-width:900px){.mapgrid{grid-template-columns:repeat(2,1fr)}}
+.locked{opacity:.38;background:repeating-linear-gradient(45deg,#f1f1f1,#f1f1f1 6px,#fafafa 6px,#fafafa 12px)}
+#inputTbl td.locked .sub{white-space:nowrap;font-size:.8rem}
+#inputTbl td.locked input,#inputTbl td.locked select,#inputTbl td.locked textarea{cursor:not-allowed}
 </style>
 </head>
 <body>
@@ -241,7 +244,7 @@ input,select{font-size:1rem;border-radius:12px;border-width:2px}
 <div class="sub">行き先・宿・値段・タイトル・観光スポット3か所・広告を入力します。値段は5万円刻みで、「上限」の数字までです。宿と行き先を変えると、上限も変わります。</div>
 <div class="card tbl"><table id="inputTbl"><thead><tr>
 <th>#</th><th>名前</th><th data-need="1">行き先</th><th data-need="2">宿</th><th data-need="2">値段(万)</th><th>上限</th><th data-need="3">タイトル</th><th data-need="3">キャッチコピー<br><span class="sub">長めでOK（60字まで）</span></th><th data-need="4">観光スポット1</th><th data-need="4">観光スポット2</th><th data-need="4">観光スポット3</th><th data-need="5">広告を出す<br>(広告費10万円)</th><th>ことばチェック</th></tr></thead><tbody></tbody></table>
-<div style="margin-top:8px"><button class="sec" id="addRow">参加者を追加</button> <span class="sub">（最大15人）</span>　<label style="display:inline">2本目の権利代（万円）<input type="number" id="kidFee" min="0" step="5" style="width:70px"></label><span class="sub"> 0なら権利代なし（初期値）。決まったら入れてね</span></div></div>
+<div style="margin-top:8px"><button class="sec" id="addRow">参加者を追加</button> <span class="sub">（最大15人）</span>　<label style="display:inline">2つ目のツアーの値段（万円）<input type="number" id="kidFee" min="0" step="5" style="width:70px"></label><span class="sub"> 0ならタダ（いまは0）。決まったら入れてね。表の「2つ目のツアーを買った」にチェックすると、2つ目を入力できるよ</span></div></div>
 <div class="card"><b>🤖 AIキャッチコピー案だし</b> <span class="sub">（ボタンを押すと、AIが タイトルと キャッチコピーの案を 3つずつ 出します。気に入ったら クリックで 入ります）</span>
 <div class="row" style="margin-top:6px"><div><label>どのツアー？</label><select id="ideaWho"></select></div><button id="ideaBtn">🤖 案を出してもらう</button></div><div id="ideaOut" style="margin-top:8px"></div></div>
 <div id="aiDlg" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:95;align-items:center;justify-content:center"><div class="card" style="max-width:600px;width:92%;max-height:90vh;overflow:auto"><h3 style="margin-top:0">🤖 AIせってい（ここに 1回 入れるだけ）</h3><div class="sub" style="margin:6px 0">Claude の APIキーを この端末にだけ 保存します。ファイルやバックアップには入りません。つながらない時は、いつもの仕組みのままです。名前は送りません（タイトル・キャッチコピー・行き先だけ）。</div>
@@ -844,7 +847,7 @@ function renderInputs(){
   const prefOpts=(r.dest?'':'<option value="" selected>（えらぶ）</option>')+Object.keys(PREF).map(k=>'<option'+(k===r.dest?' selected':'')+'>'+k+'</option>').join('');
   const innOpts=Object.keys(INN).map(k=>'<option'+(k===r.inn?' selected':'')+'>'+k+'</option>').join('');
   const lim=limitOf(r);
-  const nameCell=isKid?'<td>↳ <b>2本目</b><br><a href="#" data-rmkid class="sub">この2本目を消す</a></td>':'<td><input type="text" data-k="name" value="'+esc(r.name)+'">'+(kidsOf(r).length?'':'<br><a href="#" data-addkid class="sub">＋ 2本目のツアーを作る（交通費・宿代なども2本ぶんかかる）</a>')+'</td>';
+  const nameCell=isKid?'<td>↳ <b>2つ目のツアー</b><br><span class="sub">'+(r.boughtAt||1)+'回目に買った</span></td>':'<td><input type="text" data-k="name" value="'+esc(r.name)+'">'+'<br><label class="sub" style="cursor:pointer"><input type="checkbox" data-kidbuy'+(kidsOf(r).length?' checked':'')+'> 2つ目のツアーを買った</label>'+'</td>';
   tr.innerHTML='<td>'+(isKid?'':(i+1))+'</td>'+
   nameCell+
   '<td data-need="1"><select data-k="dest">'+prefOpts+'</select></td>'+
@@ -858,8 +861,11 @@ function renderInputs(){
   '<td data-need="4"><input type="text" class="sp" data-k="sp3" value="'+esc(r.sp3)+'"></td>'+
   '<td data-need="5"><input type="checkbox" data-k="ad"'+(r.ad?' checked':'')+'>'+(r.ad?'<br><label style="cursor:pointer;font-size:.8rem">🖼 画像<input type="file" accept="image/*" data-img hidden></label>'+(r.img?'<br><img src="'+r.img+'" style="width:60px;border-radius:6px"><br><label class="sub">画像の点数<select data-k="imgScore">'+[0,1,2,3,4,5].map(n=>'<option value="'+n+'"'+((r.imgScore||0)===n?' selected':'')+'>'+n+'</option>').join('')+'</select></label><br><a href="#" data-rmimg class="sub">消す</a>':''):'')+'</td>';
   {const ck=document.createElement('td');ck.className='chk';ck.dataset.chk=r.id;ck.innerHTML=chkHtml(r);tr.appendChild(ck)}
-  const ak=tr.querySelector('[data-addkid]');if(ak)ak.addEventListener('click',e=>{e.preventDefault();const nr=newRow();nr.parent=r.id;nr.dest='';state.rows.push(nr);save();renderInputs();renderResults()});
-  const rk=tr.querySelector('[data-rmkid]');if(rk)rk.addEventListener('click',e=>{e.preventDefault();if(!confirm('この2本目のツアーを消します。よいですか？'))return;state.rows=state.rows.filter(x=>x.id!==r.id);state.cycles={};save();renderInputs();renderResults()});
+  tr.querySelectorAll('td[data-need]').forEach(td=>{const n=Number(td.dataset.need);if(n>state.stage){td.classList.add('locked');td.innerHTML='<span class="sub">'+n+'回目から</span>'}});
+  const kb=tr.querySelector('[data-kidbuy]');if(kb)kb.addEventListener('change',()=>{
+   if(kb.checked){const nr=newRow();nr.parent=r.id;nr.dest='';nr.boughtAt=state.stage;state.rows.push(nr);save();renderInputs();renderResults()}
+   else{const ks=kidsOf(r);if(!ks.length)return;if(!confirm('2つ目のツアーを消します。よいですか？（結果は計算し直されます）')){kb.checked=true;return}state.rows=state.rows.filter(x=>x.parent!==r.id);state.cycles={};save();renderInputs();renderResults()}
+  });
   const fi=tr.querySelector('[data-img]');
   if(fi)fi.addEventListener('change',()=>{const f=fi.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{const im=new Image();im.onload=()=>{const W=480,sc=Math.min(1,W/im.width);const c=document.createElement('canvas');c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);c.getContext('2d').drawImage(im,0,0,c.width,c.height);r.img=c.toDataURL('image/jpeg',0.7);save();renderInputs();renderResults()};im.src=rd.result};rd.readAsDataURL(f)});
   const rm=tr.querySelector('[data-rmimg]');if(rm)rm.addEventListener('click',e=>{e.preventDefault();delete r.img;save();renderInputs();renderResults()});
@@ -881,7 +887,19 @@ function currentOpts(){return {stage:state.stage,thr:0.5,guard:document.getEleme
 function adcostNow(){return state.cycles[5]&&state.cycles[5].opts?state.cycles[5].opts.adcost:(Number(document.getElementById('adcost').value)||0)}
 // その回で発生する費用：1回目＝交通費、2回目＝宿代、5回目＝広告費（広告を出す人だけ）
 function kidFee(){return Math.max(0,Number(state.kidFee)||0)}
-function costAt(r,k){const pf=PREF[r.dest];if(!pf||!INN[r.inn])return 0;let c=0;if(k===1)c+=DIST[pf[0]].cost+(r.parent?kidFee():0);if(k===2)c+=INN[r.inn].cost;if(k===5&&r.ad)c+=adcostNow();return c}
+function costAt(r,k){
+ const pf=PREF[r.dest];if(!pf||!INN[r.inn])return 0;let c=0;
+ const bt=r.parent?Math.max(1,Number(r.boughtAt)||1):1; // 2つ目を買った回（途中から買ってもOK）
+ if(r.parent&&k===bt)c+=kidFee();
+ if(k===Math.max(1,bt))c+=DIST[pf[0]].cost;
+ if(k===Math.max(2,bt))c+=INN[r.inn].cost;
+ if(r.ad&&k===Math.max(5,bt))c+=adcostNow();
+ return c;
+}
+function costParts(r){ // 全部の回をまとめた内わけ（スプレッドシート用）
+ const pf=PREF[r.dest];if(!pf||!INN[r.inn])return {tr:0,inn:0,ad:0};
+ return {tr:DIST[pf[0]].cost+(r.parent?kidFee():0),inn:INN[r.inn].cost,ad:r.ad?adcostNow():0};
+}
 function diceDelta(rowId){return diceState().history.filter(h=>h.rowId===rowId).reduce((a,h)=>a+(h.delta||0),0)}
 function manualList(){if(!state.manual)state.manual=[];return state.manual}
 function manualDelta(rowId){return (typeof voteDelta==='function'?voteDelta(rowId):0)+manualList().reduce((a,m)=>a+(m.kind==='kidbuy'?(m.to===rowId?m.amount:0):(m.rowId===rowId?m.amount:0)),0)}
@@ -1412,7 +1430,7 @@ function copyForSheet(){
  persons().filter(r=>r.name||r.dest).forEach(r=>{
   const lg=ledgerPerson(r,K);const T=toursOf(r).filter(t=>t.dest&&t.inn);
   const cs=k=>{const c=state.cycles[k];if(!c)return '';let t=0,any=false;T.forEach(x=>{if(c.results[x.id]){t+=c.results[x.id].revenue;any=true}});return any?Math.round(t*10)/10:''};
-  const sc=k=>T.reduce((a,t)=>a+(k===5&&!t.ad?0:costAt(t,k)),0);
+  const sc=k=>T.reduce((a,t)=>a+(k===1?costParts(t).tr:k===2?costParts(t).inn:costParts(t).ad),0);
   L.push([r.name,joinT(r,'dest'),sc(1),sc(2),sc(5),cs(1),cs(2),cs(3),cs(4),cs(5),cs(6),lg.dice,lg.bonus,lg.manual].join('\t'));
  });
  const txt=L.join('\n');
@@ -1425,7 +1443,7 @@ function exportLedgerCsv(){
  const lines=[head];
  persons().filter(r=>r.dest&&r.inn).forEach(r=>{
   const lg=ledgerPerson(r,6);const T=toursOf(r).filter(t=>t.dest&&t.inn);
-  const line=[r.name,joinT(r,'dest'),joinT(r,'inn','・'),joinT(r,'price','／'),T.some(t=>t.ad)?'あり':'なし',T.reduce((a,t)=>a+costAt(t,1),0),T.reduce((a,t)=>a+costAt(t,2),0),T.reduce((a,t)=>a+(t.ad?costAt(t,5):0),0)];
+  const line=[r.name,joinT(r,'dest'),joinT(r,'inn','・'),joinT(r,'price','／'),T.some(t=>t.ad)?'あり':'なし',T.reduce((a,t)=>a+costParts(t).tr,0),T.reduce((a,t)=>a+costParts(t).inn,0),T.reduce((a,t)=>a+costParts(t).ad,0)];
   for(let k=1;k<=6;k++){const c=state.cycles[k];line.push(Math.round(T.reduce((a,t)=>a+(c&&c.results[t.id]?c.results[t.id].revenue:0),0)*10)/10)}
   line.push(lg.dice,lg.bonus,lg.manual);
   for(let k=1;k<=6;k++)line.push(k<=K?lg.steps[k-1].bal:'');
@@ -1463,10 +1481,10 @@ async function aiTest(){const o=document.getElementById('aiTestRes');if(!aiKey()
 async function aiVoices(tid,box){
  const cur=state.cycles[state.stage];const r=state.rows.find(x=>x.id===tid);if(!cur||!r)return;const res=cur.results[tid];const nm=r.name||'';
  const strip=t=>String(t).split(nm+'さんの').join('このツアーの').split(nm).join('このツアー');
- const V=(res.voices||[]).slice(0,3);if(!V.length){box.textContent='買った人がいません。';return}
+ const nsel=box.parentElement.querySelector('.aivn');const NV=nsel?Number(nsel.value)||3:3;const V=(res.voices||[]).slice(0,NV);if(!V.length){box.textContent='買った人がいません。';return}
  box.textContent='🤖 AIが お客さんの声を 書いています…';
  try{
-  const t=await callAI('次は、旅行ツアーを買ったお客さんの「声」の下書きです。それぞれ、お客さんの属性（who）に合う自然な話し言葉に書き直してください。新しい事実は足さず、書いてある理由（好み・宿・値段・注意点）は残します。各60字以内。名前は出さない。JSONの文字列の配列だけを返してください。\\n\\n'+JSON.stringify(V.map(v=>({who:v.who,text:strip(v.text)}))),900);
+  const t=await callAI('次は、旅行ツアーを買ったお客さんの「声」の下書きです。それぞれ、お客さんの属性（who）に合う自然な話し言葉に書き直してください。新しい事実は足さず、書いてある理由（好み・宿・値段・注意点）は残します。各60字以内。名前は出さない。JSONの文字列の配列だけを、渡した順番どおり同じ人数ぶん返してください。\\n\\n'+JSON.stringify(V.map(v=>({who:v.who,text:strip(v.text)}))),Math.min(3000,300*V.length+300));
   const arr=JSON.parse(t.match(/\[[\s\S]*\]/)[0]);
   box.innerHTML='<b>🤖 AIが書き直した お客さんの声</b>'+arr.map((x,i)=>'<div style="margin:4px 0"><span class="sub">'+esc(V[i]?V[i].who:'')+'</span><br>'+esc(x)+'</div>').join('')+'<div class="sub">※ 参考です。お金や順位には関係しません。</div>';
  }catch(e){box.innerHTML='<span class="minus">つながりませんでした（'+esc(e.message||'error')+'）。いつもの声のままで続けられます。</span>'}
@@ -1678,7 +1696,13 @@ function renderFlow(){
  markNeed();
 }
 function markNeed(){
- document.querySelectorAll('#inputTbl [data-need]').forEach(e=>e.classList.toggle('need',Number(e.dataset.need)===state.stage));
+ if(window.__lockStage!==state.stage){window.__lockStage=state.stage;try{renderInputs();return}catch(e){}}
+ document.querySelectorAll('#inputTbl [data-need]').forEach(e=>{
+  const n=Number(e.dataset.need);e.classList.toggle('need',n===state.stage);
+  const lock=n>state.stage;e.classList.toggle('locked',lock);
+  if(e.tagName==='TD')e.querySelectorAll('input,select,textarea').forEach(x=>{x.disabled=lock});
+  if(e.tagName==='TD')e.title=lock?(n+'回目になったら 入力できるよ'):'';
+ });
 }
 function updateDup(){
  const el=document.getElementById('dupWarn');if(!el)return;
@@ -1746,7 +1770,7 @@ function renderSummaries(){
   h+='<img src="'+tourPic(r)+'" style="max-width:220px;border-radius:10px;float:right;margin-left:10px" alt="">';
   if(r.copy)h+='<div style="font-size:1.1rem;margin:4px 0">📝 キャッチコピー：<b>「'+esc(r.copy)+'」</b></div>';
   h+=whyHtml(res,r,state.stage);
-  h+='<div style="margin:6px 0"><button class="sec" data-aiwhy="'+r.id+'">🤖 AIせんせいに 理由と おかしいところを 見てもらう</button> <button class=\"sec\" data-aivoice=\"'+r.id+'\">🤖 お客さんの声を AIで自然に書き直す</button><div class="aiwhybox" style="margin-top:6px"></div></div>';
+  h+='<div style="margin:6px 0"><button class="sec" data-aiwhy="'+r.id+'">🤖 AIせんせいに 理由と おかしいところを 見てもらう</button> <button class=\"sec\" data-aivoice=\"'+r.id+'\">🤖 お客さんの声を AIで自然に書き直す</button> <select class=\"aivn\"><option value=\"3\">3人</option><option value=\"5\">5人</option><option value=\"10\">10人</option></select><div class="aiwhybox" style="margin-top:6px"></div></div>';
   h+='<div style="font-size:1.25rem;font-weight:800">💰 稼いだ金額：<span class="plus">'+res.revenue+'万円</span>　<span class="sub" style="font-weight:400">（'+res.count+'人 × '+r.price+'万円'+((res.scale||1)!==1?' × '+Math.round((res.scale||1)*100)+'%':'')+(res.topUp?' ＋保証の補填 '+res.topUp+'万':'')+'。この回の費用'+cost+'万円を引くと もうけ <b class="'+(gain>=0?'plus':'minus')+'">'+(gain>=0?'+':'')+gain+'万円</b>）</span></div>';
   h+='<div style="margin:4px 0"><b>買った人の声のまとめ（'+res.count+'人）</b></div>'+buyerAttr(res,cur)+summarize(res);
   const first=res.voices.slice(0,3);
