@@ -242,9 +242,11 @@ input,select{font-size:1rem;border-radius:12px;border-width:2px}
 <div class="card tbl"><table id="inputTbl"><thead><tr>
 <th>#</th><th>名前</th><th data-need="1">行き先</th><th data-need="2">宿</th><th data-need="2">値段(万)</th><th>上限</th><th data-need="3">タイトル</th><th data-need="3">キャッチコピー<br><span class="sub">長めでOK（60字まで）</span></th><th data-need="4">観光スポット1</th><th data-need="4">観光スポット2</th><th data-need="4">観光スポット3</th><th data-need="5">広告を出す<br>(広告費10万円)</th><th>ことばチェック</th></tr></thead><tbody></tbody></table>
 <div style="margin-top:8px"><button class="sec" id="addRow">参加者を追加</button> <span class="sub">（最大15人）</span>　<label style="display:inline">2本目の権利代（万円）<input type="number" id="kidFee" min="0" step="5" style="width:70px"></label><span class="sub"> 0なら権利代なし（初期値）。決まったら入れてね</span></div></div>
-<details class="card"><summary style="cursor:pointer;font-weight:800">🤖 本物のAIにつなぐ（先生用・なくても動きます）</summary>
-<div class="sub" style="margin:6px 0">Claude の APIキーを この端末にだけ 保存します。ファイルやバックアップには入りません。つながらない時は、いつもの仕組みのままです。名前は送りません（タイトル・キャッチコピー・行き先だけ）。</div>
-<div class="row"><div><label>どのAI？</label><select id="aiProv"><option value="claude">Claude（キーは sk-ant-…）</option><option value="openai">ChatGPT / OpenAI（キーは sk-…）</option></select></div><div><label>モデル名（空欄でおまかせ）</label><input type="text" id="aiModel" placeholder="claude-haiku-5-5 / gpt-4o-mini" style="min-width:200px"></div><div><label>APIキー</label><input type="password" id="aiKey" autocomplete="off" style="min-width:280px"></div><button class="sec" id="aiKeySave">保存</button><button class="sec" id="aiKeyDel">消す</button><span class="sub" id="aiKeyState"></span></div></details>
+<div class="card"><b>🤖 AIキャッチコピー案だし</b> <span class="sub">（ボタンを押すと、AIが タイトルと キャッチコピーの案を 3つずつ 出します。気に入ったら クリックで 入ります）</span>
+<div class="row" style="margin-top:6px"><div><label>どのツアー？</label><select id="ideaWho"></select></div><button id="ideaBtn">🤖 案を出してもらう</button></div><div id="ideaOut" style="margin-top:8px"></div></div>
+<div id="aiDlg" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:95;align-items:center;justify-content:center"><div class="card" style="max-width:600px;width:92%;max-height:90vh;overflow:auto"><h3 style="margin-top:0">🤖 AIせってい（ここに 1回 入れるだけ）</h3><div class="sub" style="margin:6px 0">Claude の APIキーを この端末にだけ 保存します。ファイルやバックアップには入りません。つながらない時は、いつもの仕組みのままです。名前は送りません（タイトル・キャッチコピー・行き先だけ）。</div>
+<div class="row"><div><label>どのAI？</label><select id="aiProv"><option value="claude">Claude（キーは sk-ant-…）</option><option value="openai">ChatGPT / OpenAI（キーは sk-…）</option></select></div><div><label>モデル名（空欄でおまかせ）</label><input type="text" id="aiModel" placeholder="claude-haiku-5-5 / gpt-4o-mini" style="min-width:200px"></div><div><label>APIキー</label><input type="password" id="aiKey" autocomplete="off" style="min-width:280px"></div><button class="sec" id="aiKeySave">保存</button><button class="sec" id="aiKeyDel">消す</button><span class="sub" id="aiKeyState"></span></div><div class="row" style="margin-top:8px"><button class="sec" id="aiTest">つながるか テスト</button><button id="aiClose">とじる</button></div><div id="aiTestRes" class="sub" style="margin-top:6px"></div></div></div>
+<button id="aiFab" style="position:fixed;left:12px;bottom:12px;z-index:60;border-radius:999px;padding:8px 14px">🤖 AIせってい</button>
 
 
 <h2>▶ お客さんに 見せよう！</h2>
@@ -868,7 +870,7 @@ function renderInputs(){
   });
   tb.appendChild(tr);
  });
- updateDup();markNeed();
+ updateDup();markNeed();try{renderIdeaWho()}catch(e){}
 }
 function currentOpts(){return {stage:state.stage,thr:0.5,guard:document.getElementById('guard').value,margin:Number(document.getElementById('margin').value)||0,seed:Number(document.getElementById('seed').value)||2026,adcost:Number(document.getElementById('adcost').value)||0,scale:Math.round((Number(document.getElementById('scale').value)||10)/100*Math.min(1,Math.max(1,state.rows.filter(r=>r.dest).length)/15)*1000)/1000}}
 function adcostNow(){return state.cycles[5]&&state.cycles[5].opts?state.cycles[5].opts.adcost:(Number(document.getElementById('adcost').value)||0)}
@@ -1449,7 +1451,37 @@ async function callAI(prompt,maxTokens){
   return txt;
  }finally{clearTimeout(to)}
 }
+
+function openAi(){const d=document.getElementById('aiDlg');if(d)d.style.display='flex'}
+function closeAi(){const d=document.getElementById('aiDlg');if(d)d.style.display='none'}
+async function aiTest(){const o=document.getElementById('aiTestRes');if(!aiKey()){o.textContent='先に キーを 入れて「保存」してね。';return}o.textContent='テスト中…';try{const t=await callAI('「つながりました」とだけ返してください。',30);o.innerHTML='<span class="plus">✅ つながりました！（'+esc(aiProv()==='openai'?'OpenAI':'Claude')+' / '+esc(aiModelName())+'）</span>'}catch(e){o.innerHTML='<span class="minus">つながりませんでした（'+esc(e.message||'error')+'）。キー・AIの種類・モデル名を 見直してね。</span>'}}
+async function aiVoices(tid,box){
+ const cur=state.cycles[state.stage];const r=state.rows.find(x=>x.id===tid);if(!cur||!r)return;const res=cur.results[tid];const nm=r.name||'';
+ const strip=t=>String(t).split(nm+'さんの').join('このツアーの').split(nm).join('このツアー');
+ const V=(res.voices||[]).slice(0,3);if(!V.length){box.textContent='買った人がいません。';return}
+ box.textContent='🤖 AIが お客さんの声を 書いています…';
+ try{
+  const t=await callAI('次は、旅行ツアーを買ったお客さんの「声」の下書きです。それぞれ、お客さんの属性（who）に合う自然な話し言葉に書き直してください。新しい事実は足さず、書いてある理由（好み・宿・値段・注意点）は残します。各60字以内。名前は出さない。JSONの文字列の配列だけを返してください。\\n\\n'+JSON.stringify(V.map(v=>({who:v.who,text:strip(v.text)}))),900);
+  const arr=JSON.parse(t.match(/\[[\s\S]*\]/)[0]);
+  box.innerHTML='<b>🤖 AIが書き直した お客さんの声</b>'+arr.map((x,i)=>'<div style="margin:4px 0"><span class="sub">'+esc(V[i]?V[i].who:'')+'</span><br>'+esc(x)+'</div>').join('')+'<div class="sub">※ 参考です。お金や順位には関係しません。</div>';
+ }catch(e){box.innerHTML='<span class="minus">つながりませんでした（'+esc(e.message||'error')+'）。いつもの声のままで続けられます。</span>'}
+}
+async function aiIdeas(){
+ const out=document.getElementById('ideaOut');if(!aiKey()){openAi();return}
+ const r=state.rows.find(x=>x.id===document.getElementById('ideaWho').value);if(!r||!r.dest){out.textContent='先に 行き先を えらんでね。';return}
+ const info=tourInfo(r);const tg=info?info.tags.slice(0,3):[];
+ out.textContent='🤖 かんがえています…';
+ try{
+  const t=await callAI('小中学生が作る旅行ツアーの、タイトル案とキャッチコピー案を作ってください。行き先:'+r.dest+'、宿:'+r.inn+'、その県で人気のカテゴリー:'+tg.join('・')+'。タイトルは12字以内を3つ、キャッチコピーは30〜50字を3つ。子どもが読めるやさしい言葉で。JSONだけを返してください。形式:{"titles":["…"],"copies":["…"]}',700);
+  const j=JSON.parse(t.match(/\{[\s\S]*\}/)[0]);
+  const chip=(k,x)=>'<button class="sec" data-idea="'+k+'" data-v="'+esc(x)+'" style="margin:3px;text-align:left;white-space:normal">'+esc(x)+'</button>';
+  out.innerHTML='<div><b>タイトル案</b><br>'+(j.titles||[]).map(x=>chip('title',x)).join('')+'</div><div style="margin-top:6px"><b>キャッチコピー案</b><br>'+(j.copies||[]).map(x=>chip('copy',x)).join('')+'</div><div class="sub">気に入った案を クリックすると、入力表に入ります（あとで自分の言葉に直そうね）。</div>';
+  out.querySelectorAll('[data-idea]').forEach(b=>b.onclick=()=>{r[b.dataset.idea]=b.dataset.v;save();renderInputs();SFX.good();out.querySelector('.sub').textContent='入れたよ！'});
+ }catch(e){out.innerHTML='<span class="minus">つながりませんでした（'+esc(e.message||'error')+'）。自分で考えてみよう。</span>'}
+}
+function renderIdeaWho(){const sel=document.getElementById('ideaWho');if(!sel)return;const cur=sel.value;sel.innerHTML=state.rows.filter(r=>r.dest).map(r=>'<option value="'+r.id+'">'+esc((r.name||'(名前なし)')+(r.parent?'（2本目）':'')+'：'+r.dest)+'</option>').join('');if(cur)sel.value=cur}
 async function aiWhy(tid,box){
+ if(!aiKey()){openAi();return}
  const cur=state.cycles[state.stage];const r=state.rows.find(x=>x.id===tid);if(!cur||!r||!cur.results[tid]){return}
  const res=cur.results[tid];const nm=r.name||'';
  box.textContent='🤖 AIが かんがえています…';
@@ -1460,12 +1492,12 @@ async function aiWhy(tid,box){
   box.innerHTML='<b>🤖 AIせんせいの コメント</b><div style="white-space:pre-wrap">'+esc(t.trim())+'</div><div class="sub">※ 参考です。お金や順位には関係しません。</div>';
  }catch(e){box.innerHTML='<span class="minus">つながりませんでした（'+esc(e.message||'error')+'）。いつもの結果だけで続けられます。</span>'}
 }
-document.addEventListener('click',e=>{const b=e.target.closest('[data-aiwhy]');if(b){const box=b.parentElement.querySelector('.aiwhybox');if(box)aiWhy(b.dataset.aiwhy,box)}});
+document.addEventListener('click',e=>{let b=e.target.closest('[data-aiwhy]');if(b){const box=b.parentElement.querySelector('.aiwhybox');if(box)aiWhy(b.dataset.aiwhy,box);return}b=e.target.closest('[data-aivoice]');if(b){if(!aiKey()){openAi();return}const box=b.parentElement.querySelector('.aiwhybox');if(box)aiVoices(b.dataset.aivoice,box)}});
 function aiKey(){try{return localStorage.getItem(AIKEY)||''}catch(e){return ''}}
-function aiKeyShow(){const e=document.getElementById('aiKeyState');if(e)e.textContent=aiKey()?'✅ 保存ずみ（この端末だけ）':'（まだ 入っていません）'}
+function aiKeyShow(){const e=document.getElementById('aiKeyState');if(e)e.textContent=aiKey()?'✅ 保存ずみ（この端末だけ）':'（まだ 入っていません）';const f=document.getElementById('aiFab');if(f)f.textContent=aiKey()?'🤖 AI ✅':'🤖 AIせってい'}
 async function aiJudge(){
  const out=document.getElementById('aiJudge');const key=aiKey();
- if(!key){out.innerHTML='<span class="sub">先に「入力」タブの「本物のAIにつなぐ」で、APIキーを保存してね。</span>';return}
+ if(!key){openAi();return}
  const T=state.rows.filter(r=>r.dest&&(r.copy||r.title));
  if(!T.length){out.innerHTML='<span class="sub">タイトルかキャッチコピーを入れてね。</span>';return}
  out.textContent='🤖 AIが読んでいます…';
@@ -1709,7 +1741,7 @@ function renderSummaries(){
   h+='<img src="'+tourPic(r)+'" style="max-width:220px;border-radius:10px;float:right;margin-left:10px" alt="">';
   if(r.copy)h+='<div style="font-size:1.1rem;margin:4px 0">📝 キャッチコピー：<b>「'+esc(r.copy)+'」</b></div>';
   h+=whyHtml(res,r,state.stage);
-  h+='<div style="margin:6px 0"><button class="sec" data-aiwhy="'+r.id+'">🤖 AIせんせいに 理由と おかしいところを 見てもらう</button><div class="aiwhybox" style="margin-top:6px"></div></div>';
+  h+='<div style="margin:6px 0"><button class="sec" data-aiwhy="'+r.id+'">🤖 AIせんせいに 理由と おかしいところを 見てもらう</button> <button class=\"sec\" data-aivoice=\"'+r.id+'\">🤖 お客さんの声を AIで自然に書き直す</button><div class="aiwhybox" style="margin-top:6px"></div></div>';
   h+='<div style="font-size:1.25rem;font-weight:800">💰 稼いだ金額：<span class="plus">'+res.revenue+'万円</span>　<span class="sub" style="font-weight:400">（'+res.count+'人 × '+r.price+'万円'+((res.scale||1)!==1?' × '+Math.round((res.scale||1)*100)+'%':'')+(res.topUp?' ＋保証の補填 '+res.topUp+'万':'')+'。この回の費用'+cost+'万円を引くと もうけ <b class="'+(gain>=0?'plus':'minus')+'">'+(gain>=0?'+':'')+gain+'万円</b>）</span></div>';
   h+='<div style="margin:4px 0"><b>買った人の声のまとめ（'+res.count+'人）</b></div>'+buyerAttr(res,cur)+summarize(res);
   const first=res.voices.slice(0,3);
@@ -1943,7 +1975,7 @@ function sampleRows(){
 function init(){
  load();
  if(!state.rows.length){state.rows=[newRow()]}
- rlState();diceState();renderStage();renderInputs();renderResDist();{const kf=document.getElementById('kidFee');kf.value=kidFee();kf.onchange=()=>{state.kidFee=Math.max(0,Number(kf.value)||0);save();renderLedger&&renderLedger();renderResults()}}document.getElementById('boomSpin').onclick=boomSpin;document.getElementById('aiJudgeBtn').onclick=aiJudge;aiKeyShow();{const ap=document.getElementById('aiProv'),am=document.getElementById('aiModel');ap.value=aiProv();try{am.value=localStorage.getItem('aiPersonaApp.aimodel')||''}catch(e){}ap.onchange=()=>{try{localStorage.setItem('aiPersonaApp.aiprov',ap.value)}catch(e){}};am.onchange=()=>{try{localStorage.setItem('aiPersonaApp.aimodel',am.value.trim())}catch(e){}}}document.getElementById('aiKeySave').onclick=()=>{const v=document.getElementById('aiKey').value.trim();if(!v){alert('キーを入れてね');return}try{localStorage.setItem(AIKEY,v)}catch(e){alert('保存できませんでした')}document.getElementById('aiKey').value='';aiKeyShow()};document.getElementById('aiKeyDel').onclick=()=>{try{localStorage.removeItem(AIKEY)}catch(e){}aiKeyShow()};document.getElementById('boomClear').onclick=()=>{state.boomNext=null;save();renderBoom()};document.getElementById('voteReset').onclick=()=>{if(confirm('票を ぜんぶ 消しますか？')){state.votes={};save();renderVote();renderLedger()}};document.getElementById('voteWho').onchange=renderVote;document.getElementById('mapReset').onclick=()=>{if(confirm('5〜7の進み具合を リセットしますか？')){state.mapPos={};state.mapDone={};save();renderMap()}};renderResults();renderPersonas();renderRoulette();renderDice();renderMute();renderFlow();initQuiz();renderCards();initWords();{const h=document.querySelector('.hero');if(h){['🌸','🍜','♨️','🚅','🗻','🐟','🎡','⛩️'].forEach((e,i)=>{const sp=document.createElement('span');sp.className='floatemo';sp.textContent=e;sp.style.left=(8+i*12)+'%';sp.style.top=(20+(i%3)*25)+'%';sp.style.animationDelay=(i*0.5)+'s';h.appendChild(sp)})}}document.getElementById('expPersona').onclick=exportPersonasCsv;document.getElementById('expDetail').onclick=exportDetailCsv;document.getElementById('expAll').onclick=exportAllJson;renderSheet();document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b){SFX.click();clearTimeout(window.__pt);clearTimeout(window.__pb);window.__plazaAnim=false;showTab(b.dataset.tab)}});showTab(state.tab||'input');
+ rlState();diceState();renderStage();renderInputs();renderResDist();{const kf=document.getElementById('kidFee');kf.value=kidFee();kf.onchange=()=>{state.kidFee=Math.max(0,Number(kf.value)||0);save();renderLedger&&renderLedger();renderResults()}}document.getElementById('boomSpin').onclick=boomSpin;document.getElementById('aiJudgeBtn').onclick=aiJudge;document.getElementById('aiFab').onclick=openAi;document.getElementById('aiClose').onclick=closeAi;document.getElementById('aiTest').onclick=aiTest;document.getElementById('ideaBtn').onclick=aiIdeas;renderIdeaWho();aiKeyShow();{const ap=document.getElementById('aiProv'),am=document.getElementById('aiModel');ap.value=aiProv();try{am.value=localStorage.getItem('aiPersonaApp.aimodel')||''}catch(e){}ap.onchange=()=>{try{localStorage.setItem('aiPersonaApp.aiprov',ap.value)}catch(e){}};am.onchange=()=>{try{localStorage.setItem('aiPersonaApp.aimodel',am.value.trim())}catch(e){}}}document.getElementById('aiKeySave').onclick=()=>{const v=document.getElementById('aiKey').value.trim();if(!v){alert('キーを入れてね');return}try{localStorage.setItem(AIKEY,v)}catch(e){alert('保存できませんでした')}document.getElementById('aiKey').value='';aiKeyShow()};document.getElementById('aiKeyDel').onclick=()=>{try{localStorage.removeItem(AIKEY)}catch(e){}aiKeyShow()};document.getElementById('boomClear').onclick=()=>{state.boomNext=null;save();renderBoom()};document.getElementById('voteReset').onclick=()=>{if(confirm('票を ぜんぶ 消しますか？')){state.votes={};save();renderVote();renderLedger()}};document.getElementById('voteWho').onchange=renderVote;document.getElementById('mapReset').onclick=()=>{if(confirm('5〜7の進み具合を リセットしますか？')){state.mapPos={};state.mapDone={};save();renderMap()}};renderResults();renderPersonas();renderRoulette();renderDice();renderMute();renderFlow();initQuiz();renderCards();initWords();{const h=document.querySelector('.hero');if(h){['🌸','🍜','♨️','🚅','🗻','🐟','🎡','⛩️'].forEach((e,i)=>{const sp=document.createElement('span');sp.className='floatemo';sp.textContent=e;sp.style.left=(8+i*12)+'%';sp.style.top=(20+(i%3)*25)+'%';sp.style.animationDelay=(i*0.5)+'s';h.appendChild(sp)})}}document.getElementById('expPersona').onclick=exportPersonasCsv;document.getElementById('expDetail').onclick=exportDetailCsv;document.getElementById('expAll').onclick=exportAllJson;renderSheet();document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b){SFX.click();clearTimeout(window.__pt);clearTimeout(window.__pb);window.__plazaAnim=false;showTab(b.dataset.tab)}});showTab(state.tab||'input');
  document.getElementById('run').onclick=runCycle;
  document.getElementById('runFloat').onclick=runCycle;
  document.getElementById('addRow').onclick=()=>{if(persons().length>=15){alert('最大15人です');return}state.rows.push(newRow());save();renderInputs()};
