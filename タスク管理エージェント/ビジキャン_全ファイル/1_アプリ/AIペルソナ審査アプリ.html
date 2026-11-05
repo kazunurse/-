@@ -253,7 +253,7 @@ input,select{font-size:1rem;border-radius:12px;border-width:2px}
 <div class="sub">行き先・宿・値段・タイトル・観光スポット3か所・広告を入力します。値段は5万円刻みで、「上限」の数字までです。宿と行き先を変えると、上限も変わります。</div>
 <div class="card tbl"><table id="inputTbl"><thead><tr>
 <th>#</th><th>名前</th><th data-need="1">行き先</th><th data-need="2">宿</th><th data-need="2">値段(万)</th><th>上限</th><th data-need="3">タイトル</th><th data-need="3">キャッチコピー<br><span class="sub">長めでOK（60字まで）</span></th><th data-need="4">観光スポット1</th><th data-need="4">観光スポット2</th><th data-need="4">観光スポット3</th><th data-need="5">広告を出す<br>(広告費10万円)</th><th>ことばチェック</th></tr></thead><tbody></tbody></table>
-<div style="margin-top:8px"><button class="sec" id="addRow">参加者を追加</button> <span class="sub">（最大15人）</span>　<label style="display:inline">2つ目のツアーの値段（万円）<input type="number" id="kidFee" min="0" step="5" style="width:70px"></label><span class="sub"> いまは20万円（0ならタダ）。表の「2つ目のツアーを買った」にチェックすると、この値段で2つ目を買えて、入力できるよ</span></div></div>
+<div style="margin-top:8px"><button class="sec" id="addRow">参加者を追加</button> <span class="sub">（最大15人）</span>　<label style="display:inline">🎫 ツアーコンダクター称号の値段（万円）<input type="number" id="kidFee" min="0" step="5" style="width:70px"></label><span class="sub"> いまは20万円（0ならタダ）。表の「🎫 称号を買った」にチェックすると、この値段が引かれて、2つ目のツアーを作れるよ</span></div></div>
 <div class="card"><b>🤖 AIキャッチコピー案だし</b> <span class="sub">（ボタンを押すと、AIが タイトルと キャッチコピーの案を 3つずつ 出します。気に入ったら クリックで 入ります）</span>
 <div class="row" style="margin-top:6px"><div><label>どのツアー？</label><select id="ideaWho"></select></div><button id="ideaBtn">🤖 案を出してもらう</button></div><div id="ideaOut" style="margin-top:8px"></div></div>
 <div id="aiDlg" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:95;align-items:center;justify-content:center"><div class="card" style="max-width:600px;width:92%;max-height:90vh;overflow:auto"><h3 style="margin-top:0">🤖 AIせってい（ここに 1回 入れるだけ）</h3><div class="sub" style="margin:6px 0">Claude の APIキーを この端末にだけ 保存します。ファイルやバックアップには入りません。つながらない時は、いつもの仕組みのままです。名前は送りません（タイトル・キャッチコピー・行き先だけ）。</div>
@@ -856,7 +856,7 @@ function renderInputs(){
   const prefOpts=(r.dest?'':'<option value="" selected>（えらぶ）</option>')+Object.keys(PREF).map(k=>'<option'+(k===r.dest?' selected':'')+'>'+k+'</option>').join('');
   const innOpts=Object.keys(INN).map(k=>'<option'+(k===r.inn?' selected':'')+'>'+k+'</option>').join('');
   const lim=limitOf(r);
-  const nameCell=isKid?'<td>↳ <b>2つ目のツアー</b><br><span class="sub">'+(r.boughtAt||1)+'回目に買った</span></td>':'<td><input type="text" data-k="name" value="'+esc(r.name)+'">'+'<br><label class="sub" style="cursor:pointer"><input type="checkbox" data-kidbuy'+(kidsOf(r).length?' checked':'')+'> 2つ目を買った</label>'+'</td>';
+  const nameCell=isKid?'<td>↳ <b>2つ目のツアー</b><br><span class="sub">🎫 称号を買った回：'+(r.boughtAt||1)+'回目</span></td>':'<td><input type="text" data-k="name" value="'+esc(r.name)+'">'+'<br><label class="sub" style="cursor:pointer"><input type="checkbox" data-kidbuy'+(kidsOf(r).length?' checked':'')+'> 🎫 称号を買った（2つ目OK）</label>'+'</td>';
   tr.innerHTML='<td>'+(isKid?'':(i+1))+'</td>'+
   nameCell+
   '<td data-need="1"><select data-k="dest">'+prefOpts+'</select>'+(PREF[r.dest]?'<div class="sub">交通費 '+DIST[PREF[r.dest][0]].cost+'万円</div>':'')+'</td>'+
@@ -873,7 +873,7 @@ function renderInputs(){
   tr.querySelectorAll('td[data-need]').forEach(td=>{const n=Number(td.dataset.need);if(n>state.stage){td.classList.add('locked');td.innerHTML='<span class="sub">'+n+'回目から</span>'}});
   const kb=tr.querySelector('[data-kidbuy]');if(kb)kb.addEventListener('change',()=>{
    if(kb.checked){const nr=newRow();nr.parent=r.id;nr.dest='';nr.boughtAt=state.stage;state.rows.push(nr);save();renderInputs();renderResults()}
-   else{const ks=kidsOf(r);if(!ks.length)return;if(!confirm('2つ目のツアーを消します。よいですか？（ほかの人の結果は そのままです）')){kb.checked=true;return}const kid=ks.map(k=>k.id);state.rows=state.rows.filter(x=>x.parent!==r.id);Object.keys(state.cycles).forEach(c=>{const cc=state.cycles[c];kid.forEach(id=>{delete cc.results[id]})});save();renderInputs();renderResults()}
+   else{const ks=kidsOf(r);if(!ks.length)return;if(!confirm('称号と2つ目のツアーを消します。よいですか？（ほかの人の結果は そのままです）')){kb.checked=true;return}const kid=ks.map(k=>k.id);state.rows=state.rows.filter(x=>x.parent!==r.id);Object.keys(state.cycles).forEach(c=>{const cc=state.cycles[c];kid.forEach(id=>{delete cc.results[id]})});save();renderInputs();renderResults()}
   });
   const fi=tr.querySelector('[data-img]');
   if(fi)fi.addEventListener('change',()=>{const f=fi.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{const im=new Image();im.onload=()=>{const W=480,sc=Math.min(1,W/im.width);const c=document.createElement('canvas');c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);c.getContext('2d').drawImage(im,0,0,c.width,c.height);r.img=c.toDataURL('image/jpeg',0.7);save();renderInputs();renderResults()};im.src=rd.result};rd.readAsDataURL(f)});
