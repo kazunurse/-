@@ -378,6 +378,8 @@ button[style*="gradient"],#rankShow,#rankShowC{background:var(--red)!important;b
 .hero p{color:#f3ead3;opacity:1}
 .hero .deco{display:none}
 #muteBtn{background:transparent!important;border:2px solid #f3ead3;color:#f3ead3;border-radius:3px!important;box-shadow:none!important}
+th{background:var(--accent2)!important;background-image:none!important;color:var(--navy)!important;font-family:var(--mincho);border-bottom:3px solid var(--navy)!important;text-shadow:none!important}
+#runFloat,button[id=run]{background:var(--red)!important;background-image:none!important;border-radius:3px!important;box-shadow:0 5px 0 #8c2219!important}
 @media(prefers-reduced-motion:reduce){.kcard.first::after{animation:none}.v12st i{transition:none}}
 </style>
 </head>
@@ -2351,7 +2353,7 @@ if(typeof document!=='undefined'&&document.getElementById('run'))init();
  function clean(s){return s.replace(/🥇/g,'1位').replace(/🥈/g,'2位').replace(/🥉/g,'3位').replace(/👑 ?/g,'').replace(EMO,'').replace(/^\s+(?=\S)/,'')}
  function fix(n){
   if(n.nodeType===3){const p=n.parentNode;if(!p)return;const t=p.nodeName;if(t==='SCRIPT'||t==='STYLE'||t==='TEXTAREA'||t==='OPTION'&&false)return;
-   if(p.style&&p.style.position==='fixed')return;
+   if(t==='DIV'&&p.style&&p.style.position==='fixed'&&!p.id)return;
    const v=n.nodeValue;if(!EMO.test(v)&&v.indexOf('🥇')<0&&v.indexOf('🥈')<0&&v.indexOf('🥉')<0){EMO.lastIndex=0;return}EMO.lastIndex=0;
    const w=clean(v);if(w!==v)n.nodeValue=w;return}
   if(n.nodeType!==1)return;const t=n.nodeName;if(t==='SCRIPT'||t==='STYLE'||t==='TEXTAREA'||t==='INPUT')return;
