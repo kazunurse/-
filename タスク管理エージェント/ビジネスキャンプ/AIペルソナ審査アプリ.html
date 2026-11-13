@@ -2338,7 +2338,7 @@ if(typeof document!=='undefined'&&document.getElementById('run'))init();
   return{pct,txt:'あと '+Math.max(0,Math.ceil(b-final))+'万で '+RANKS[i+1][1]+'！'}}
  let hud=null,prev=null,shown=0,raf=0;
  function mk(){if(hud)return hud;const bar=document.getElementById('rankBar');if(!bar)return null;
-  hud=document.createElement('div');hud.id='hud';bar.parentNode.insertBefore(hud,bar);return hud}
+  hud=document.createElement('div');hud.id='hud';const sk=document.querySelector('.stick');if(sk&&sk.parentNode)sk.parentNode.insertBefore(hud,sk);else bar.parentNode.insertBefore(hud,bar);return hud}
  function toast(html,cls,ms){const t=document.createElement('div');t.className='gtoast '+(cls||'');t.innerHTML=html;document.body.appendChild(t);setTimeout(()=>t.remove(),ms||2200)}
  function rain(n){for(let i=0;i<n;i++){const c=document.createElement('div');c.className='coinrain cn';c.textContent='D';
   c.style.left=(Math.random()*100)+'vw';c.style.animationDelay=(Math.random()*.7)+'s';c.style.width=c.style.height=(26+Math.random()*22)+'px';c.style.fontSize=(14+Math.random()*10)+'px';
